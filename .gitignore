@@ -107,4 +107,4 @@ dist
 .vscode-test
 
 # A file that Macs (and only Macs) create and feel necessary to upload
-.DS_Store
+*.DS_Store
