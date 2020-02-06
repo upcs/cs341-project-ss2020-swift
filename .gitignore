@@ -105,3 +105,6 @@ dist
 
 # Stores VSCode versions used for testing VSCode extensions
 .vscode-test
+
+# A file that Macs (and only Macs) create and feel necessary to upload
+.DS_Store
