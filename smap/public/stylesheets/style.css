@@ -1,8 +1,358 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+/* Bunger, Liao, Marcinko, Regier, Robinson */
+
+/*******************************************************************/
+/* Template for new element styling:
+
+    [tag, class, id]
+        /* Positioning and Display */
+
+        /* Borders */
+
+        /* Coloring */
+
+        /* Fonts and Text */
+
+        /* Other */
+
+/*******************************************************************/
+
+/* Defining theme colors */
+/* Source https://stackoverflow.com/questions/1875852/how-can-i-define-colors-as-variables-in-css */
+/* Usage:   property: var(--variable);   */
+:root {
+    --background-color:         rgba(240, 240, 240, 1);     /* Light Grey */
+    --element-background-light: rgba(250, 220, 170, 1);     /* Lighter Orange */
+    --element-background-med:   rgba(250, 200, 115, 1);     /* Light Orange */
+    --element-background-dark:  rgba(250, 185, 80, 1);      /* Medium Orange */
+    --highlight-color:          rgba(235, 145, 10, 1);      /* Darker Orange */
+    --text-color:               rgba(85, 50, 0, 1);         /* Deep Brown */
+    --font-sans:                'Quicksand', sans-serif;
+    --font-serif:               'EB Garamond', serif;
 }
 
-a {
-  color: #00B7FF;
+/**********************/
+/* GLOBAL TAG STYLING */
+/**********************/
+
+/* Background color of the body is the general background color for consistency. Font is set by
+default to the Sans font that was picked. Other settings should be edited in individual
+elements. */
+body {
+    /* Positioning and Display */
+    margin: 0px;
+    overflow-y: hidden;
+    /* Coloring */
+  	background-color: var(--background-color);
+    /* Fonts and Text */
+    font-family: var(--font-sans);
+}
+
+/* Set the font color and family of all the h tags to be as such */
+h1, h2, h3, h4, h5, h6 {
+    /* Fonts and Text */
+    font-family: var(--font-sans);
+    color: var(--text-color);
+}
+
+/* Set the size of the h1 to be a bit bigger */
+h1 {
+    /* Fonts and Text */
+    font-size: 52px;
+}
+
+/*****************************/
+/* SEMI-GLOBAL CLASS STYLING */
+/*****************************/
+
+/* The class for the general card in the about section (either the "about" or "citation" card) */
+.about_text {
+    /* Positioning and Display */
+    padding: 20px;
+    /* Borders */
+    border-width: 2px;
+    border-radius: 16px;
+    border-color: var(--element-background-dark);
+    border-style: solid;
+    /* Coloring */
+    background-color: var(--element-background-light);
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.125);
+    /* Fonts and Text */
+    color: var(--text-color);
+    font-family: var(--font-serif);
+    font-size: 15pt;
+}
+
+/* The small i should be aligned to the right, non-selectable and have a clickable look. Makes it
+   seem like it has functionality */
+.metadata_button {
+    /* Positioning and Display */
+    float: right;
+    /* Other */
+    cursor: pointer;
+    user-select: none;
+}
+
+/* Set up the positioning of each slider/title/info button holder */
+.statistic_setting_container {
+    /* Positioning and Display */
+    width: 80%;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Make sure the title of the statistic slider is aligned left */
+.statistic_title {
+    /* Positioning and Display */
+    float: left;
+}
+
+/* For each statistic option in the selection box, make sure it looks like an important list to
+   mouse over at the very least, with some hover and click detailing */
+.statistic_option {
+    /* Positioning and Display */
+    height: 20px;
+    margin: 4px;
+    padding: 4px;
+    /* Borders */
+    border-radius: 4px;
+    /* Coloring */
+    background-color: var(--element-background-light);
+    /* Font and Text*/
+    user-select: none;
+    /* Other */
+    cursor: pointer;
+}
+
+.statistic_option:hover {
+    /* Coloring */
+    background-color: var(--background-color);
+}
+
+.statistic_option:active {
+    /* Coloring */
+    background-color: var(--element-background-med);
+}
+
+/* Change the horribly ugly sliders to these much more sleek sliders by disabling the webkit
+   appearance and giving it out own look. TODO: Add tick marks */
+.range_slider {
+    /* Positioning and Display */
+    width: 100%;
+    height: 16px;
+    /* Borders */
+    border: 1px solid var(--highlight-color);
+    border-radius: 8px;
+    /* Coloring */
+    background-color: var(--element-background-dark);
+    /* Other */
+    -webkit-appearance: none !important;
+}
+
+/* Hide the app section and reveal the about section */
+.hidden {
+    /* Positioning and Display */
+    display: none;
+    top: 200%;
+    bottom: 100%;
+}
+
+/* Move the bottom bar to the top and flip it around */
+.about_position {
+    /* Positioning and Display */
+    top: 0 !important;
+    bottom: 96% !important;
+    z-index: 2;
+    transform: rotateX(180deg) translateY(-35px);
+    /* Coloring */
+    background-color: rgba(255, 255, 255, 0) !important;
+}
+
+/*********************/
+/* UNIQUE ID STYLING */
+/*********************/
+
+/* The entire div that holds the about section. Making sure it shows up in the right spot */
+#about_container {
+    /* Positioning and Display */
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    text-align: center;
+}
+
+/* The card in the about section on the left. Simple positioning settings, the class has the rest
+   of the details */
+#about_smap {
+    /* Positioning and Display */
+    position: absolute;
+    top: 30%;
+    right: 53%;
+    left: 3%;
+}
+
+/* The arrow image */
+#arrow {
+    /* Positioning and Display */
+    height: 35px;
+    width: 15%;
+    padding: 15px;
+}
+
+#arrow:hover {
+    filter: brightness(0.25);
+}
+
+/* The bar that serves as navigation to the other about screen. Initial positioning, as the
+   "about_position" class will move the bottom bar to the top of the screen in the about section */
+#bottom_bar {
+    /* Positioning and Display */
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    z-index: 2;
+    max-height: 12%;
+    /* Coloring */
+    background-color: var(--element-background-light);
+}
+
+/* Positioning for the right about card */
+#citations {
+    /* Positioning and Display */
+    position: absolute;
+    top: 30%;
+    right: 3%;
+    left: 53%;
+}
+
+/* The blank, background-colored divider that avoids the issue of wonky Z-Indexes. Without using
+   this element, the bottom bar is impossible to get beneath the settings box but above the map.
+   This might be changed in future versions when animations are added to the different sections */
+#divisor {
+    /* Positioning and Display */
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    /* Coloring */
+    background-color: var(--background-color);
+}
+
+/* Holds and positions the map */
+#map_container {
+    /* Positioning and Display */
+    position: absolute;
+    top: 5%;
+    bottom: 15%;
+    right: 3%;
+    left: 30%;
+    z-index: 2;
+}
+
+/* The map image itself. This may be changed when the future versions use the SVG image */
+#map {
+    /* Positioning and Display */
+    width: 100%;
+    height: 100%;
+}
+
+/* The overall left-side bar positioning and coloring. See the note below for important info */
+#settings_container {
+    /* Positioning and Display */
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 75%;
+    max-width: 500px; /* This is a vital setting to make sure it doesn't take over at high res. */
+    text-align: center;
+    z-index: 4;
+    /* Coloring */
+    background-color: var(--element-background-med);
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.125);
+    /* Fonts and Text */
+    color: var(--text-color);
+}
+
+/* The settings header for the sliders. This has to be positioned absolutely due to abnormalities. */
+#settings_header {
+    /* Positioning and Display */
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    max-width: 500px;
+    height: 8%;
+    vertical-align: center;
+    /* Coloring */
+    background-color: var(--element-background-dark);
+}
+
+/* The slider container for positioning. See above notes. */
+#slider_container {
+    /* Positioning and Display */
+    position: absolute;
+    top: 8%;
+    bottom: 50%;
+    width: 100%;
+    overflow: auto;
+}
+
+/* The bar across the top of the website in the about section */
+#smap_header {
+    /* Positioning and Display */
+    position: absolute;
+    top: 0;
+    width: 100%;
+    bottom: 77.5%;
+    text-align: center;
+    /* Coloring */
+    background-color: var(--element-background-light);
+}
+
+/* Holds the title of the website in the about section */
+#smap_header_text {
+    /* Positioning and Display */
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+}
+
+/* The container that holds the statistic selector */
+#statistic_selection_container {
+    /* Positioning and Display */
+    position: absolute;
+    top: 58%;
+    bottom: 5%;
+    width: 100%;
+}
+
+/* The box in the lower half of the settings container */
+#statistic_selector {
+    /* Positioning and Display */
+    width: 80%;
+    height: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 15px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    /* Coloring */
+    background-color: var(--element-background-dark);
+}
+
+/* The title for the statistic selector */
+#statistic_selection_title {
+    /* Positioning and Display */
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    max-width: 500px;
+    height: 8%;
+    vertical-align: center;
+    /* Coloring */
+    background-color: var(--element-background-dark);
 }
