@@ -23,7 +23,7 @@ function parseDataURL(query) {
 
   //If only one category supplied, then the categories are not forced into an Array
   //This code takes care of that so we are always dealing with the same type
-  if (!Array.isArray(cat){
+  if (!Array.isArray(cat)){
     cat = [cat];
   }
 
