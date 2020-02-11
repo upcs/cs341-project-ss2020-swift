@@ -15,19 +15,19 @@ function getCats(){
 //  query - the request query object
 //Returns: A list of categories requested, or undefined if no categories provided
 function parseDataURL(query) {
-  let cats = query.cat;
+  let cat = query.cat;
 
-  if (cats === undefined){
+  if (cat === undefined){
     return undefined;
   }
 
   //If only one category supplied, then the categories are not forced into an Array
   //This code takes care of that so we are always dealing with the same type
-  if (!Array.isArray(cats)){
-    cats = [cats];
+  if (!Array.isArray(cat){
+    cat = [cat];
   }
 
-  return cats;
+  return cat;
 }
 
 //Gets the data for the /api/data endpoint
@@ -36,7 +36,7 @@ function parseDataURL(query) {
 function getData(cats){
   let contents = {};
 
-  for (category of cats){
+  for (let category of cats){
     if (dummyData[category] === undefined){
       return undefined;
     }
