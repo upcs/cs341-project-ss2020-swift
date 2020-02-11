@@ -1,14 +1,111 @@
  <!-- Bunger, Liao, Marcinko, Regier, Robinson -->
 <!DOCTYPE html>
-
 <head>
-	<link rel="stylesheet" type="text/css" href="/stylesheets/smap_basic_stylesheet.css">
+	<meta charset="utf-8" />
+	<meta lang="en" />
+	<meta name="keywords" content="States,Analytics,Mapping,Data">
+	<meta name="author" content="Sarah Bunger, Hayden Liao, Meredith Marcinko, Ryan Regier, and
+								 Philip Robinson">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href="https://fonts.googleapis.com/css?family=EB+Garamond:400,500,500i,700,700i|Quicksand:400,700&display=swap"
+		  rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="stylesheets/style.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<script src="javascripts/metadata.js" type="text/javascript"></script>
+	<script src="javascripts/scroll_handler.js" type="text/javascript"></script>
 	<title>SMAP</title>
 </head>
 
 <body>
+	<!-- This container holds the settings and map. This is kept separate in order to easily
+		 enable a scrolling transition between this and the about section -->
+	<div id="app_container">
+		<!-- Settings container is the floating side bar that allows the user to modify scoring -->
+		<div id="settings_container">
+			<div id="settings_header">
+				<h3>Statistic Priority:</h3>
+			</div>
+			<!-- This container holds all of the statistics for the user to manipulate -->
+			<div id="slider_container">
+				<!-- Each of these statistic_setting_contiainer holds the positioning for the title
+			 		 of the statistic, the metadata button, and the slider -->
+				<div class="statistic_setting_container">
+					<div class="statistic_title">State GDP</div>
+					<div class="metadata_button">&#9432;</div>
+					<input type="range" min="1" max="5" value="3" id="stat1" class="range_slider" />
+				</div>
+				<div class="statistic_setting_container">
+					<div class="statistic_title">Crime Rate</div>
+					<div class="metadata_button">&#9432;</div>
+					<input type="range" min="1" max="5" value="3" id="stat2" class="range_slider" />
+				</div>
+				<div class="statistic_setting_container">
+					<div class="statistic_title">Educational Attainment</div>
+					<div class="metadata_button">&#9432;</div>
+					<input type="range" min="1" max="5" value="3" id="stat3" class="range_slider" />
+				</div>
+				<div class="statistic_setting_container">
+					<div class="statistic_title">Employment Rate</div>
+					<div class="metadata_button">&#9432;</div>
+					<input type="range" min="1" max="5" value="3" id="stat4" class="range_slider" />
+				</div>
+			</div>
+			<div id="statistic_selection_title">
+				<h3>Statistic Options:</h3>
+			</div>
+			<!-- This container holds the list of available statistics that can be added to the
+		 		 scoring setting -->
+			<div id="statistic_selection_container">
+				<div id="statistic_selector">
+					<div class="statistic_option">Job Openings</div>
+					<div class="statistic_option">Mortgage Prices</div>
+					<div class="statistic_option">Rent Prices</div>
+					<div class="statistic_option">Evironmental Policy</div>
+				</div>
+			</div>
+		</div>
+		<!-- Map container is the invisible container that contains the map. This may be deprecated
+	 		 in later versions depending on the implementation of the svg -->
+		<div id="map_container">
+			<img id="map" src="images/map_mockup.png" />
+		</div>
+	</div>
+	<!-- The "bottom bar" where the arrow is stored is kept outside of both the major sections
+	in order to make it easier to manipulate in a different manner -->
+	<div id="bottom_bar">
+		<img id="arrow" src="images/arrow.png" />
+	</div>
+	<!-- This is only here due to the fact that Z-Index is a bizzare parameter, and I don't know
+ 		 how to fix it yet.-->
+	<div id="divisor"></div>
+	<!-- The about container is for general purpose things about the website, which includes details
+ 		 about the data used, licenses, the purpose of the website, etc. This space has not been
+	  	 fully utilized in order to allow for more beta expansions -->
+	<div id="about_container">
+		<div id="smap_header">
+			<h1 id="smap_header_text">SMAP</h1>
+		</div>
+		<div id="about_smap" class="about_text">
+			<h2>About SMAP:</h2>
+			SMAP is a program that calculates a mathematical score of all 50 US states based on the
+			score weight the user sets up in the sliders. Different statistics can be selected by
+			clicking on the options below the slider, after which a new slider will appear.
+		</div>
+		<div id="citations" class="about_text">
+			<h2>About Our Statistics:</h2>
+			SMAP uses a variety of statistics, each from varying locations. SMAP used Statista to
+			collect the data. However, much of the data is public through US government agencies.
+			Click on the small &nbsp;&#9432;&nbsp; next to each statistic to see more information.
+		</div>
 
-	<h1>SMAP</h1>
+
+
+		<!-- The rest of this space is dummy space for future beta features -->
+
+
+
+	</div>
+
 
 
 </body>
