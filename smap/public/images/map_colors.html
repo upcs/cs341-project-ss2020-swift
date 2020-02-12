@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+	<body>
+		<object data= "merica.svg" type= "image/svg+xml" id= "us_map_svg" 
+		width= "100%" height= "100%"></object>
+		
+		<script>
+			var state = document.getElementById("us_map_svg");
+			state.addEventListener("load",function(){
+				console.log("You got in the event listener");
+				console.log(state);
+				//get the inner DOM of the map
+				var mapDoc = state.contentDocument;
+				
+				console.log(mapDoc);
+				
+				//get the inner element by id
+				var mt = mapDoc.getElementById("MT");
+				console.log("MT");
+				mt.style.backgroundColor = "lightblue";
+			});
+			</script>
+			</body>
+			</html>
