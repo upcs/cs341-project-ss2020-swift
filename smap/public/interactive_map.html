@@ -471,7 +471,7 @@ Usage: How to connect a svg file and javascript and make it interactive
 		$(event.target).attr('style', _currentFill); 
 	})
     var $colors = $("#colors");
-    $swatches.click(function (event) 
+    $colors.click(function (event) 
 	{ 
       $color = $(event.target);
       loc = [parseInt($color.attr('x'), 10), parseInt($color.attr('y'), 10)]
