@@ -1,4 +1,5 @@
 //create table
+    //decimal(18,2) stores 18 digits, 2 right of the decimal 
         create table stats(
             Stat_name_short varchar(255),
             stat_name_long varchar(512),
