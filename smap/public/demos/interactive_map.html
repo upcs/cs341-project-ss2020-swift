@@ -4,6 +4,9 @@ Problem: how to change the colors on the map
 Source:  bl.ocks.org/widged/4545199
 Usage: How to connect a svg file and javascript and make it interactive
 -->
+
+
+<!--This is the interactive map for when then user can click on a state and change the color of the state-->
 <!DOCTYPE html>
 <meta charset="utf-8">
 <body>
@@ -465,8 +468,8 @@ Usage: How to connect a svg file and javascript and make it interactive
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
 <script>
   var _currentFill = "fill:#000";
-	<!--when a state is clicked on the map-->
-    $("#us-map").click(function (event) 
+	//when a state is clicked on the map
+    $("#us-map path").click(function (event) 
 	{ 
 		$(event.target).attr('style', _currentFill); 
 	})
@@ -477,8 +480,8 @@ Usage: How to connect a svg file and javascript and make it interactive
       loc = [parseInt($color.attr('x'), 10), parseInt($color.attr('y'), 10)]
       $("#selection", $colors).attr('x', loc[0]);
       $("#selection", $colors).attr('y', loc[1]);
-      _currentFill = $color.attr('style'); ; 
-    })
+      _currentFill = $color.attr('style'); 
+    });
 </script>
 </body>
 </html>
