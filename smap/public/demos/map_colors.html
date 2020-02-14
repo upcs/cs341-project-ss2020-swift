@@ -9,17 +9,15 @@
 		<script>
 			var state = document.getElementById("us_map_svg");
 			state.addEventListener("load",function(){
-				console.log("You got in the event listener");
-				console.log(state);
+			
 				//get the inner DOM of the map
 				var mapDoc = state.contentDocument;
-				
-				console.log(mapDoc);
+		
 				
 				//get the inner element by id
 				var mt = mapDoc.getElementById("MT");
-				console.log("MT");
-				mt.style.backgroundColor = "lightblue";
+				
+				mt.style.fill = "lightblue";
 			});
 			</script>
 			</body>
