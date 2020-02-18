@@ -16,8 +16,12 @@
 
 /*******************************************************************/
 
-@import url("orange-red-theme.css");
+@import url("master-theme-sheet.css")
+/* @import url("orange-red-theme.css"); */
 /* @import url("green-blue-theme.css"); */
+/* @import url("dark-red-theme.css"); */
+/* @import url("dark-blue-theme.css"); */
+@import url("dark-green-theme.css");
 
 svg {
     stroke-linejoin: round;

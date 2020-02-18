@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <!-- This file has all the predefined colors, you just have to give them the right ids -->
+        <link rel="stylesheet" href="../stylesheets/master-theme-sheet.css">
+        <title></title>
+        <style>
+            .theme-template {
+                width: 80px;
+                height: 80px;
+                display: inline-grid;
+                grid-template-columns: 40% auto;
+                grid-template-rows: 75% 25%;
+                grid-template-areas:
+                    "background accent"
+                    "background secondary"
+                ;
+                border: 1px solid #878787;
+                border-radius: 40px;
+                overflow: hidden;
+                box-shadow: 0px 0px 1px #878787;
+                margin: 10px;
+            }
+
+            .theme-template:hover {
+                box-shadow: 0px 0px 8px #555555;
+            }
+
+            .background {
+                grid-area: background;
+                align-items: stretch;
+            }
+
+            .accent {
+                grid-area: accent;
+                align-items: stretch;
+            }
+
+            .secondary {
+                grid-area: secondary;
+                align-items: stretch;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="theme-template" id="orange-red">
+            <div class="background" id="orange-red-background"></div>
+            <div class="accent" id="orange-red-accent"></div>
+            <div class="secondary" id="orange-red-secondary"></div>
+        </div>
+        <div class="theme-template" id="green-blue">
+            <div class="background" id="green-blue-background"></div>
+            <div class="accent" id="green-blue-accent"></div>
+            <div class="secondary" id="green-blue-secondary"></div>
+        </div>
+        <div class="theme-template" id="dark-red">
+            <div class="background" id="dark-red-background"></div>
+            <div class="accent" id="dark-red-accent"></div>
+            <div class="secondary" id="dark-red-secondary"></div>
+        </div>
+        <div class="theme-template" id="dark-green">
+            <div class="background" id="dark-green-background"></div>
+            <div class="accent" id="dark-green-accent"></div>
+            <div class="secondary" id="dark-green-secondary"></div>
+        </div>
+        <div class="theme-template" id="dark-blue">
+            <div class="background" id="dark-blue-background"></div>
+            <div class="accent" id="dark-blue-accent"></div>
+            <div class="secondary" id="dark-blue-secondary"></div>
+        </div>
+    </body>
+</html>
