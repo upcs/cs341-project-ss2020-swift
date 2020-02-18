@@ -108,3 +108,7 @@ dist
 
 # A file that Macs (and only Macs) create and feel necessary to upload
 *.DS_Store
+
+
+#ensuring that we don't upload the .txt files that contain sensitive database info
+passwords.txt
