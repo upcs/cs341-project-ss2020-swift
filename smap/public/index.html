@@ -47,12 +47,29 @@
         </script>
     </head>
     <body>
+        <!-- This div holds the app, which includes the settings sidebar, the map itself, as well as
+             the nav bar. All the things in this div save the nav bar will be affected by scrolling
+             more, hopefully giving a parallax effect, and allowing the nav bar to be both a part of
+             the app and about section -->
         <div id="app-container">
+            <!-- The nav that holds all of the settings on the left side of the app. See the ids for
+                 each of the individual settings -->
             <div id="settings">
                 <div id="statistics-sliders-header">
                     Statistic Settings:
                 </div>
                 <div id="statistics-sliders">
+                    <!-- This is the template for each statistic slider container, the only
+                         that is unique is encapsulated in square brackets [[[]]] -->
+                    <!--
+                    <div class="statistic-slider-container" id="[[[ Statistic ID ]]]">
+                        <div class="statistic-slider-remover">&#215;</div>
+                        <div class="statistic-slider-title">[[[ Statistic Name ]]]</div>
+                        <input class="statistic-slider" type="range" min="1" max="5" value="3" />
+                        <div class="statistic-slider-metadata">&#9432;</div>
+                    </div>
+                    -->
+                    <!-- TODO: Remove the premade templates and populate using Javascript -->
                     <div class="statistic-slider-container" id="gpd">
                         <div class="statistic-slider-remover">&#215;</div>
                         <div class="statistic-slider-title">GDP</div>
@@ -90,10 +107,22 @@
                         <div class="statistic-slider-metadata">&#9432;</div>
                     </div>
                 </div>
+
                 <div id="statistics-selector-header">
                     Statistic Selection:
                 </div>
+                <!-- All of the other statistics that are not sliders -->
                 <div id="statistics-selector">
+                    <!-- This is the template for each statistic slider container, the only
+                         that is unique is encapsulated in square brackets [[[]]] -->
+                    <!--
+                    <div class="statistic-option" id="job-openings">
+                        <div class="add-statistic">+</div>
+                        <div class="statistic-option-title">Job Openings</div>
+                        <div class="statistic-option-metadata">&#9432;</div>
+                    </div>
+                    -->
+                    <!-- TODO: Remove the premade templates and populate using Javascript -->
                     <div class="statistic-option" id="job-openings">
                         <div class="add-statistic">+</div>
                         <div class="statistic-option-title">Job Openings</div>
@@ -141,6 +170,8 @@
                     </div>
                 </div>
             </div>
+            <!-- The map container. Right now this is just the copy-pasted map .svg contents. This
+                 will be reworked this sprint. TODO: Rework with iframe? -->
             <div id="map-container">
                 <svg
                    xmlns:dc="http://purl.org/dc/elements/1.1/"
@@ -618,6 +649,7 @@
                       />
                 </svg>
             </div>
+            <!-- The nav bar that allows the users to navigate between app and about section -->
             <div id="nav-bar">
                 <div id="center-nav">
                     <img src="images/arrow.png" id="nav-arrow"/>

@@ -1,27 +1,290 @@
 /* Bunger, Liao, Marcinko, Regier, Robinson */
 
-/*******************************************************************/
-/* Template for new element styling:
+/************************************************************************/
+/* Items are organized in order of appearance, top to bottom in the DOM */
+/************************************************************************/
 
+/************************************************************************/
+/* Template for new element styling:
     [tag, class, id]
         /* Positioning and Display */
-
         /* Borders */
-
         /* Coloring */
-
         /* Fonts and Text */
-
+        /* Animation */
         /* Other */
+/************************************************************************/
 
-/*******************************************************************/
+/* This is the stylesheet that contains the primary colors for the theme selector */
+@import url("master-theme-sheet.css");
 
-@import url("master-theme-sheet.css")
-/* @import url("orange-red-theme.css"); */
+/* All the themes */
+@import url("orange-red-theme.css");
 /* @import url("green-blue-theme.css"); */
 /* @import url("dark-red-theme.css"); */
 /* @import url("dark-blue-theme.css"); */
-@import url("dark-green-theme.css");
+/* @import url("dark-green-theme.css"); */
+
+
+/************************/
+/***  Gloabl Styling  ***/
+/************************/
+
+body {
+    /* Positioning and Display */
+    margin: 0px;
+    /* Fonts and Text */
+    font-family: var(--font-sans);
+    color: var(--color-dark);
+}
+
+/*******************************/
+/***  App Container Styling  ***/
+/*******************************/
+
+#app-container {
+    /* Positioning and Display */
+    display: grid;
+    grid-template-columns: [settings-width]30% auto;
+    grid-template-rows: [app-height]90% 10%;
+    background-color: var(--color-light);
+    grid-template-areas:
+        "settings map"
+        "settings nav-bar"
+    ;
+    width: 100%;
+    height: 100vh;
+}
+
+/******************************/
+/***  Settings Bar Styling  ***/
+/******************************/
+
+#settings {
+    /* Positioning and Display */
+    display: grid;
+    grid-area: settings;
+    grid-template-rows:
+        [settings-guide]10%
+        [sliders-guide]auto
+        [selector-guide]10%
+        [end-settings-guide]auto;
+    grid-template-areas:
+        "sliders-header"
+        "sliders"
+        "selector-header"
+        "selector"
+    ;
+    z-index: 2;
+    /* Coloring */
+    background-color: var(--group-color);
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.125);
+    /* Fonts and Text */
+    text-align: center;
+}
+
+
+/***********************/
+/***  Slider Styling ***/
+/***********************/
+
+.statistic-slider-container {
+    /* Positioning and Display */
+    display: grid;
+    grid-template-columns: [remove-statistic-guide]7% [stat-option-title]auto 7%;
+    grid-template-rows: [slider-title]50% auto;
+    grid-template-areas:
+        "slider-remover slider-title slider-metadata"
+        "slider-remover slider slider"
+    ;
+    margin-bottom: 4px;
+    padding: 8px;
+    /* Coloring */
+    background-color: var(--subgroup-color);
+}
+
+.statistic-slider-container:hover {
+    /* Coloring */
+    background-color: var(--subgroup-color-lighter);
+}
+
+.statistic-slider-remover {
+    /* Positioning and Display */
+    display: grid;
+    grid-area: slider-remover;
+    align-items: center;
+    /* Fonts and Text */
+    font-size: 32px;
+    /* Other */
+    cursor: pointer;
+    user-select: none;
+}
+
+.statistic-slider-title {
+    /* Positioning and Display */
+    display: grid;
+    grid-area: slider-title;
+    justify-content: flex-start;
+    padding-left: 10px;
+    padding-top: 5px;
+}
+
+.statistic-slider-metadata {
+    /* Positioning and Display */
+    display: grid;
+    grid-area: slider-metadata;
+    align-items: center;
+    padding-right: 4px;
+    /* Fonts and Text */
+    font-size: 18px;
+    /* Other */
+    cursor: help;
+    user-select: none;
+}
+
+.statistic-slider {
+    /* Positioning and Display */
+    display: grid;
+    align-items: center;
+    grid-area: slider;
+    height: 10px;
+    margin: 10px;
+    /* Borders */
+    border: 2px solid var(--accent-color);
+    border-radius: 8px;
+    /* Coloring */
+    background: linear-gradient(to right, var(--color-light) 0%, var(--accent-color-light) 100%);
+    box-shadow: 0px 0px 2px inset var(--secondary-color-light);
+    /* Other */
+    -webkit-appearance: none !important;
+}
+
+
+#statistics-sliders-header {
+    /* Positioning and Display */
+    grid-area: sliders-header;
+    display: grid;
+    align-items: center;
+    /* Coloring */
+    background-color: var(--accent-color-light);
+    box-shadow: 0px 0px 30px inset var(--secondary-color-light);
+    /* Fonts and Text */
+    font-size: 24px;
+    font-weight: bold;
+}
+
+#statistics-sliders {
+    /* Positioning and Display */
+    grid-area: sliders;
+    display: grid;
+    padding: 4px;
+    /* Other */
+    overflow-y: auto;
+    /* Note: The following two settings are specific to Firefox */
+    scrollbar-width: thin;
+    scrollbar-color: var(--secondary-color-light) var(--color-light);
+    /* Note: The following settings are specific to Chrome and webkit browsers */
+}::-webkit-scrollbar {
+    width: 8px;
+}::-webkit-scrollbar-track {
+    width: 8px;
+    background-color: var(--color-light);
+}::-webkit-scrollbar-thumb {
+    border: 1px solid var(--color-light);
+    border-top-width: 0px;
+    border-bottom-width: 0px;
+    background-color: var(--secondary-color-light);
+}
+
+/*************************/
+/***  Selector Styling ***/
+/*************************/
+
+.statistic-option {
+    /* Positioning and Display */
+    display: grid;
+    grid-template-columns: [add-statistic-guide]7% [stat-option-title]auto 7%;
+    grid-template-rows: auto;
+    grid-template-areas:
+        "statistic-option-add statistic-option-title ."
+    ;
+    height: 20px;
+    margin-bottom: 4px;
+    padding: 8px;
+    /* Coloring */
+    background-color: var(--subgroup-color);
+    /* Other */
+    cursor: pointer;
+}
+
+.statistic-option:hover {
+    /* Coloring */
+    background-color: var(--subgroup-color-lighter);
+}
+
+.statistic-option:hover .add-statistic {
+    /* Text and Font */
+    color: var(--color-dark);
+}
+
+.add-statistic {
+    /* Positioning and Display */
+    grid-area: statistic-option-add;
+    /* Fonts and Text */
+    color: var(--subgroup-color);
+    /* Other */
+    user-select: none;
+}
+
+.statistic-option-title {
+    /* Positioning and Display */
+    grid-area: statistic-option-title;
+}
+
+.statistic-option-metadata {
+    /* Other */
+    cursor: help;
+    user-select: none;
+}
+
+#statistics-selector-header {
+    /* Positioning and Display */
+    display: grid;
+    grid-area: selector-header;
+    align-items: center;
+    /* Coloring */
+    background-color: var(--accent-color-light);
+    box-shadow: 0px 0px 30px inset var(--secondary-color-light);
+    /* Fonts and Text */
+    font-size: 24px;
+    font-weight: bold;
+}
+
+#statistics-selector {
+    /* Positioning and Display */
+    grid-area: selector;
+    padding: 4px;
+    /* Other */
+    overflow-y: auto;
+    /* Note: The following two settings are specific to Firefox */
+    scrollbar-width: thin;
+    scrollbar-color: var(--secondary-color-light) var(--color-light);
+    /* Note: The following settings are specific to Chrome and webkit browsers */
+}::-webkit-scrollbar {
+    width: 8px;
+}::-webkit-scrollbar-track {
+    width: 8px;
+    background-color: var(--color-light);
+}::-webkit-scrollbar-thumb {
+    border: 1px solid var(--color-light);
+    border-top-width: 0px;
+    border-bottom-width: 0px;
+    background-color: var(--secondary-color-light);
+}
+
+/**********************************/
+/***  SVG/Map Specific Styling  ***/
+/**********************************/
 
 svg {
     stroke-linejoin: round;
@@ -34,246 +297,56 @@ path {
     fill: var(--accent-color);
 }
 
-body {
-    margin: 0px;
-    font-family: var(--font-sans);
-    color: var(--color-dark);
-}
-
-.statistic-option {
-    border: 1px solid transparent;
-    -webkit-transition: none;
-    -moz-transition: none;
-    -o-transition: none;
-    -ms-transition: none;
-    transition: none;
-    display: grid;
-    grid-template-columns: [add-statistic-guide]7% [stat-option-title]auto 7%;
-    grid-template-rows: auto;
-    background-color: var(--subgroup-color);
-    margin-bottom: 4px;
-    padding: 8px;
-    height: 20px;
-    grid-template-areas:
-        "statistic-option-add statistic-option-title ."
-    ;
-    cursor: pointer;
-}
-
-.statistic-option:hover {
-    background-color: var(--subgroup-color-lighter);
-}
-
-.statistic-option:hover .add-statistic {
-    color: var(--color-dark);
-}
-
-.add-statistic {
-    grid-area: statistic-option-add;
-    user-select: none;
-    color: var(--subgroup-color);
-}
-
-.statistic-option-title {
-    grid-area: statistic-option-title;
-}
-
-.statistic-option-metadata {
-    user-select: none;
-}
-
-.statistic-slider-container {
-    border: 1px solid transparent;
-    -webkit-transition: none;
-    -moz-transition: none;
-    -o-transition: none;
-    -ms-transition: none;
-    transition: none;
-    display: grid;
-    grid-template-columns: [remove-statistic-guide]7% [stat-option-title]auto 7%;
-    grid-template-rows: [slider-title]50% auto;
-    grid-template-areas:
-        "slider-remover slider-title slider-metadata"
-        "slider-remover slider slider"
-    ;
-    padding: 8px;
-    background-color: var(--subgroup-color);
-    margin-bottom: 4px;
-}
-
-.statistic-slider-container:hover {
-    background-color: var(--subgroup-color-lighter);
-}
-
-.statistic-slider-remover {
+#map-container {
+    /* Positioning and Display */
+    grid-area: map;
     display: grid;
     align-items: center;
-    grid-area: slider-remover;
-    font-size: 32px;
-    cursor: pointer;
-    user-select: none;
-}
-
-.statistic-slider-title {
-    display: grid;
-    justify-content: flex-start;
-    padding-left: 10px;
-    padding-top: 5px;
-    grid-area: slider-title;
-}
-
-.statistic-slider-metadata {
-    display: grid;
-    align-items: center;
-    padding-right: 4px;
-    grid-area: slider-metadata;
-    cursor: pointer;
-    font-size: 18px;
-    user-select: none;
-}
-
-.statistic-slider {
-    display: grid;
-    align-items: center;
-    grid-area: slider;
-    height: 10px;
-    margin: 10px;
-    border: 2px solid var(--accent-color);
-    border-radius: 8px;
-    background: linear-gradient(to right, var(--color-light) 0%, var(--accent-color-light) 100%);
-    box-shadow: 0px 0px 2px inset var(--secondary-color-light);
-    -webkit-appearance: none !important;
-}
-
-#app-container {
-    width: 100%;
-    height: 100vh;
-    display: grid;
-    grid-template-columns: [settings-width]30% auto;
-    grid-template-rows: [app-height]90% 10%;
+    /* Coloring */
     background-color: var(--color-light);
-    grid-template-areas:
-        "settings map"
-        "settings nav-bar"
-    ;
-}
-
-#settings {
-    grid-area: settings;
-    display: grid;
-    grid-template-columns: /*[pad-left-guide]4% [pad-right-guide]92% [end-padding-guide]*/auto;
-    grid-template-rows: [settings-guide]10% [sliders-guide]auto [selector-guide]10% [end-settings-guide]auto;
-    background-color: var(--group-color);
+    /* Fonts and Text */
     text-align: center;
-    grid-template-areas:
-        "sliders-header"
-        "sliders"
-        "selector-header"
-        "selector"
-    ;
-    z-index: 2;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.125);
 }
 
-#statistics-sliders-header {
-    grid-area: sliders-header;
-    background-color: var(--accent-color-light);
-    box-shadow: 0px 0px 30px inset var(--secondary-color-light);
-    display: grid;
-    align-items: center;
-    font-weight: bold;
-    font-size: 24px;
-}
-
-#statistics-sliders {
-    grid-area: sliders;
-    display: grid;
-    overflow-y: auto;
-    scrollbar-width: thin;
-    scrollbar-color: var(--secondary-color-light) var(--color-light);
-    padding: 4px;
-}
-#statistics-sliders::-webkit-scrollbar {
-    width: 8px;
-}
-
-#statistics-sliders::-webkit-scrollbar-track {
-    width: 8px;
-    background-color: var(--color-light);
-}
-
-#statistics-sliders::-webkit-scrollbar-thumb {
-    border: 1px solid var(--color-light);
-    border-top-width: 0px;
-    border-bottom-width: 0px;
-    background-color: var(--secondary-color-light);
-}
-
-#statistics-selector-header {
-    grid-area: selector-header;
-    background-color: var(--accent-color-light);
-    box-shadow: 0px 0px 30px inset var(--secondary-color-light);
-    display: grid;
-    align-items: center;
-    font-weight: bold;
-    font-size: 24px;
-}
-
-#statistics-selector {
-    grid-area: selector;
-    overflow-y: auto;
-    scrollbar-width: thin;
-    scrollbar-color: var(--secondary-color-light) var(--color-light);
-    padding: 4px;
-}
-
-#statistics-selector::-webkit-scrollbar {
-    width: 8px;
-}
-
-#statistics-selector::-webkit-scrollbar-track {
-    width: 8px;
-    background-color: var(--color-light);
-}
-
-#statistics-selector::-webkit-scrollbar-thumb {
-    border: 1px solid var(--color-light);
-    border-top-width: 0px;
-    border-bottom-width: 0px;
-    background-color: var(--secondary-color-light);
-}
+/************************/
+/***  Nav-bar Styling ***/
+/************************/
 
 #nav-bar {
-    background-color: var(--group-color);
-    grid-area: nav-bar;
+    /* Positioning and Display */
     display: grid;
+    grid-area: nav-bar;
     align-items: center;
     grid-column: [center-nav-guide]30% [nav-padding]35% auto;
     grid-template-areas: "center-nav .";
+    /* Coloring */
+    background-color: var(--group-color);
 }
 
 #nav-arrow {
-    margin-top: 10px;
-    margin-bottom: 10px;
+    /* Positioning and Display */
     width: 250px;
     height: 45px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    /* Animation */
     transition-duration: 0.25s;
 }
 
 #nav-arrow:hover {
+    /* Animation */
     filter: invert(100%) contrast(60%) drop-shadow(0px 0px 8px var(--accent-color-dark));
     transition-duration: 0.25s;
 }
 
 #center-nav {
+    /* Positioning and Display */
     display: grid;
     justify-content: center;
 }
 
-#map-container {
-    background-color: var(--color-light);
-    grid-area: map;
-    display: grid;
-    align-items: center;
-    text-align: center;
-}
+/******************************/
+/***  About Section Styling ***/
+/******************************/
+
+/* TODO: Add the about section */
