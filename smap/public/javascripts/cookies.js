@@ -13,13 +13,15 @@
   slider_cat3 = value3;
 */
 
+
+
 /*
   Called when document loaded.
   Reads cookies.
   Set window configuration to these settings.
 
   Arguments: none
-  Return: a boolean that is true iff a valid cookie is found and restored from
+  Return: a boolean that is true exactly when a valid cookie is found and restored from
 */
 function restoreFromCookies(){
 

@@ -35,7 +35,6 @@ Stat.prototype.updateWeight = function(weight){
 }
 
 Stat.prototype.enable = function(){
-  console.log(this);
   this.enabled = true;
   this.slider.remove();
   this.slider = makeActiveSlider(this.category.title, this.weight);
@@ -55,7 +54,6 @@ Stat.prototype.disable = function(){
 
   //Add event listeners
   this.slider.click((event) => {this.enable()});
-  console.log(this.slider);
 }
 
 Stat.prototype.delete = function(){
