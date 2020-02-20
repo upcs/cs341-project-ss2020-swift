@@ -16,7 +16,7 @@ var mysql = require('mysql'),
 
 var host = "";    //from GCloud instance
 var database = "";  //database name
-var user = "";         //username 
+var user = "";         //username
 var password = "";  //password
 
 /**
@@ -48,7 +48,7 @@ exports.dbquery = function(query_str, callback) {
     //     host = line;
     //     console.log(line);
     // });
-        
+
     async.waterfall([
 
         //Step 1: Connect to the database
@@ -96,6 +96,3 @@ exports.dbquery = function(query_str, callback) {
     });
 
 }//function dbquery
-
-
-

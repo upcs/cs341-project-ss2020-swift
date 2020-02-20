@@ -1,13 +1,13 @@
 //passing normalized stats (which come from db as raw stats) to the client
 
 function normalizeStats(queryData){
-    
+
     //error handling for if for some reason there was no data for the category
     if (queryData === []){
         //TODO: what should our error resonse be here???
         console.log("empty set");
     }
-    
+
     var normalizedData = {}; //need to send normalized data to api.js as JSON because the POST sends JSONs
     var max = 0;
 
@@ -21,7 +21,7 @@ function normalizeStats(queryData){
         if (state.value > max){
             max = state.value;
         }
-        
+
     }
 
 }
