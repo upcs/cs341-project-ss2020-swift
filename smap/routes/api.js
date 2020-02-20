@@ -4,12 +4,13 @@ var express = require('express');
 var router = express.Router();
 var createError = require('http-errors');
 var handler = require('./imports/apiHandler');
+var dbms = require('../routes/dbms');
 
-//The root of the api url offers nothing
-//Potentially we could offer something like API documentation here
-router.get('/', function(req, res, next) {
-  next(createError(404));
-});
+// //The root of the api url offers nothing
+// //Potentially we could offer something like API documentation here
+// router.get('/', function(req, res, next) {
+//   next(createError(404));
+// });
 
 // response to request for categories available
 router.get('/cats', function(req, res, next) {
@@ -56,16 +57,19 @@ router.post('/', function(req, res, next){
   // });
 
   //query for data from the selected category
-  dbms.dbquery("SELECT crime_rate FROM ??????", 
+  //select * from stats2 where stat_name_short='Median household income';
+  dbms.dbquery("SELECT invert_flag FROM stats2 WHERE stat_name_short='Median household income'", 
     function(error, results){
       //the results that come back are JSON objects for each of the applicable entries, with each column as the key
-
+      console.log("got invert_flag");
       // after testing this, DO NOT commit with the password stuff intact!
 
       //make and send back a JSON of the 3 topping types as keys and the quantity as values
-      toppingData = {"cherry" : numCherry, "plain" : numPlain, "chocolate" : numChocolate};
-      console.log(toppingData);
-      res.send(toppingData);
+      // toppingData = {"cherry" : numCherry, "plain" : numPlain, "chocolate" : numChocolate};
+      // console.log(toppingData);
+      // res.send(toppingData);
+      res.send({fakeKey: "uselessValue"});
+
     }
   );
 

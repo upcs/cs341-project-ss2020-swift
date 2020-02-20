@@ -6,9 +6,6 @@
  *
  */
 
-const readline = require('readline');
-const fs = require('fs');
-
 exports.version = '0.0.1';
 
 var mysql = require('mysql'),
@@ -16,7 +13,7 @@ var mysql = require('mysql'),
 
 var host = "";    //from GCloud instance
 var database = "";  //database name
-var user = "";         //username
+var user = "";         //username 
 var password = "";  //password
 
 /**
@@ -34,21 +31,7 @@ exports.dbquery = function(query_str, callback) {
 
     var dbclient;
     var results = null;
-
-    // console.log("HERE");
-
-    // //preparing to read in a line from the passwords.txt file for use as the host/db/user/password variables
-    // const readInterface = readline.createInterface({
-    //     input: fs.createReadStream('../routes/passwords.txt'),
-    //     output: process.stdout,
-    //     console: false
-    // });
-
-    // readInterface.on('line', function(line) {
-    //     host = line;
-    //     console.log(line);
-    // });
-
+        
     async.waterfall([
 
         //Step 1: Connect to the database
