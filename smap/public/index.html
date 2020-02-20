@@ -3,48 +3,17 @@
     <head>
         <meta charset="utf-8">
         <title>SMAP</title>
-        <link rel="stylesheet" href="stylesheets/style.css" />
+        <!-- Include fonts -->
         <link href="https://fonts.googleapis.com/css?family=EB+Garamond:400,500,500i,700,700i|Quicksand:400,700&display=swap"
     		  rel="stylesheet">
+        <!-- Include our stylesheets -->
+        <link rel="stylesheet" href="stylesheets/style.css" />
+        <link rel="stylesheet" href="stylesheets/master-theme-sheet.css">
+        <link rel="stylesheet" href="stylesheets/themes/light/orange-red-theme.css" id="theme">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-
-        <script type="text/javascript">
-            'use strict';
-
-            $("document").ready( function() {
-                // The inital top element
-                var top_element = $("#AK");
-                // When mousing over a state
-                $("path").mouseenter( function() {
-                    // Put it on top
-                    $(this).insertAfter(top_element);
-                    top_element = $(this);
-                    // Set styling
-                    $(this).attr("stroke-width", "3").css("filter", "contrast(85%) brightness(115%)");
-                // Return the styling on leaving
-                }).mouseleave( function() {
-                    $(this).attr("stroke-width", "1").css("filter", "brightness(100%) contrast(100%)");
-                });
-
-                $(".statistic-option").click( function () {
-                    // Fade and remove the statistic option
-                    $(this).fadeTo(600, 0.01, function(){
-                        $(this).slideUp(400, function() {
-                            $(this).remove();
-                        });
-                    });
-                });
-
-                $(".statistic-slider-remover").click( function () {
-                    // Fade and remove the statistic slider
-                    $(this).parent().fadeTo(600, 0.01, function(){
-                        $(this).slideUp(400, function() {
-                            $(this).remove();
-                        });
-                    });
-                });
-            });
-        </script>
+        <!-- Include client Javascripts -->
+        <script type="text/javascript" src="javascripts/map.js"></script>
+        <script type="text/javascript" src="javascripts/metadata.js"></script>
     </head>
     <body>
         <!-- This div holds the app, which includes the settings sidebar, the map itself, as well as

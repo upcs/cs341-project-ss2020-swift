@@ -15,13 +15,15 @@
         /* Other */
 /************************************************************************/
 
+/* CSS imports: Not useful for javascript, so commented out in this file */
+
 /* This is the stylesheet that contains the primary colors for the theme selector */
-@import url("./themes/master-theme-sheet.css");
+/* @import url("./themes/master-theme-sheet.css"); */
 
 /* All the themes */
 /* @import url("./themes/light/orange-red-theme.css"); */
 /* @import url("./themes/light/green-blue-theme.css"); */
-@import url("./themes/light/pink-purple-theme.css");
+/* import url("./themes/light/pink-purple-theme.css"); */
 /* @import url("./themes/dark/dark-red-theme.css"); */
 /* @import url("./themes/dark/dark-blue-theme.css"); */
 /* @import url("./themes/dark/dark-green-theme.css"); */
