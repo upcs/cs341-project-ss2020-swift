@@ -20,6 +20,19 @@
     background-color: rgba(240, 240, 240, 1);
 }
 
+/* Pink-Purple */
+#pink-purple-accent {
+    background-color: rgba(210, 70,  230, 1);
+}
+
+#pink-purple-secondary {
+    background-color: rgba(140, 50,  210, 1);
+}
+
+#pink-purple-background {
+    background-color: rgba(240, 240, 240, 1);
+}
+
 /* Dark-Red theme */
 #dark-red-accent {
     background-color: rgba(240, 45,  45,  1);

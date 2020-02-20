@@ -16,14 +16,15 @@
 /************************************************************************/
 
 /* This is the stylesheet that contains the primary colors for the theme selector */
-@import url("master-theme-sheet.css");
+@import url("./themes/master-theme-sheet.css");
 
 /* All the themes */
-@import url("orange-red-theme.css");
-/* @import url("green-blue-theme.css"); */
-/* @import url("dark-red-theme.css"); */
-/* @import url("dark-blue-theme.css"); */
-/* @import url("dark-green-theme.css"); */
+/* @import url("./themes/light/orange-red-theme.css"); */
+/* @import url("./themes/light/green-blue-theme.css"); */
+@import url("./themes/light/pink-purple-theme.css");
+/* @import url("./themes/dark/dark-red-theme.css"); */
+/* @import url("./themes/dark/dark-blue-theme.css"); */
+/* @import url("./themes/dark/dark-green-theme.css"); */
 
 
 /************************/

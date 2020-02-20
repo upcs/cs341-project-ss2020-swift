@@ -3,12 +3,21 @@
     <head>
         <meta charset="utf-8">
         <!-- This file has all the predefined colors, you just have to give them the right ids -->
-        <link rel="stylesheet" href="../stylesheets/master-theme-sheet.css">
-        <title></title>
+        <link rel="stylesheet" href="../stylesheets/themes/master-theme-sheet.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <title>Theme Picker Demo</title>
+        <script type="text/javascript">
+            $("document").ready(function () {
+                $(".theme-template").click( function() {
+                    $(".theme-template-active").addClass("theme-template").removeClass("theme-template-active");
+                    $(this).addClass("theme-template-active").removeClass("theme-template");
+                });
+            });
+        </script>
         <style>
             .theme-template {
-                width: 80px;
-                height: 80px;
+                width: 60px;
+                height: 60px;
                 display: inline-grid;
                 grid-template-columns: 40% auto;
                 grid-template-rows: 75% 25%;
@@ -16,15 +25,35 @@
                     "background accent"
                     "background secondary"
                 ;
-                border: 1px solid #878787;
+                border: 3px solid #878787;
                 border-radius: 40px;
                 overflow: hidden;
-                box-shadow: 0px 0px 1px #878787;
                 margin: 10px;
             }
 
-            .theme-template:hover {
-                box-shadow: 0px 0px 8px #555555;
+            .theme-template-active {
+                width: 60px;
+                height: 60px;
+                display: inline-grid;
+                grid-template-columns: 40% auto;
+                grid-template-rows: 75% 25%;
+                grid-template-areas:
+                    "background accent"
+                    "background secondary"
+                ;
+                border: 3px solid #878787;
+                border-radius: 40px;
+                overflow: hidden;
+                box-shadow: 0px 0px 8px #878787;
+                margin: 10px;
+            }
+
+            #dark-theme .theme-template-active {
+                border-color: #DDDDDD;
+            }
+
+            #light-theme .theme-template-active {
+                border-color: #333333;
             }
 
             .background {
@@ -41,33 +70,79 @@
                 grid-area: secondary;
                 align-items: stretch;
             }
+
+            #theme-container {
+                display: inline-grid;
+                grid-template-columns: 50% auto;
+                background-color: #000000;
+                border: 2px solid #808080;
+            }
+
+            #dark-theme {
+                padding: 10px;
+                background-color: #404040;
+                display: grid;
+            }
+
+            #light-theme {
+                padding: 10px;
+                background-color: #EEEEEE;
+                display: grid;
+            }
+
+            #dark-theme .theme-template:hover {
+                box-shadow: 0px 0px 5px #FFFFFF;
+            }
+
+            #dark-theme .theme-template-active:hover {
+                box-shadow: 0px 0px 5px #BBBBBB;
+            }
+
+            #light-theme .theme-template:hover {
+                box-shadow: 0px 0px 5px #000000;
+            }
+
+            #light-theme .theme-template-active:hover {
+                box-shadow: 0px 0px 5px #333333;
+            }
         </style>
     </head>
     <body>
-        <div class="theme-template" id="orange-red">
-            <div class="background" id="orange-red-background"></div>
-            <div class="accent" id="orange-red-accent"></div>
-            <div class="secondary" id="orange-red-secondary"></div>
-        </div>
-        <div class="theme-template" id="green-blue">
-            <div class="background" id="green-blue-background"></div>
-            <div class="accent" id="green-blue-accent"></div>
-            <div class="secondary" id="green-blue-secondary"></div>
-        </div>
-        <div class="theme-template" id="dark-red">
-            <div class="background" id="dark-red-background"></div>
-            <div class="accent" id="dark-red-accent"></div>
-            <div class="secondary" id="dark-red-secondary"></div>
-        </div>
-        <div class="theme-template" id="dark-green">
-            <div class="background" id="dark-green-background"></div>
-            <div class="accent" id="dark-green-accent"></div>
-            <div class="secondary" id="dark-green-secondary"></div>
-        </div>
-        <div class="theme-template" id="dark-blue">
-            <div class="background" id="dark-blue-background"></div>
-            <div class="accent" id="dark-blue-accent"></div>
-            <div class="secondary" id="dark-blue-secondary"></div>
+        <div id="theme-container">
+            <div id="light-theme">
+                <div class="theme-template" id="orange-red">
+                    <div class="background" id="orange-red-background"></div>
+                    <div class="accent" id="orange-red-accent"></div>
+                    <div class="secondary" id="orange-red-secondary"></div>
+                </div>
+                <div class="theme-template" id="green-blue">
+                    <div class="background" id="green-blue-background"></div>
+                    <div class="accent" id="green-blue-accent"></div>
+                    <div class="secondary" id="green-blue-secondary"></div>
+                </div>
+                <div class="theme-template" id="pink-purple">
+                    <div class="background" id="pink-purple-background"></div>
+                    <div class="accent" id="pink-purple-accent"></div>
+                    <div class="secondary" id="pink-purple-secondary"></div>
+                </div>
+            </div>
+            <div id="dark-theme">
+                <div class="theme-template" id="dark-red">
+                    <div class="background" id="dark-red-background"></div>
+                    <div class="accent" id="dark-red-accent"></div>
+                    <div class="secondary" id="dark-red-secondary"></div>
+                </div>
+                <div class="theme-template" id="dark-green">
+                    <div class="background" id="dark-green-background"></div>
+                    <div class="accent" id="dark-green-accent"></div>
+                    <div class="secondary" id="dark-green-secondary"></div>
+                </div>
+                <div class="theme-template" id="dark-blue">
+                    <div class="background" id="dark-blue-background"></div>
+                    <div class="accent" id="dark-blue-accent"></div>
+                    <div class="secondary" id="dark-blue-secondary"></div>
+                </div>
+            </div>
         </div>
     </body>
 </html>
