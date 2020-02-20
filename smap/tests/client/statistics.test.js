@@ -21,8 +21,14 @@ test('Create a slider', (done) => {
 
   //Creates mock document
   document.body.innerHTML = `
-    <div id=slider_container></div>
-    <div id=statistic_selector></div>
+    <div id=slider_container>
+      <div id="active_slider_template" class="statistic_setting_container">
+        <div class="statistic_title">State GDP</div>
+        <div class="metadata_button">&#9432;</div>
+        <input type="range" min="1" max="5" value="3" id="stat1" class="range_slider" />
+      </div>
+    </div>
+    <div id=statistic_selector><div id="inactive_slider_template" class="statistic_option">Job Openings</div></div>
   `;
 
   //Has side effects, so must be included in the test
@@ -34,10 +40,11 @@ test('Create a slider', (done) => {
     //Try-catch needed since this is an async test
     //See: https://jestjs.io/docs/en/asynchronous
     try {
-      expect($(".statistic_option").length).toEqual(1);
+      script.addStat({title:"test stat", id:0});
+      expect($(".statistic_option").length).toEqual(2);
       $(".statistic_option").click();
-      expect($(".statistic_option").length).toEqual(0);
-      expect($(".statistic_setting_container").length).toEqual(1);
+      expect($(".statistic_option").length).toEqual(1);
+      expect($(".statistic_setting_container").length).toEqual(2);
       done();
     } catch (error) {
       done(error);
