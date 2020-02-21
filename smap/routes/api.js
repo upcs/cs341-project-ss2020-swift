@@ -56,22 +56,41 @@ router.post('/', function(req, res, next){
   //   console.log(line);
   // });
 
-  //query for data from the selected category
-  //select * from stats2 where stat_name_short='Median household income';
+  //var invert_flag = 
+
   dbms.dbquery("SELECT invert_flag FROM stats2 WHERE stat_name_short='Median household income'", 
-    function(error, results){
-      //the results that come back are JSON objects for each of the applicable entries, with each column as the key
-      console.log("got invert_flag");
-      // after testing this, DO NOT commit with the password stuff intact!
+  function(error, results){
+    //the results that come back are JSON objects for each of the applicable entries, with each column as the key
+    console.log("got invert_flag");
+    // after testing this, DO NOT commit with the password stuff intact!
+    console.log("FLAG:" + results[0]);
+    //make and send back a JSON of the 3 topping types as keys and the quantity as values
+    // toppingData = {"cherry" : numCherry, "plain" : numPlain, "chocolate" : numChocolate};
+    // console.log(toppingData);
+    // res.send(toppingData);
 
-      //make and send back a JSON of the 3 topping types as keys and the quantity as values
-      // toppingData = {"cherry" : numCherry, "plain" : numPlain, "chocolate" : numChocolate};
-      // console.log(toppingData);
-      // res.send(toppingData);
-      res.send({fakeKey: "uselessValue"});
+  }
+);
 
-    }
-  );
+  // //TODO: change to actual stat instead of hardcoded value
+  // //query for the actual datadata from the selected category
+  // dbms.dbquery("SELECT AL FROM stats2 WHERE stat_name_short='Median household income'", 
+  //   function(error, results){
+  //     //the results that come back are JSON objects for each of the applicable entries, with each column as the key
+  //     console.log("got invert_flag");
+  //     // after testing this, DO NOT commit with the password stuff intact!
+
+  //     //make and send back a JSON of the 3 topping types as keys and the quantity as values
+  //     // toppingData = {"cherry" : numCherry, "plain" : numPlain, "chocolate" : numChocolate};
+  //     // console.log(toppingData);
+  //     // res.send(toppingData);
+
+  //     console.log("Results: " + results);
+
+  //     res.send({fakeKey: "uselessValue"});
+
+  //   }
+  // );
 
 });
 
