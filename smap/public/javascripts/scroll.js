@@ -1,5 +1,6 @@
 $(document).ready(function(){
     var lastMove = 0;
+    // TODO: Fix to work when about section exists.
     $("#arrow").click( function() {
         $(window).scrollTop(789);
     });
