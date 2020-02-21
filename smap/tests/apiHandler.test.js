@@ -41,6 +41,8 @@ describe('getData', () => {
     expect(data).toHaveProperty('salary');
     expect(data.crime_rate).toHaveProperty('OR');
     expect(data.salary).toHaveProperty('OR');
+    expect(data.crime_rate).toHaveProperty('NV');
+    expect(data.salary).toHaveProperty('NV');
   });
 
   test('one bad category', () => {
