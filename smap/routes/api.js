@@ -27,19 +27,21 @@ router.get('/data', function(req, res, next){
   }
 
   //Gets data associated with those categories, or throws 404 if any category does not exist
-  let contents = handler.getData(cats);
-  if(!contents){
-    next(createError(404));
-    return;
-  }
+  let contents = handler.getData(cats, function(results){
+    console.log(results);
+    if(!results){
+      next(createError(404));
+      return;
+    }
 
-  // return contents, a object (dictionary) containing the key/value pairs of requested categories
-  res.json(contents);
+    // return contents, a object (dictionary) containing the key/value pairs of requested categories
+    res.json(results);
+  });
 });
 
 //server side post -------------------------------------------------------------
 router.post('/', function(req, res, next){
-  
+
   console.log("req body ", req.body);
 
   // //testing of reading files
@@ -56,9 +58,9 @@ router.post('/', function(req, res, next){
   //   console.log(line);
   // });
 
-  //var invert_flag = 
+  //var invert_flag =
 
-  dbms.dbquery("SELECT invert_flag FROM stats2 WHERE stat_name_short='Median household income'", 
+  dbms.dbquery("SELECT invert_flag FROM stats2 WHERE stat_name_short='Median household income'",
   function(error, results){
     //the results that come back are JSON objects for each of the applicable entries, with each column as the key
     console.log("got invert_flag");
@@ -74,7 +76,7 @@ router.post('/', function(req, res, next){
 
   // //TODO: change to actual stat instead of hardcoded value
   // //query for the actual datadata from the selected category
-  // dbms.dbquery("SELECT AL FROM stats2 WHERE stat_name_short='Median household income'", 
+  // dbms.dbquery("SELECT AL FROM stats2 WHERE stat_name_short='Median household income'",
   //   function(error, results){
   //     //the results that come back are JSON objects for each of the applicable entries, with each column as the key
   //     console.log("got invert_flag");
