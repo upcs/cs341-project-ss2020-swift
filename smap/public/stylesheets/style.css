@@ -65,6 +65,10 @@ body {
 
 #settings {
     /* Positioning and Display */
+    position: absolute;
+    bottom: 0;
+    top: 0;
+    width: 30%;
     display: grid;
     grid-area: settings;
     grid-template-rows:

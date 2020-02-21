@@ -71,23 +71,44 @@
                 align-items: stretch;
             }
 
+            #theme-hoverer {
+                position: absolute;
+                display: grid;
+                align-items: center;
+                left: 100px;
+                top: 0;
+                height: 50px;
+                width: 193px;
+                background-color: #AAAAAA;
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+
             #theme-container {
-                display: inline-grid;
+                position: absolute;
+                top: 50px;
+                display: none;
                 grid-template-columns: 50% auto;
                 background-color: #000000;
                 border: 2px solid #808080;
+            }
+
+            #theme-hoverer:hover #theme-container {
+                display: inline-grid;
             }
 
             #dark-theme {
                 padding: 10px;
                 background-color: #404040;
                 display: grid;
+
             }
 
             #light-theme {
                 padding: 10px;
-                background-color: #EEEEEE;
+                background-color: #CCCCCC;
                 display: grid;
+                transform: scale(-1, 1);
             }
 
             #dark-theme .theme-template:hover {
@@ -108,39 +129,42 @@
         </style>
     </head>
     <body>
-        <div id="theme-container">
-            <div id="light-theme">
-                <div class="theme-template" id="orange-red">
-                    <div class="background" id="orange-red-background"></div>
-                    <div class="accent" id="orange-red-accent"></div>
-                    <div class="secondary" id="orange-red-secondary"></div>
+        <div id="theme-hoverer">
+            See themes:
+            <div id="theme-container">
+                <div id="light-theme">
+                    <div class="theme-template" id="orange-red">
+                        <div class="background" id="orange-red-background"></div>
+                        <div class="accent" id="orange-red-accent"></div>
+                        <div class="secondary" id="orange-red-secondary"></div>
+                    </div>
+                    <div class="theme-template" id="green-blue">
+                        <div class="background" id="green-blue-background"></div>
+                        <div class="accent" id="green-blue-accent"></div>
+                        <div class="secondary" id="green-blue-secondary"></div>
+                    </div>
+                    <div class="theme-template" id="pink-purple">
+                        <div class="background" id="pink-purple-background"></div>
+                        <div class="accent" id="pink-purple-accent"></div>
+                        <div class="secondary" id="pink-purple-secondary"></div>
+                    </div>
                 </div>
-                <div class="theme-template" id="green-blue">
-                    <div class="background" id="green-blue-background"></div>
-                    <div class="accent" id="green-blue-accent"></div>
-                    <div class="secondary" id="green-blue-secondary"></div>
-                </div>
-                <div class="theme-template" id="pink-purple">
-                    <div class="background" id="pink-purple-background"></div>
-                    <div class="accent" id="pink-purple-accent"></div>
-                    <div class="secondary" id="pink-purple-secondary"></div>
-                </div>
-            </div>
-            <div id="dark-theme">
-                <div class="theme-template" id="dark-red">
-                    <div class="background" id="dark-red-background"></div>
-                    <div class="accent" id="dark-red-accent"></div>
-                    <div class="secondary" id="dark-red-secondary"></div>
-                </div>
-                <div class="theme-template" id="dark-green">
-                    <div class="background" id="dark-green-background"></div>
-                    <div class="accent" id="dark-green-accent"></div>
-                    <div class="secondary" id="dark-green-secondary"></div>
-                </div>
-                <div class="theme-template" id="dark-blue">
-                    <div class="background" id="dark-blue-background"></div>
-                    <div class="accent" id="dark-blue-accent"></div>
-                    <div class="secondary" id="dark-blue-secondary"></div>
+                <div id="dark-theme">
+                    <div class="theme-template" id="dark-red">
+                        <div class="background" id="dark-red-background"></div>
+                        <div class="accent" id="dark-red-accent"></div>
+                        <div class="secondary" id="dark-red-secondary"></div>
+                    </div>
+                    <div class="theme-template" id="dark-green">
+                        <div class="background" id="dark-green-background"></div>
+                        <div class="accent" id="dark-green-accent"></div>
+                        <div class="secondary" id="dark-green-secondary"></div>
+                    </div>
+                    <div class="theme-template" id="dark-blue">
+                        <div class="background" id="dark-blue-background"></div>
+                        <div class="accent" id="dark-blue-accent"></div>
+                        <div class="secondary" id="dark-blue-secondary"></div>
+                    </div>
                 </div>
             </div>
         </div>
