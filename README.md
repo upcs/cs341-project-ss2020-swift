@@ -1,3 +1,9 @@
-*cries in PHP*
-Public IP Address:
-  34.82.180.73
+#SMAP!
+
+Sarah Bunger
+Hayden Liao
+Meredith Marcinko
+Ryan Regier
+Philip Robinson
+
+Software Engineering, Spring 2020
