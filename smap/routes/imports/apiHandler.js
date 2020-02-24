@@ -24,6 +24,8 @@ function getCats(){
 //  query - the request query object
 //Returns: A list of categories requested, or undefined if no categories provided
 function parseDataURL(query) {
+
+  //remember, queries will be the stat_id, aka a number
   let cat = query.cat;
 
   if (cat === undefined){
@@ -42,7 +44,6 @@ function parseDataURL(query) {
       return undefined;
     }
   }
-
   return cat;
 }
 
