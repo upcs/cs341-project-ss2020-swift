@@ -15,20 +15,21 @@ var $ = require('jquery');
   External citation: https://info340.github.io/jest.html
 */
 window.$ = $;
+window.mix_color = jest.fn(weight => "rgba(0,0,0,1)");
 
 //Sample test for now
 test('Create a slider', (done) => {
 
   //Creates mock document
   document.body.innerHTML = `
-    <div id=slider_container>
-      <div id="active_slider_template" class="statistic_setting_container">
-        <div class="statistic_title">State GDP</div>
+    <div id=statistics-sliders>
+      <div id="active_slider_template" class="statistic-slider-container">
+        <div class="statistic-slider-title">State GDP</div>
         <div class="metadata_button">&#9432;</div>
-        <input type="range" min="1" max="5" value="3" id="stat1" class="range_slider" />
+        <input type="range" min="1" max="5" value="3" id="stat1" class="statistic-slider" />
       </div>
     </div>
-    <div id=statistic_selector><div id="inactive_slider_template" class="statistic_option">Job Openings</div></div>
+    <div id=statistics-selector><div id="inactive_slider_template" class="statistic-option">Job Openings</div></div>
   `;
 
   //Has side effects, so must be included in the test
@@ -41,10 +42,11 @@ test('Create a slider', (done) => {
     //See: https://jestjs.io/docs/en/asynchronous
     try {
       let stat = new script.Stat({title:"test stat", id:0}, script.DEFAULT_WEIGHT);
-      // expect($(".statistic_option").length).toEqual(2);
-      // $(".statistic_option").click();
-      // expect($(".statistic_option").length).toEqual(1);
-      // expect($(".statistic_setting_container").length).toEqual(2);
+      expect($(".statistic-option").length).toEqual(1);
+      expect($(".statistic-slider-container").length).toEqual(0);
+      $(".statistic-option").click();
+      expect($(".statistic-option").length).toEqual(0);
+      expect($(".statistic-slider-container").length).toEqual(1);
       done();
     } catch (error) {
       done(error);

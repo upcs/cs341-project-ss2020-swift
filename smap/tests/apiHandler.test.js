@@ -27,8 +27,8 @@ describe('getData', () => {
   });
 
   test('one good category', (done) => {
-    function callback(data){ 
-      
+    function callback(data){
+
       try {
 
         //confirm that the stat_id that was returned was the number expected
@@ -50,12 +50,9 @@ describe('getData', () => {
 
  test('multiple good categories', (done) => {
 
-    function callback(data){ 
-      
+    function callback(data){
+
       try {
-
-        console.log(data);
-
         //confirm that both stat_ids that were returned were the number expected
         expect(data[0].stat_id).toBe(2);
         expect(data[1].stat_id).toBe(66);
@@ -79,8 +76,8 @@ describe('getData', () => {
 
   test('one bad category', (done) => {
 
-    function callback(data){ 
-      
+    function callback(data){
+
       try {
 
         //confirm that the data the was returned was undefined
@@ -95,9 +92,9 @@ describe('getData', () => {
   });
 
   test('multiple bad categories', (done) => {
-    
-    function callback(data){ 
-      
+
+    function callback(data){
+
       try {
 
         console.log("DATAAAA: " + data);
@@ -112,17 +109,14 @@ describe('getData', () => {
       }
     }
     handler.getData([77,2020], callback);
-    
+
   });
 
   test('good and bad categories', (done) => {
 
-    function callback(data){ 
-      
+    function callback(data){
+
       try {
-
-        console.log(data);
-
         //confirm that the db returned what it could and that we properly handle the undefineds that come back from the bad
         expect(data[0].stat_id).toBe(66);
         expect(data[1]).toBeUndefined();

@@ -111,4 +111,4 @@ dist
 
 
 #ensuring that we don't upload the .txt files that contain sensitive database info
-passwords.txt
+passwords.json

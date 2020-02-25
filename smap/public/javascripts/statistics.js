@@ -15,6 +15,7 @@ var sliderContainer; //Where the active sliders are stored
 var selectionContainer; //Where the inactive sliders are stored
 var activeSliderTemplate; //The html template for an active slider
 var inactiveSliderTemplate; //The html template for an inactive slider
+var map; //The map SVG
 
 //An object storing all statistics
 //  active: a set of active category ids
@@ -37,6 +38,7 @@ $(document).ready(() => {
 
   sliderContainer = $("#statistics-sliders");
   selectionContainer = $("#statistics-selector");
+  map = $("#us-map");
 
   //Gets list of categories and creates those sliders
   $.get("/api/cats", "", function(data, status, res){
@@ -79,7 +81,7 @@ function displayWeights(){
   for (let state of states){
     let weight = weights[state];
     if (maxWeight != 0) weight /= maxWeight;
-    $("#" + state).css("fill", "rgba(255, " + (1-weight) * 255 + ", " + (1-weight) * 255 + ", 1)");
+    $("#" + state, map).css("fill", mix_color(weight));
   }
 }
 
@@ -149,7 +151,7 @@ Stat.prototype.enable = function(){
       if (status !== "success"){
         alert("AHHHHHHHHHHHH");
       } else {
-        this.data = data[this.category.id];
+        this.data = data[0];
         displayWeights();
       }
     });
