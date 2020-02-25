@@ -5,7 +5,10 @@
 "use strict";
 
 const DEFAULT_WEIGHT = 3; //The weight of a slider that is just made active
-const states = [];
+const states = ["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI",
+"ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS",
+"MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR",
+"PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"];
 
 //Global variables
 var sliderContainer; //Where the active sliders are stored
@@ -41,6 +44,7 @@ $(document).ready(() => {
       alert("AHHHH");
     } else {
       for (let cat of data){
+        cat.title = cat.stat_name_short;
         new Stat(cat, DEFAULT_WEIGHT);
       }
     }
@@ -49,8 +53,33 @@ $(document).ready(() => {
   //let stat = new Stat(category, DEFAULT_WEIGHT);
 });
 
-function get_weights(){
+function displayWeights(){
+  let weights = {};
+  let maxWeight = 0;
+  for (let state of states){
+    let weight = 0;
+    for (let catID of data.active){
+      let stat = data.stats[catID];
+      if(stat.data){
+        let stateData = stat.data[state];
+        if(!stateData){
+          //Data not present for this state, so bail
+          weight = 0;
+          break;
+        }
+        weight += stat.weight * stat.data[state];
+      }
+    }
+    weights[state] = weight;
+    maxWeight = Math.max(maxWeight, weight);
+  }
 
+  //Normalize and display
+  for (let state of states){
+    let weight = weights[state];
+    if (maxWeight != 0) weight /= maxWeight;
+    $("#" + state).css("fill", "rgba(255, " + (1-weight) * 255 + ", " + (1-weight) * 255 + ", 1)");
+  }
 }
 
 //Stat constructor
@@ -65,7 +94,7 @@ function Stat(category, weight){
     data.stats[category.id].delete();
     data.active.delete(category.id);
   }
-  data.stats[category.id] = category;
+  data.stats[category.id] = this;
 
   this.category = category;
   this.weight = weight;
@@ -77,10 +106,10 @@ function Stat(category, weight){
 //Called to change the weight of the statistic
 //Updates the HTML to reflect this new weight
 Stat.prototype.updateWeight = function(weight){
-  console.log(weight);
   this.weight = weight;
   if (this.enabled){
     $(".statistic-slider", this.slider).attr("value", weight);
+    displayWeights();
   }
 }
 
@@ -102,6 +131,17 @@ Stat.prototype.enable = function(){
   $(".statistic-slider-remover", this.slider).click((event) => {
     this.disable();
   });
+
+  if(!this.data){
+    $.get("/api/data?cat=" + this.category.id, "", (data, status, xhr) => {
+      if (status !== "success"){
+        alert("AHHHHHHHHHHHH");
+      } else {
+        this.data = data[this.category.id];
+        displayWeights();
+      }
+    });
+  }
 }
 
 //Called to remove a statistic from the SMAP calculation
@@ -116,6 +156,8 @@ Stat.prototype.disable = function(){
 
   //Add event listeners
   this.slider.click((event) => {this.enable()});
+
+  displayWeights();
 }
 
 //Deletes a statistic

@@ -4,7 +4,7 @@
 
 //Dummy return data - will be replaced with DB connection in the future
 var dummyData = {crime_rate: {NV: 1, OR: 2}, salary: {NV: 5, OR: 7}, gdp: {NV: 8, OR: 25}};
-var dummyCats = [{id:1, title:"Test 1"}, {id:2, title:"Test 2"}, {id:66, title:"Test 3"}];
+var dummyCats = [{id:"crime_rate", stat_name_short:"Test 1"}, {id:2, stat_name_short:"Test 2"}, {id:66, stat_name_short:"Test 3"}];
 
 //Finds all valid categories for which data can be fetched
 function getCats(){
