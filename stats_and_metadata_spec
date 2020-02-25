@@ -1,4 +1,43 @@
-mysql> describe stats2; describe metadata1;
+| IA              | decimal(18,2) | YES  |     | NULL    |                |
+| KS              | decimal(18,2) | YES  |     | NULL    |                |
+| KY              | decimal(18,2) | YES  |     | NULL    |                |
+| LA              | decimal(18,2) | YES  |     | NULL    |                |
+| ME              | decimal(18,2) | YES  |     | NULL    |                |
+| MD              | decimal(18,2) | YES  |     | NULL    |                |
+| MA              | decimal(18,2) | YES  |     | NULL    |                |
+| MI              | decimal(18,2) | YES  |     | NULL    |                |
+| MN              | decimal(18,2) | YES  |     | NULL    |                |
+| MS              | decimal(18,2) | YES  |     | NULL    |                |
+| MO              | decimal(18,2) | YES  |     | NULL    |                |
+| MT              | decimal(18,2) | YES  |     | NULL    |                |
+| NE              | decimal(18,2) | YES  |     | NULL    |                |
+| NV              | decimal(18,2) | YES  |     | NULL    |                |
+| NH              | decimal(18,2) | YES  |     | NULL    |                |
+| NJ              | decimal(18,2) | YES  |     | NULL    |                |
+| NM              | decimal(18,2) | YES  |     | NULL    |                |
+| NY              | decimal(18,2) | YES  |     | NULL    |                |
+| NC              | decimal(18,2) | YES  |     | NULL    |                |
+| ND              | decimal(18,2) | YES  |     | NULL    |                |
+| OH              | decimal(18,2) | YES  |     | NULL    |                |
+| OK              | decimal(18,2) | YES  |     | NULL    |                |
+| OR              | decimal(18,2) | YES  |     | NULL    |                |
+| PA              | decimal(18,2) | YES  |     | NULL    |                |
+| RI              | decimal(18,2) | YES  |     | NULL    |                |
+| SC              | decimal(18,2) | YES  |     | NULL    |                |
+| SD              | decimal(18,2) | YES  |     | NULL    |                |
+| TN              | decimal(18,2) | YES  |     | NULL    |                |
+| TX              | decimal(18,2) | YES  |     | NULL    |                |
+| UT              | decimal(18,2) | YES  |     | NULL    |                |
+| VT              | decimal(18,2) | YES  |     | NULL    |                |
+| VA              | decimal(18,2) | YES  |     | NULL    |                |
+| WA              | decimal(18,2) | YES  |     | NULL    |                |
+| WV              | decimal(18,2) | YES  |     | NULL    |                |
+| WI              | decimal(18,2) | YES  |     | NULL    |                |
+| WY              | decimal(18,2) | YES  |     | NULL    |                |
+| US              | decimal(18,2) | YES  |     | NULL    |                |
++-----------------+---------------+------+-----+---------+----------------+
+56 rows in set (0.01 sec)
+
 +-----------------+---------------+------+-----+---------+----------------+
 | Field           | Type          | Null | Key | Default | Extra          |
 +-----------------+---------------+------+-----+---------+----------------+
@@ -60,27 +99,8 @@ mysql> describe stats2; describe metadata1;
 | US              | decimal(18,2) | YES  |     | NULL    |                |
 +-----------------+---------------+------+-----+---------+----------------+
 56 rows in set (0.00 sec)
-+-------------------------+--------------+------+-----+---------+-------+
-| Field                   | Type         | Null | Key | Default | Extra |
-+-------------------------+--------------+------+-----+---------+-------+
-| stat_name_short         | varchar(255) | YES  |     | NULL    |       |
-| source                  | varchar(255) | YES  |     | NULL    |       |
-| conducted_by            | varchar(255) | YES  |     | NULL    |       |
-| survey_period           | varchar(255) | YES  |     | NULL    |       |
-| region                  | varchar(255) | YES  |     | NULL    |       |
-| type_of_survey          | varchar(255) | YES  |     | NULL    |       |
-| number_of_respondents   | varchar(255) | YES  |     | NULL    |       |
-| age_group               | varchar(255) | YES  |     | NULL    |       |
-| special_characteristics | varchar(255) | YES  |     | NULL    |       |
-| note                    | blob         | YES  |     | NULL    |       |
-| published_by            | varchar(255) | YES  |     | NULL    |       |
-| publication_date        | varchar(255) | YES  |     | NULL    |       |
-| original_source         | varchar(255) | YES  |     | NULL    |       |
-| stat_id                 | int(11)      | YES  | MUL | NULL    |       |
-+-------------------------+--------------+------+-----+---------+-------+
-14 rows in set (0.00 sec)
 
-mysql> describe metadata3_temp_no_foreign_key;
+mysql> describe metadata3;
 +-------------------------+--------------+------+-----+---------+-------+
 | Field                   | Type         | Null | Key | Default | Extra |
 +-------------------------+--------------+------+-----+---------+-------+
