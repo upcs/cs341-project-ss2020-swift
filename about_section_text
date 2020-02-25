@@ -1,0 +1,5 @@
+Every day, many Americans are conducting job searches, considering moving away from their home state for their next big opportunity. While options already exist for visualizing individual data sets about state demographics and livability, people are rarely interested in only one factor. State Map Analysis Program (SMAP) allows users to visualize data from a combination of preloaded datasets simultaneously.
+
+The program allows its users to choose which factors matter most to them from our bank of statistics[1]. Users can also weight how important a dataset is to them; highly ranked datasets contribute more to the state-by-state average than lower ranked ones. Then, every state is scored against the states with the highest and lowest statistics. States are then colored according to their score, with higher opacity corresponding to scores closer to the highest score. With SMAP, users no longer need to have multiple files of data open at once to create their own assessments; comprehensive state analysis is at their fingertips! 
+
+1 From Statista.
