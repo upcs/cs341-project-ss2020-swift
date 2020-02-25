@@ -347,13 +347,18 @@ path {
 
 #nav-bar {
     /* Positioning and Display */
+    grid-column-start: 1;
+    grid-column-end: 5;
+    grid-row-start: 3;
+    grid-row-end: 3;
     display: grid;
     grid-area: nav-bar;
     align-items: center;
-    grid-column: [center-nav-guide]30% [nav-padding]35% auto;
-    grid-template-areas: "center-nav .";
+	grid-template-columns: [right padding]8% auto [arrow]30% auto [theme-selector]8%;
+    grid-template-areas: ". . center-nav . theme-selector" ;
     /* Coloring */
     background-color: var(--group-color);
+	
 }
 
 #nav-arrow {
@@ -374,7 +379,8 @@ path {
 
 #center-nav {
     /* Positioning and Display */
-    display: grid;
+    grid-area: center-nav;
+	display: grid;
     justify-content: center;
 }
 
@@ -387,4 +393,18 @@ path {
 
 #us_map {
 	width: 100%;
+}
+
+/* theme selector*/
+
+#theme-selector {
+	grid-area: theme-selector;
+	width: 70%;
+	height: 70%;
+}
+
+#theme-selector:hover {
+    /* Animation */
+    filter: invert(100%) contrast(60%) drop-shadow(0px 0px 8px var(--accent-color-dark));
+    transition-duration: 0.25s;
 }
