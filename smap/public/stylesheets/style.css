@@ -19,11 +19,14 @@
 @import url("orange-red-theme.css");
 /* @import url("green-blue-theme.css"); */
 
+#us_map {
+	width: 100%;
+}
+
 svg {
-    stroke-linejoin: round;
+	stroke-linejoin: round;
     stroke: var(--secondary-color-dark);
-    fill: none;
-    filter: drop-shadow(0px 0px 10px var(--color-grey));"
+    filter: drop-shadow(0px 0px 10px var(--color-grey));
 }
 
 path {
@@ -300,5 +303,4 @@ body {
     grid-area: map;
     display: grid;
     align-items: center;
-    text-align: center;
 }
