@@ -1,0 +1,19 @@
+/* Bunger, Liao, Marcinko, Regier, Robinson */
+
+/* Defining the theme */
+/* Source https://stackoverflow.com/questions/1875852/how-can-i-define-colors-as-variables-in-css */
+:root {
+    --color-light:              rgba(240, 240, 240, 1);     /* Off-White */
+    --color-grey:               rgba(180, 180, 180, 1);     /* Middle Grey */
+    --color-dark:               rgba(40,  40,  40,  1);     /* Off-Black */
+    --group-color:              rgba(210, 210, 210, 1);     /* Medium Grey */
+    --subgroup-color:           rgba(225, 225, 225, 1);     /* Light Grey */
+    --subgroup-color-lighter:   rgba(230, 235, 230, 1);     /* Lighter Grey */
+    --accent-color-light:       rgba(115, 255, 115, 1);     /* Light Accent */
+    --accent-color:             rgba(80,  250, 100, 1);     /* Medium Accent */
+    --accent-color-dark:        rgba(10,  235, 55,  1);     /* Darker Accent */
+    --secondary-color-light:    rgba(70,  180, 220, 1);     /* Brighter Secondary */
+    --secondary-color-dark:     rgba(0,   80,  130, 1);     /* Darker Secondary */
+    --font-sans:                'Quicksand', sans-serif;
+    --font-serif:               'EB Garamond', serif;
+}

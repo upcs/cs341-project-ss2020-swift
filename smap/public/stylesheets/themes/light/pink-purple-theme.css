@@ -9,11 +9,11 @@
     --group-color:              rgba(210, 210, 210, 1);     /* Medium Grey */
     --subgroup-color:           rgba(225, 225, 225, 1);     /* Light Grey */
     --subgroup-color-lighter:   rgba(230, 235, 230, 1);     /* Lighter Grey */
-    --accent-color-light:       rgba(115, 255, 115, 1);     /* Light Accent */
-    --accent-color:             rgba(80,  250, 100, 1);     /* Medium Accent */
-    --accent-color-dark:        rgba(10,  235, 55,  1);     /* Darker Accent */
-    --secondary-color-light:    rgba(40,  130, 220, 1);     /* Brighter Secondary */
-    --secondary-color-dark:     rgba(0,   80,  130, 1);     /* Darker Secondary */
+    --accent-color-light:       rgba(220, 70,  230, 1);     /* Light Accent */
+    --accent-color:             rgba(210, 60,  220, 1);     /* Medium Accent */
+    --accent-color-dark:        rgba(180, 60,  200, 1);     /* Darker Accent */
+    --secondary-color-light:    rgba(140, 50,  210, 1);     /* Brighter Secondary */
+    --secondary-color-dark:     rgba(70,  10,  130, 1);     /* Darker Secondary */
     --font-sans:                'Quicksand', sans-serif;
     --font-serif:               'EB Garamond', serif;
 }

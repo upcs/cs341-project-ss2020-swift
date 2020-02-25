@@ -3,14 +3,22 @@
     <head>
         <meta charset="utf-8">
         <title>SMAP</title>
-        <link rel="stylesheet" href="stylesheets/style.css" />
+        <!-- Include fonts -->
         <link href="https://fonts.googleapis.com/css?family=EB+Garamond:400,500,500i,700,700i|Quicksand:400,700&display=swap"
     		  rel="stylesheet">
+        <!-- Include our stylesheets -->
+        <link rel="stylesheet" href="stylesheets/style.css" />
+        <link rel="stylesheet" href="stylesheets/themes/master-theme-sheet.css">
+        <link rel="stylesheet" href="stylesheets/themes/light/orange-red-theme.css" id="theme">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-
+        <script type="text/javascript" src="javascripts/map.js"></script>
+        <script type="text/javascript" src="javascripts/scroll.js"></script>
+        <script type="text/javascript" src="javascripts/metadata.js"></script>
+        <script src="javascripts/color_mixer.js" type="text/javascript"></script>
         <script type="text/javascript">
             'use strict';
 
+            // BELOW IS INVALID CODE BUT USEABLE FOR FUTURE
             $("document").ready( function() {
                 // The inital top element
                 var top_element = $("#AK");
@@ -25,40 +33,39 @@
                 }).mouseleave( function() {
                     $(this).attr("stroke-width", "1").css("filter", "brightness(100%) contrast(100%)");
                 });
-
-                $(".statistic-option").click( function () {
-                    // Fade and remove the statistic option
-                    $(this).fadeTo(600, 0.01, function(){
-                        $(this).slideUp(400, function() {
-                            $(this).remove();
-                        });
-                    });
-                });
-
-                $(".statistic-slider-remover").click( function () {
-                    // Fade and remove the statistic slider
-                    $(this).parent().fadeTo(600, 0.01, function(){
-                        $(this).slideUp(400, function() {
-                            $(this).remove();
-                        });
-                    });
-                });
             });
         </script>
     </head>
     <body>
+        <!-- This div holds the app, which includes the settings sidebar, the map itself, as well as
+             the nav bar. All the things in this div save the nav bar will be affected by scrolling
+             more, hopefully giving a parallax effect, and allowing the nav bar to be both a part of
+             the app and about section -->
         <div id="app-container">
+            <!-- The nav that holds all of the settings on the left side of the app. See the ids for
+                 each of the individual settings -->
             <div id="settings">
                 <div id="statistics-sliders-header">
                     Statistic Settings:
                 </div>
                 <div id="statistics-sliders">
+                    <!-- This is the template for each statistic slider container, the only thing
+                         that is unique is encapsulated in square brackets [[[]]] -->
+                    <!--
+                    <div class="statistic-slider-container" id="[[[ Statistic ID ]]]">
+                        <div class="statistic-slider-remover">&#215;</div>
+                        <div class="statistic-slider-title">[[[ Statistic Name ]]]</div>
+                        <input class="statistic-slider" type="range" min="1" max="5" value="3" />
+                        <div class="statistic-slider-metadata">&#9432;</div>
+                    </div>
+                    -->
+                    <!-- TODO: Remove the premade templates and populate using Javascript -->
                     <div class="statistic-slider-container" id="gpd">
                         <div class="statistic-slider-remover">&#215;</div>
                         <div class="statistic-slider-title">GDP</div>
 						<div class="statistic-slider-metadata">&#9432;</div>
 						<input class="statistic-slider" type="range" min="1" max="5" value="3" />
-						<div class="ticks">
+						<div class="statistic-slider-ticks">
 							<p>1</p>
 							<p>2</p>
 							<p>3</p>
@@ -71,7 +78,7 @@
                         <div class="statistic-slider-title">Crime Rate</div>
 						<div class="statistic-slider-metadata">&#9432;</div>
 						<input class="statistic-slider" type="range" min="1" max="5" value="3" />
-                        <div class="ticks">
+                        <div class="statistic-slider-ticks">
 							<p>1</p>
 							<p>2</p>
 							<p>3</p>
@@ -84,7 +91,7 @@
                         <div class="statistic-slider-title">Education</div>
 						<div class="statistic-slider-metadata">&#9432;</div>
 						<input class="statistic-slider" type="range" min="1" max="5" value="3" />
-						<div class="ticks">
+						<div class="statistic-slider-ticks">
 							<p>1</p>
 							<p>2</p>
 							<p>3</p>
@@ -97,7 +104,7 @@
                         <div class="statistic-slider-title">Employment</div>
 						<div class="statistic-slider-metadata">&#9432;</div>
 						<input class="statistic-slider" type="range" min="1" max="5" value="3" />
-						<div class="ticks">
+						<div class="statistic-slider-ticks">
 							<p>1</p>
 							<p>2</p>
 							<p>3</p>
@@ -110,7 +117,7 @@
                         <div class="statistic-slider-title">Example 1</div>
 						<div class="statistic-slider-metadata">&#9432;</div>
 						<input class="statistic-slider" type="range" min="1" max="5" value="3" />
-						<div class="ticks">
+						<div class="statistic-slider-ticks">
 							<p>1</p>
 							<p>2</p>
 							<p>3</p>
@@ -121,9 +128,8 @@
                     <div class="statistic-slider-container" id="example-2">
                         <div class="statistic-slider-remover">&#215;</div>
                         <div class="statistic-slider-title">Example 2</div>
-						<div class="statistic-slider-metadata">&#9432;</div>
                         <input class="statistic-slider" type="range" min="1" max="5" value="3" />
-                        <div class="ticks">
+                        <div class="statistic-slider-ticks">
 							<p>1</p>
 							<p>2</p>
 							<p>3</p>
@@ -132,10 +138,22 @@
 						</div>
                     </div>
                 </div>
+
                 <div id="statistics-selector-header">
                     Statistic Selection:
                 </div>
+                <!-- All of the other statistics that are not sliders -->
                 <div id="statistics-selector">
+                    <!-- This is the template for each statistic selector container, the only thing
+                         that is unique is encapsulated in square brackets [[[]]] -->
+                    <!--
+                    <div class="statistic-option" id="[[[ Statistic ID ]]]">
+                        <div class="add-statistic">+</div>
+                        <div class="statistic-option-title">[[[ Statistic Title ]]]</div>
+                        <div class="statistic-option-metadata">&#9432;</div>
+                    </div>
+                    -->
+                    <!-- TODO: Remove the premade templates and populate using Javascript -->
                     <div class="statistic-option" id="job-openings">
                         <div class="add-statistic">+</div>
                         <div class="statistic-option-title">Job Openings</div>
@@ -183,11 +201,11 @@
                     </div>
                 </div>
             </div>
-			
-			
             <div id="map-container">
-				<object type="image/svg+xml" data="images/us.svg" id="us_map"></object>
-				</div>
+  				<object type="image/svg+xml" data="images/us.svg" id="us_map"></object>
+  			</div>
+            <!-- The nav bar that allows the users to navigate between app and about section.
+                 Currently does not function -->
             <div id="nav-bar">
                 <div id="center-nav">
                     <img src="images/arrow.png" id="nav-arrow"/>

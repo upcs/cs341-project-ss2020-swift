@@ -1,0 +1,8 @@
+//to log into gcloud
+gcloud sql connect cheesecakedb --user=root --quiet
+
+//changing to a different project
+gcloud config set project [PROJECT_ID]
+
+PROJECT_ID: swift-smap
+database: smap

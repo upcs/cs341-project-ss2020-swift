@@ -1,166 +1,186 @@
 /* Bunger, Liao, Marcinko, Regier, Robinson */
 
-/*******************************************************************/
-/* Template for new element styling:
+/************************************************************************/
+/* Items are organized in order of appearance, top to bottom in the DOM */
+/************************************************************************/
 
+/************************************************************************/
+/* Template for new element styling:
     [tag, class, id]
         /* Positioning and Display */
-
         /* Borders */
-
         /* Coloring */
-
         /* Fonts and Text */
-
+        /* Animation */
         /* Other */
+/************************************************************************/
 
-/*******************************************************************/
+/* CSS imports: Not useful for javascript, so commented out in this file */
 
-@import url("orange-red-theme.css");
-/* @import url("green-blue-theme.css"); */
+/* This is the stylesheet that contains the primary colors for the theme selector */
+/* @import url("./themes/master-theme-sheet.css"); */
 
-#us_map {
-	width: 100%;
-}
+/* All the themes */
+/* @import url("./themes/light/orange-red-theme.css"); */
+/* @import url("./themes/light/green-blue-theme.css"); */
+/* import url("./themes/light/pink-purple-theme.css"); */
+/* @import url("./themes/dark/dark-red-theme.css"); */
+/* @import url("./themes/dark/dark-blue-theme.css"); */
+/* @import url("./themes/dark/dark-green-theme.css"); */
 
-svg {
-	stroke-linejoin: round;
-    stroke: var(--secondary-color-dark);
-    filter: drop-shadow(0px 0px 10px var(--color-grey));
-}
 
-path {
-    fill: var(--accent-color);
-}
+/************************/
+/***  Gloabl Styling  ***/
+/************************/
+
 
 body {
+    /* Positioning and Display */
     margin: 0px;
+    /* Fonts and Text */
     font-family: var(--font-sans);
     color: var(--color-dark);
 }
 
-.statistic-option {
-    border: 1px solid transparent;
-    -webkit-transition: none;
-    -moz-transition: none;
-    -o-transition: none;
-    -ms-transition: none;
-    transition: none;
+/*******************************/
+/***  App Container Styling  ***/
+/*******************************/
+
+#app-container {
+    /* Positioning and Display */
     display: grid;
-    grid-template-columns: [add-statistic-guide]7% [stat-option-title]auto 7%;
-    grid-template-rows: auto;
-    background-color: var(--subgroup-color);
-    margin-bottom: 4px;
-    padding: 8px;
-    height: 20px;
+    grid-template-columns: [settings-width]30% auto;
+    grid-template-rows: [app-height]90% 10%;
+    background-color: var(--color-light);
     grid-template-areas:
-        "statistic-option-add statistic-option-title ."
+        "settings map"
+        "settings nav-bar"
     ;
-    cursor: pointer;
+    width: 100%;
+    height: 100vh;
 }
 
-.statistic-option:hover {
-    background-color: var(--subgroup-color-lighter);
+/******************************/
+/***  Settings Bar Styling  ***/
+/******************************/
+
+#settings {
+    /* Positioning and Display */
+    position: absolute;
+    bottom: 0;
+    top: 0;
+    width: 30%;
+    display: grid;
+    grid-area: settings;
+    grid-template-rows:
+        [settings-guide]10%
+        [sliders-guide]auto
+        [selector-guide]10%
+        [end-settings-guide]auto;
+    grid-template-areas:
+        "sliders-header"
+        "sliders"
+        "selector-header"
+        "selector"
+    ;
+    z-index: 2;
+    /* Coloring */
+    background-color: var(--group-color);
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.125);
+    /* Fonts and Text */
+    text-align: center;
 }
 
-.statistic-option:hover .add-statistic {
-    color: var(--color-dark);
-}
 
-.add-statistic {
-    grid-area: statistic-option-add;
-    user-select: none;
-    color: var(--subgroup-color);
-}
-
-.statistic-option-title {
-    grid-area: statistic-option-title;
-}
-
-.statistic-option-metadata {
-    user-select: none;
-}
+/***********************/
+/***  Slider Styling ***/
+/***********************/
 
 .statistic-slider-container {
-    border: 1px solid transparent;
-    -webkit-transition: none;
-    -moz-transition: none;
-    -o-transition: none;
-    -ms-transition: none;
-    transition: none;
+    /* Positioning and Display */
     display: grid;
     grid-template-columns: [remove-statistic-guide]7% [stat-option-title]auto 7%;
-    grid-template-rows: [slider-title]33.3% auto [ticks]33.3%;
+	grid-template-rows: [slider-title]33.3% auto [slider-ticks]33.3%;
     grid-template-areas:
         "slider-remover slider-title slider-metadata"
         "slider-remover slider slider"
 		"slider-remover ticks ticks"
     ;
-    padding: 8px;
-    background-color: var(--subgroup-color);
     margin-bottom: 4px;
+    padding: 8px;
+    /* Coloring */
+    background-color: var(--subgroup-color);
 }
 
 .statistic-slider-container:hover {
+    /* Coloring */
     background-color: var(--subgroup-color-lighter);
 }
 
 .statistic-slider-remover {
+    /* Positioning and Display */
     display: grid;
-    align-items: center;
     grid-area: slider-remover;
+    align-items: center;
+    /* Fonts and Text */
     font-size: 32px;
+    /* Other */
     cursor: pointer;
     user-select: none;
 }
 
 .statistic-slider-title {
+    /* Positioning and Display */
     display: grid;
+    grid-area: slider-title;
     justify-content: flex-start;
     padding-left: 10px;
     padding-top: 5px;
-    grid-area: slider-title;
 }
 
 .statistic-slider-metadata {
+    /* Positioning and Display */
     display: grid;
+    grid-area: slider-metadata;
     align-items: center;
     padding-right: 4px;
-    grid-area: slider-metadata;
-    cursor: pointer;
+    /* Fonts and Text */
     font-size: 18px;
+    /* Other */
+    cursor: help;
     user-select: none;
 }
 
-/*sliders*/
 .statistic-slider {
+    /* Positioning and Display */
     display: grid;
     align-items: center;
     grid-area: slider;
-    height: 12px;
+    height: 10px;
     margin: 10px;
+    /* Borders */
     border: 2px solid var(--accent-color);
     border-radius: 8px;
+    /* Coloring */
     background: linear-gradient(to right, var(--color-light) 0%, var(--accent-color-light) 100%);
     box-shadow: 0px 0px 2px inset var(--secondary-color-light);
+    /* Other */
     -webkit-appearance: none !important;
 	z-index: 3;
-	
+
 }
 
-
-
-.ticks {
+.statistic-slider-ticks {
 	display: flex;
 	justify-content: space-between;
 	grid-area: ticks;
 	width: 103.6%;
 	margin-left: 18px;
 	margin-top: -20px;
-	
+
 }
 
-.ticks p {
+.statistic-slider-ticks p {
 	position: relative;
 	display: flex;
 	justify-content: center;
@@ -173,127 +193,187 @@ body {
 	font-size: 12px;
 }
 
-#app-container {
-    width: 100%;
-    height: 100vh;
-    display: grid;
-    grid-template-columns: [settings-width]30% auto;
-    grid-template-rows: [app-height]90% 10%;
-    background-color: var(--color-light);
-    grid-template-areas:
-        "settings map"
-        "settings nav-bar"
-    ;
-}
-
-#settings {
-    grid-area: settings;
-    display: grid;
-    grid-template-columns: /*[pad-left-guide]4% [pad-right-guide]92% [end-padding-guide]*/auto;
-    grid-template-rows: [settings-guide]10% [sliders-guide]auto [selector-guide]10% [end-settings-guide]auto;
-    background-color: var(--group-color);
-    text-align: center;
-    grid-template-areas:
-        "sliders-header"
-        "sliders"
-        "selector-header"
-        "selector"
-    ;
-    z-index: 2;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.125);
-}
-
 #statistics-sliders-header {
+    /* Positioning and Display */
     grid-area: sliders-header;
-    background-color: var(--accent-color-light);
-    box-shadow: 0px 0px 30px inset var(--secondary-color-light);
     display: grid;
     align-items: center;
-    font-weight: bold;
+    /* Coloring */
+    background-color: var(--accent-color-light);
+    box-shadow: 0px 0px 30px inset var(--secondary-color-light);
+    /* Fonts and Text */
     font-size: 24px;
+    font-weight: bold;
 }
 
 #statistics-sliders {
+    /* Positioning and Display */
     grid-area: sliders;
     display: grid;
+    padding: 4px;
+    /* Other */
     overflow-y: auto;
+    /* Note: The following two settings are specific to Firefox */
     scrollbar-width: thin;
     scrollbar-color: var(--secondary-color-light) var(--color-light);
-    padding: 4px;
-}
-#statistics-sliders::-webkit-scrollbar {
+    /* Note: The following settings are specific to Chrome and webkit browsers */
+}::-webkit-scrollbar {
     width: 8px;
-}
-
-#statistics-sliders::-webkit-scrollbar-track {
+}::-webkit-scrollbar-track {
     width: 8px;
     background-color: var(--color-light);
-}
-
-#statistics-sliders::-webkit-scrollbar-thumb {
+}::-webkit-scrollbar-thumb {
     border: 1px solid var(--color-light);
     border-top-width: 0px;
     border-bottom-width: 0px;
     background-color: var(--secondary-color-light);
+}
+
+/*************************/
+/***  Selector Styling ***/
+/*************************/
+
+.statistic-option {
+    /* Positioning and Display */
+    display: grid;
+    grid-template-columns: [add-statistic-guide]7% [stat-option-title]auto 7%;
+    grid-template-rows: auto;
+    grid-template-areas:
+        "statistic-option-add statistic-option-title ."
+    ;
+    height: 20px;
+    margin-bottom: 4px;
+    padding: 8px;
+    /* Coloring */
+    background-color: var(--subgroup-color);
+    /* Other */
+    cursor: pointer;
+}
+
+.statistic-option:hover {
+    /* Coloring */
+    background-color: var(--subgroup-color-lighter);
+}
+
+.statistic-option:hover .add-statistic {
+    /* Text and Font */
+    color: var(--color-dark);
+}
+
+.add-statistic {
+    /* Positioning and Display */
+    grid-area: statistic-option-add;
+    /* Fonts and Text */
+    color: var(--subgroup-color);
+    /* Other */
+    user-select: none;
+}
+
+.statistic-option-title {
+    /* Positioning and Display */
+    grid-area: statistic-option-title;
+}
+
+.statistic-option-metadata {
+    /* Other */
+    cursor: help;
+    user-select: none;
 }
 
 #statistics-selector-header {
+    /* Positioning and Display */
+    display: grid;
     grid-area: selector-header;
+    align-items: center;
+    /* Coloring */
     background-color: var(--accent-color-light);
     box-shadow: 0px 0px 30px inset var(--secondary-color-light);
-    display: grid;
-    align-items: center;
-    font-weight: bold;
+    /* Fonts and Text */
     font-size: 24px;
+    font-weight: bold;
 }
 
 #statistics-selector {
+    /* Positioning and Display */
     grid-area: selector;
+    padding: 4px;
+    /* Other */
     overflow-y: auto;
+    /* Note: The following two settings are specific to Firefox */
     scrollbar-width: thin;
     scrollbar-color: var(--secondary-color-light) var(--color-light);
-    padding: 4px;
-}
-
-#statistics-selector::-webkit-scrollbar {
+    /* Note: The following settings are specific to Chrome and webkit browsers */
+}::-webkit-scrollbar {
     width: 8px;
-}
-
-#statistics-selector::-webkit-scrollbar-track {
+}::-webkit-scrollbar-track {
     width: 8px;
     background-color: var(--color-light);
-}
-
-#statistics-selector::-webkit-scrollbar-thumb {
+}::-webkit-scrollbar-thumb {
     border: 1px solid var(--color-light);
     border-top-width: 0px;
     border-bottom-width: 0px;
     background-color: var(--secondary-color-light);
 }
 
-#nav-bar {
-    background-color: var(--group-color);
-    grid-area: nav-bar;
+/**********************************/
+/***  SVG/Map Specific Styling  ***/
+/**********************************/
+
+svg {
+    stroke-linejoin: round;
+    stroke: var(--secondary-color-dark);
+    fill: var(--accent-color);
+    filter: drop-shadow(0px 0px 10px var(--color-grey));
+}
+
+path {
+    fill: var(--accent-color);
+}
+
+#map-container {
+    /* Positioning and Display */
+    grid-area: map;
     display: grid;
+    align-items: center;
+    /* Coloring */
+    background-color: var(--color-light);
+    /* Fonts and Text */
+    text-align: center;
+}
+
+/************************/
+/***  Nav-bar Styling ***/
+/************************/
+
+#nav-bar {
+    /* Positioning and Display */
+    display: grid;
+    grid-area: nav-bar;
     align-items: center;
     grid-column: [center-nav-guide]30% [nav-padding]35% auto;
     grid-template-areas: "center-nav .";
+    /* Coloring */
+    background-color: var(--group-color);
 }
 
 #nav-arrow {
-    margin-top: 10px;
-    margin-bottom: 10px;
+    /* Positioning and Display */
     width: 250px;
     height: 45px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    /* Animation */
     transition-duration: 0.25s;
 }
 
 #nav-arrow:hover {
+    /* Animation */
     filter: invert(100%) contrast(60%) drop-shadow(0px 0px 8px var(--accent-color-dark));
     transition-duration: 0.25s;
 }
 
 #center-nav {
+    /* Positioning and Display */
     display: grid;
     justify-content: center;
 }
@@ -303,4 +383,8 @@ body {
     grid-area: map;
     display: grid;
     align-items: center;
+}
+
+#us_map {
+	width: 100%;
 }

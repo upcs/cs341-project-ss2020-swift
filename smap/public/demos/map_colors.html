@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+
+<!--this is a file that is to change the colors on the map through javascript-->
+<html>
+	<body>
+		<object data= "merica.svg" type= "image/svg+xml" id= "us_map_svg" 
+		width= "100%" height= "100%"></object>
+		
+		<script>
+			var state = document.getElementById("us_map_svg");
+			state.addEventListener("load",function(){
+			
+				//get the inner DOM of the map
+				var mapDoc = state.contentDocument;
+		
+				
+				//get the inner element by id
+				var mt = mapDoc.getElementById("MT");
+				
+				mt.style.fill = "lightblue";
+			});
+			</script>
+			</body>
+			</html>
