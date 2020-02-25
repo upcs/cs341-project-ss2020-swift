@@ -5,6 +5,7 @@
 "use strict";
 
 const DEFAULT_WEIGHT = 3; //The weight of a slider that is just made active
+const states = [];
 
 //Global variables
 var sliderContainer; //Where the active sliders are stored
@@ -19,8 +20,43 @@ var inactiveSliderTemplate; //The html template for an inactive slider
 //  in a change in the HTML
 var data = {active: new Set(), stats:{}};
 
-//Creates a statistic and places it in the stats object
-function addStat(category){
+//Used to initialize global variables
+$(document).ready(() => {
+  let active =  $("#active_slider_template");
+  activeSliderTemplate = active.clone();
+  activeSliderTemplate.removeAttr("id");
+  active.remove();
+
+  let inactive = $("#inactive_slider_template");
+  inactiveSliderTemplate = inactive.clone();
+  inactiveSliderTemplate.removeAttr("id");
+  inactive.remove();
+
+  sliderContainer = $("#statistics-sliders");
+  selectionContainer = $("#statistics-selector");
+
+  $.get("/api/cats", "", function(data, status, res){
+    if (status !== "success"){
+      console.log("Error getting categories");
+      alert("AHHHH");
+    } else {
+      for (let cat of data){
+        new Stat(cat, DEFAULT_WEIGHT);
+      }
+    }
+  });
+  //Example usage
+  //let stat = new Stat(category, DEFAULT_WEIGHT);
+});
+
+function get_weights(){
+
+}
+
+//Stat constructor
+//  category - a category object, which must have a title
+//  weight - The weight the stat has in calcuations if it is active
+function Stat(category, weight){
   if(!sliderContainer){
     console.log("Document not yet ready");
     return;
@@ -29,28 +65,8 @@ function addStat(category){
     data.stats[category.id].delete();
     data.active.delete(category.id);
   }
-  let stat = new Stat(category, DEFAULT_WEIGHT);
-  data.stats[category.id] = stat;
-}
+  data.stats[category.id] = category;
 
-//Used to initialize global variables
-$(document).ready(() => {
-  activeSliderTemplate = $("#active_slider_template");
-  activeSliderTemplate.removeAttr("id");
-  inactiveSliderTemplate = $("#inactive_slider_template");
-  inactiveSliderTemplate.removeAttr("id");
-
-  sliderContainer = $("#slider_container");
-  selectionContainer = $("#statistic_selector");
-
-  //Example usage
-  //addStat({id:10,title:"test stat"});
-});
-
-//Stat constructor
-//  category - a category object, which must have a title
-//  weight - The weight the stat has in calcuations if it is active
-function Stat(category, weight){
   this.category = category;
   this.weight = weight;
   this.enabled = false;
@@ -61,9 +77,10 @@ function Stat(category, weight){
 //Called to change the weight of the statistic
 //Updates the HTML to reflect this new weight
 Stat.prototype.updateWeight = function(weight){
+  console.log(weight);
   this.weight = weight;
   if (this.enabled){
-    $(".range_slider", this.slider).attr("value", weight);
+    $(".statistic-slider", this.slider).attr("value", weight);
   }
 }
 
@@ -71,14 +88,19 @@ Stat.prototype.updateWeight = function(weight){
 //Moves the category to the active tab and adds a slider
 Stat.prototype.enable = function(){
   this.enabled = true;
+  data.active.add(this.category.id);
   this.slider.remove();
   this.slider = makeActiveSlider(this.category.title, this.weight);
   this.updateWeight(this.weight);
   data.active.add(this.category.id);
 
-  //Add event listener
-  $(".range_slider", this.slider).change((event) => {
+  //Add event listeners
+  $(".statistic-slider", this.slider).change((event) => {
     this.updateWeight(event.target.value);
+  });
+
+  $(".statistic-slider-remover", this.slider).click((event) => {
+    this.disable();
   });
 }
 
@@ -86,6 +108,7 @@ Stat.prototype.enable = function(){
 //Moves the category to the inactive tab and removes the slider
 Stat.prototype.disable = function(){
   this.enabled = false;
+  data.active.delete(this.category.id);
   if (this.slider){
     this.slider.remove();
   }
@@ -103,8 +126,8 @@ Stat.prototype.delete = function(){
 //Creates an active slider from the template and adds it to the page
 function makeActiveSlider(title, weight){
   let slider = activeSliderTemplate.clone();
-  $(".range_slider", slider).attr("value", weight);
-  $(".statistic_title", slider).html(title);
+  $(".statistic-slider", slider).attr("value", weight);
+  $(".statistic-slider-title", slider).html(title);
   sliderContainer.append(slider);
   return slider;
 }
@@ -112,13 +135,14 @@ function makeActiveSlider(title, weight){
 //Creates an inactive slider from the template and adds it to the page
 function makeInactiveSlider(title){
   let slider = inactiveSliderTemplate.clone();
-  slider.html(title);
+  $(".statistic-option-title", slider).html(title);
   selectionContainer.append(slider);
   return slider;
 }
 
-if(module && module.exports){
+if(typeof module !== "undefined" && module.exports){
   module.exports = {
-    addStat: addStat
+    Stat: Stat,
+    DEFAULT_WEIGHT: DEFAULT_WEIGHT
   }
 }
