@@ -1,0 +1,67 @@
+/* Orange-Red theme */
+#orange-red-accent {
+    background-color: rgba(250, 185, 80 , 1);
+}
+#orange-red-secondary {
+    background-color: rgba(255, 120, 120, 1);
+}
+#orange-red-background {
+    background-color: rgba(240, 240, 240, 1);
+}
+
+/* Green-Blue theme */
+#green-blue-accent {
+    background-color: rgba(80,  250, 100, 1);
+}
+#green-blue-secondary {
+    background-color: rgba(70,  180, 220, 1);
+}
+#green-blue-background {
+    background-color: rgba(240, 240, 240, 1);
+}
+
+/* Pink-Purple */
+#pink-purple-accent {
+    background-color: rgba(210, 70,  230, 1);
+}
+
+#pink-purple-secondary {
+    background-color: rgba(140, 50,  210, 1);
+}
+
+#pink-purple-background {
+    background-color: rgba(240, 240, 240, 1);
+}
+
+/* Dark-Red theme */
+#dark-red-accent {
+    background-color: rgba(240, 45,  45,  1);
+}
+#dark-red-secondary {
+    background-color: rgba(70,  70,  70,  1);
+}
+#dark-red-background {
+    background-color: rgba(40,  40,  40,  1);
+}
+
+/* Dark-Green theme */
+#dark-green-accent {
+    background-color: rgba(25,  220, 25,  1);
+}
+#dark-green-secondary {
+    background-color: rgba(80,  90,  80,  1);
+}
+#dark-green-background {
+    background-color: rgba(40,  40,  40,  1);
+}
+
+/* Dark-Blue theme */
+#dark-blue-accent {
+    background-color: rgba(80,  80,  240, 1);
+}
+#dark-blue-secondary {
+    background-color: rgba(70,  70,  90,  1);;
+}
+#dark-blue-background {
+    background-color: rgba(40,  40,  40,  1);
+}
