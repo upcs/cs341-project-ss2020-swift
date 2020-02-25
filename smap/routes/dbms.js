@@ -11,10 +11,14 @@ exports.version = '0.0.1';
 var mysql = require('mysql'),
     async = require('async');
 
-var host = "";    //from GCloud instance
-var database = "";  //database name
-var user = "";         //username
-var password = "";  //password
+var fs = require('fs');
+var path = require('path');
+var passwords = JSON.parse(fs.readFileSync(path.join(__dirname, 'passwords.json'), 'utf8'));
+
+var host = passwords.database_host;    //from GCloud instance
+var database = passwords.database_name;  //database name
+var user = passwords.database_user;         //username
+var password = passwords.database_password;  //password
 
 /**
  * dbquery
@@ -57,7 +61,6 @@ exports.dbquery = function(query_str, callback) {
         function (rows, fields, callback) {
             console.log("\n** dumping data:");
             results = rows;
-            console.log("" + rows);
             callback(null);
         }
 
