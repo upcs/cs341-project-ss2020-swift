@@ -1,5 +1,6 @@
 var handler = require('../routes/imports/apiHandler');
 
+//tests for parseDataURL() function ------------------------------------
 describe('parseDataURL', () => {
   test('exists', () => {
     expect(handler).toHaveProperty('parseDataURL');
@@ -19,52 +20,125 @@ describe('parseDataURL', () => {
   });
 });
 
-//TODO: Add mock function for DB query so crime_rate and salary are categories
+//tests for getData() function ----------------------------------------
 describe('getData', () => {
   test('exists', () => {
     expect(handler).toHaveProperty('getData');
   });
 
-  test('no categories', () => {
-    expect(handler.getData([])).toEqual(undefined);
-  });
+  test('one good category', (done) => {
+    function callback(data){ 
+      
+      try {
 
-  test('one good category', done => {
-    let data = handler.getData([66], function(results){ 
-      if(!results){
-        next(createError(404));
-        return;
+        //confirm that the stat_id that was returned was the number expected
+        expect(data[0].stat_id).toBe(66);
+
+        //check size of dictionary returned; should be 53
+        expect(Object.keys(data[0]).length).toBe(53);
+
+        //check the value of just one state
+        expect(data[0]["NV"]).toBe(0.716474607678499);
+
+        done();
+      } catch (error) {
+        done(error);
       }
-
-      // return contents, a object (dictionary) containing the key/value pairs of requested categories
-      res.json(results);
-      done();
-    });
-    expect(data).toHaveProperty('66');
-    expect(data[66]).toHaveProperty('OR');
-    expect(data[66]).toHaveProperty('NV');
+    }
+    handler.getData([66], callback);
   });
 
-//  test('multiple good categories', () => {
-//     let data = handler.getData(['crime_rate', 'salary']);
-//     expect(data).toHaveProperty('crime_rate');
-//     expect(data).toHaveProperty('salary');
-//     expect(data.crime_rate).toHaveProperty('OR');
-//     expect(data.salary).toHaveProperty('OR');
-//     expect(data.crime_rate).toHaveProperty('NV');
-//     expect(data.salary).toHaveProperty('NV');
-//   });
+ test('multiple good categories', (done) => {
 
-//   test('one bad category', () => {
-//     expect(handler.getData(['foo'])).toBeUndefined();
-//   });
+    function callback(data){ 
+      
+      try {
 
-//   test('multiple bad categories', () => {
-//     expect(handler.getData(['foo', 'bar'])).toBeUndefined();
-//   });
+        console.log(data);
 
-//   test('good and bad categories', () => {
-//     expect(handler.getDat a(['crime_rate', 'foo'])).toBeUndefined();
-//     expect(handler.getData(['foo', 'crime_rate'])).toBeUndefined();
-//   })
+        //confirm that both stat_ids that were returned were the number expected
+        expect(data[0].stat_id).toBe(2);
+        expect(data[1].stat_id).toBe(66);
+
+        //check size of dictionary returned; should be 53
+        expect(Object.keys(data[0]).length).toBe(53);
+        expect(Object.keys(data[1]).length).toBe(53);
+
+        //check the value of just one state
+        expect(data[0]["NV"]).toBe(0.671916474960184);
+        expect(data[1]["NV"]).toBe(0.716474607678499);
+
+        done();
+      } catch (error) {
+        done(error);
+      }
+    }
+    handler.getData([66,2], callback);
+
+  });
+
+  test('one bad category', (done) => {
+
+    function callback(data){ 
+      
+      try {
+
+        //confirm that the data the was returned was undefined
+        expect(data[0]).toBeUndefined();
+
+        done();
+      } catch (error) {
+        done(error);
+      }
+    }
+    handler.getData([77], callback);
+  });
+
+  test('multiple bad categories', (done) => {
+    
+    function callback(data){ 
+      
+      try {
+
+        console.log("DATAAAA: " + data);
+
+        //confirm that both stat_ids that were returned were the number expected
+        expect(data[0]).toBeUndefined();
+        expect(data[1]).toBeUndefined();
+
+        done();
+      } catch (error) {
+        done(error);
+      }
+    }
+    handler.getData([77,2020], callback);
+    
+  });
+
+  test('good and bad categories', (done) => {
+
+    function callback(data){ 
+      
+      try {
+
+        console.log(data);
+
+        //confirm that the db returned what it could and that we properly handle the undefineds that come back from the bad
+        expect(data[0].stat_id).toBe(66);
+        expect(data[1]).toBeUndefined();
+
+        //check size of dictionary returned; should be 53
+        expect(Object.keys(data[0]).length).toBe(53);
+
+        //check the value of just one state
+        expect(data[0]["NV"]).toBe(0.716474607678499);
+
+        done();
+      } catch (error) {
+        done(error);
+      }
+    }
+    handler.getData([66,2020], callback);
+  })
+
 });

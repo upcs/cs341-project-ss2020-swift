@@ -51,6 +51,7 @@ function parseDataURL(query) {
 //  cats - an array of categories to get data for
 //Returns: an object of the form {category: Data}, or undefined if any category does not exist
 function getData(cats, callback){
+  console.log("CATSSSSSSS: " + cats);
   let query = mysql.format(rawQuery, [states, cats]);
 
   dbms.dbquery(query, function(error, results){
