@@ -1,10 +1,19 @@
 //This file contains functions for processing  and handling API requests
 //This will eventually contain code for querying the database
 
+"use strict";
+
+var mysql = require("mysql");
+var dbms = require("../dbms");
+var normalize = require("./normalization");
+var consts = require("./constants");
 
 //Dummy return data - will be replaced with DB connection in the future
 var dummyData = {crime_rate: {NV: 1, OR: 2}, salary: {NV: 5, OR: 7}, gdp: {NV: 8, OR: 25}};
 var dummyCats = ['crime_rate', 'salary', 'gdp'];
+
+const rawQuery = consts.rawQuery;
+const states = consts.states;
 
 //Finds all valid categories for which data can be fetched
 function getCats(){
@@ -15,6 +24,8 @@ function getCats(){
 //  query - the request query object
 //Returns: A list of categories requested, or undefined if no categories provided
 function parseDataURL(query) {
+
+  //remember, queries will be the stat_id, aka a number
   let cat = query.cat;
 
   if (cat === undefined){
@@ -27,23 +38,35 @@ function parseDataURL(query) {
     cat = [cat];
   }
 
+  for(let i = 0; i < cat.length; i++){
+    cat[i] = parseInt(cat[i], 10);
+    if(!cat[i]){
+      return undefined;
+    }
+  }
   return cat;
 }
 
 //Gets the data for the /api/data endpoint
 //  cats - an array of categories to get data for
 //Returns: an object of the form {category: Data}, or undefined if any category does not exist
-function getData(cats){
-  let contents = {};
+function getData(cats, callback){
+  console.log("CATSSSSSSS: " + cats);
+  let query = mysql.format(rawQuery, [states, cats]);
 
-  for (let category of cats){
-    if (dummyData[category] === undefined){
-      return undefined;
+  dbms.dbquery(query, function(error, results){
+    if(error){
+      console.log("You are a failure and you will never succeed");
+      callback(undefined);
+      return;
     }
-    contents[category] = dummyData[category];
-  }
 
-  return contents;
+    for (let stat of results){
+      normalize(stat);
+    }
+
+    callback(results);
+  });
 }
 
 module.exports = {
