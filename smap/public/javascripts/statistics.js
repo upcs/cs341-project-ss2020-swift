@@ -1,5 +1,5 @@
 //SMAP Team
-//Handle adding and updating sliders
+//Handle adding and updating sliders as well as updating the map display
 //The goal here is to ensure that the data and the HTML are always aligned
 
 "use strict";
@@ -20,7 +20,7 @@ var inactiveSliderTemplate; //The html template for an inactive slider
 //  active: a set of active category ids
 //  stats: an object mapping category ids to Stat objects
 //This is the single source of truth - a change in these objects should be reflected
-//  in a change in the HTML
+//  in a change in the HTML. Usage of the functions in this module should guarantee this.
 var data = {active: new Set(), stats:{}};
 
 //Used to initialize global variables
@@ -38,6 +38,7 @@ $(document).ready(() => {
   sliderContainer = $("#statistics-sliders");
   selectionContainer = $("#statistics-selector");
 
+  //Gets list of categories and creates those sliders
   $.get("/api/cats", "", function(data, status, res){
     if (status !== "success"){
       console.log("Error getting categories");
@@ -49,11 +50,11 @@ $(document).ready(() => {
       }
     }
   });
-  //Example usage
-  //let stat = new Stat(category, DEFAULT_WEIGHT);
 });
 
+//Reads the weights from the global data object and uses them to display the map.
 function displayWeights(){
+  //Sum up weights for each state
   let weights = {};
   let maxWeight = 0;
   for (let state of states){
@@ -82,16 +83,26 @@ function displayWeights(){
   }
 }
 
-//Stat constructor
-//  category - a category object, which must have a title
-//  weight - The weight the stat has in calcuations if it is active
+/*Stat constructor.
+A Stat object is used to model both the HTML and the underlying data.
+It is of the following form:
+{
+  category: A category object as returned from the server. It must have id and title attributes.
+  weight: How much to weight this category when enabled.
+  enabled: Whether to use this category to calculate weights.
+  slider: A JQuery object for the slider (whether active or inactive).
+  data: The data for the statistic - mapping from state abbreviations to numbers. May be undefined.
+}
+Constructor arguments:
+ category - a category object, which must have a title
+ weight - The weight the stat has in calcuations if it is active*/
 function Stat(category, weight){
   if(!sliderContainer){
     console.log("Document not yet ready");
     return;
   }
   if (data.stats[category.id]){
-    data.stats[category.id].delete();
+    delete data.stats[category.id];
     data.active.delete(category.id);
   }
   data.stats[category.id] = this;
@@ -132,6 +143,7 @@ Stat.prototype.enable = function(){
     this.disable();
   });
 
+  //Fetches the data if we do not have it.
   if(!this.data){
     $.get("/api/data?cat=" + this.category.id, "", (data, status, xhr) => {
       if (status !== "success"){
@@ -163,6 +175,8 @@ Stat.prototype.disable = function(){
 //Deletes a statistic
 Stat.prototype.delete = function(){
   this.slider.remove();
+  data.active.remove(this.category.id);
+  delete data.stats[category.id];
 }
 
 //Creates an active slider from the template and adds it to the page
