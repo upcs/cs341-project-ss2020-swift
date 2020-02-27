@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?xml-stylesheet type="text/css" href="/stylesheets/style.css" ?>
-<?xml-stylesheet type="text/css" href="/stylesheets/themes/light/orange-red-theme.css" ?>
 <!--
 ************* Copyright (c) 2017 Pareto Softare, LLC DBA Simplemaps.com *******************
 ************* Free for Commercial Use, full terms at  http://simplemaps.com/resources/svg-license ************
@@ -17,7 +16,7 @@
    enable_background="new 0 0 1000 589"
    height="589px"
    pretty_print="False"
-   style="stroke-linejoin: round;"
+   style="stroke-linejoin: round; stroke-width: 5px; fill: #878787;"
    version="1.1"
    viewBox="0 0 1000 589"
    width="1000px"

@@ -31,6 +31,23 @@ function mix_color(weight) {
     return ("rgba("+ result[0] +", "+ result[1] +", "+ result[2] +", 1)");
 }
 
+function get_border_color() {
+    return $(":root").css("--secondary-color-dark");
+}
+
+function color_state(state, weight) {
+    // Get the Object by ID
+    var svg = document.getElementById("us-map");
+    // Get the SVG document inside the Object tag
+    var svgDoc = svg.contentDocument;
+    // Get one of the SVG items by ID;
+    var svgItem = svgDoc.getElementById(state);
+    // Set the colour to something else
+    var border = get_border_color();
+	console.log(svgItem);
+    svgItem.setAttribute("style", "stroke-width: 1; stroke: "+border+"; fill: "+mix_color(weight)+";");
+}
+
 if (typeof module !== "undefined" && module.exports){
   module.exports = mix_color;
 }
