@@ -30,3 +30,7 @@ function mix_color(weight) {
     var result = [ min_data[0]+max_data[0], min_data[1]+max_data[1], min_data[2]+max_data[2] ];
     return ("rgba("+ result[0] +", "+ result[1] +", "+ result[2] +", 1)");
 }
+
+if (typeof module !== "undefined" && module.exports){
+  module.exports = mix_color;
+}

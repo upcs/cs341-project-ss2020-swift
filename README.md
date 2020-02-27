@@ -1,4 +1,4 @@
-#SMAP!
+# SMAP!
 
 Sarah Bunger
 Hayden Liao
