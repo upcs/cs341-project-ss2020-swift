@@ -341,7 +341,7 @@ body {
     grid-template-areas: ". . center-nav . theme-selector" ;
     /* Coloring */
     background-color: var(--group-color);
-	
+
 }
 
 #nav-arrow {
@@ -376,8 +376,7 @@ body {
 }
 
 #us-map {
-	width: 100%;
-	height: 100%;
+	max-width: 100%;
 }
 
 /* theme selector*/

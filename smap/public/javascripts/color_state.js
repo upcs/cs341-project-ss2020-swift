@@ -44,7 +44,6 @@ function color_state(state, weight) {
     var svgItem = svgDoc.getElementById(state);
     // Set the colour to something else
     var border = get_border_color();
-	console.log(svgItem);
     svgItem.setAttribute("style", "stroke-width: 1; stroke: "+border+"; fill: "+mix_color(weight)+";");
 }
 
