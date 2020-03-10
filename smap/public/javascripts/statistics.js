@@ -81,7 +81,8 @@ function displayWeights(){
   for (let state of states){
     let weight = weights[state];
     if (maxWeight != 0) weight /= maxWeight;
-    $("#" + state, map).css("fill", mix_color(weight));
+    color_state(state, weight);
+    // $("#" + state, map).css("fill", mix_color(weight));
   }
 }
 
