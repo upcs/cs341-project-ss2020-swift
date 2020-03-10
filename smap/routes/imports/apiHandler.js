@@ -10,7 +10,7 @@ var consts = require("./constants");
 
 //Dummy return data - will be replaced with DB connection in the future
 var dummyData = {crime_rate: {NV: 1, OR: 2}, salary: {NV: 5, OR: 7}, gdp: {NV: 8, OR: 25}};
-var dummyCats = [{id:"crime_rate", stat_name_short:"Test 1"}, {id:2, stat_name_short:"Test 2"}, {id:66, stat_name_short:"Test 3"}];
+var dummyCats = [{id:2, stat_name_short:"GDP"}, {id:3, stat_name_short:"Education Expenditure"}];
 
 const rawQuery = consts.rawQuery;
 const states = consts.states;
