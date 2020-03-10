@@ -1,9 +1,8 @@
 language: node_js
 node_js:
   - 10
-script:
-  - cd smap 
 install:
+  - cd smap
   - npm install
 script:
   - npm test
