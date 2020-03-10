@@ -24,36 +24,8 @@ var map; //The map SVG
 //  in a change in the HTML. Usage of the functions in this module should guarantee this.
 var data = {active: new Set(), stats:{}};
 
-//Used to initialize global variables
-$(document).ready(() => {
-  let active =  $("#active_slider_template");
-  activeSliderTemplate = active.clone();
-  activeSliderTemplate.removeAttr("id");
-  active.remove();
 
-  let inactive = $("#inactive_slider_template");
-  inactiveSliderTemplate = inactive.clone();
-  inactiveSliderTemplate.removeAttr("id");
-  inactive.remove();
-
-  sliderContainer = $("#statistics-sliders");
-  selectionContainer = $("#statistics-selector");
-  map = $("#us-map");
-
-  //Gets list of categories and creates those sliders
-  $.get("/api/cats", "", function(data, status, res){
-    if (status !== "success"){
-      console.log("Error getting categories");
-      alert("AHHHH");
-    } else {
-      for (let cat of data){
-        cat.title = cat.stat_name_short;
-        new Stat(cat, DEFAULT_WEIGHT);
-      }
-    }
-  });
-});
-
+// TODO: possible refactor (split up into 2 functions, one for calculating the weights, one for display)
 //Reads the weights from the global data object and uses them to display the map.
 function displayWeights(){
   //Sum up weights for each state
@@ -81,8 +53,7 @@ function displayWeights(){
   for (let state of states){
     let weight = weights[state];
     if (maxWeight != 0) weight /= maxWeight;
-    color_state(state, weight);
-    // $("#" + state, map).css("fill", mix_color(weight));
+    colorState(state, weight);
   }
 }
 
@@ -100,10 +71,10 @@ Constructor arguments:
  category - a category object, which must have a title
  weight - The weight the stat has in calcuations if it is active*/
 function Stat(category, weight){
-  if(!sliderContainer){
-    console.log("Document not yet ready");
-    return;
-  }
+  // if(!sliderContainer){
+  //   console.log("Document not yet ready");
+  //   return;
+  // }
   if (data.stats[category.id]){
     delete data.stats[category.id];
     data.active.delete(category.id);
@@ -182,23 +153,7 @@ Stat.prototype.delete = function(){
   delete data.stats[category.id];
 }
 
-//Creates an active slider from the template and adds it to the page
-function makeActiveSlider(title, weight){
-  let slider = activeSliderTemplate.clone();
-  $(".statistic-slider", slider).attr("value", weight);
-  $(".statistic-slider-title", slider).html(title);
-  sliderContainer.append(slider);
-  return slider;
-}
-
-//Creates an inactive slider from the template and adds it to the page
-function makeInactiveSlider(title){
-  let slider = inactiveSliderTemplate.clone();
-  $(".statistic-option-title", slider).html(title);
-  selectionContainer.append(slider);
-  return slider;
-}
-
+// For testing purposes. More details later
 if(typeof module !== "undefined" && module.exports){
   module.exports = {
     Stat: Stat,
