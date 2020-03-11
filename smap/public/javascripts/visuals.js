@@ -13,6 +13,7 @@ $("document").ready(function () {
         window.setTimeout(function() {
             $("#ellipses").slideUp(1000);
             $("#loading").animate({opacity: "0"}, 500);
+            $("#orange-red").click();
             window.setTimeout(function() { $("#loading").html("Ready!"); }, 500 );
             $("#loading").animate({opacity: "1", fontSize: "50px"}, 500);
             window.setTimeout(function() {
@@ -24,7 +25,8 @@ $("document").ready(function () {
     }
     function load_themes(callback, loop) {
         const themes = [
-            "orange-red", "green-blue", "pink-purple", "dark-red", "dark-green", "dark-blue"
+            "orange-red-theme", "green-blue-theme", "pink-purple-theme",
+            "dark-red-theme", "dark-green-theme", "dark-blue-theme"
         ];
         for(var i = 0; i < themes.length; i++) {
             if(i !== themes.length - 1) {
@@ -35,7 +37,6 @@ $("document").ready(function () {
                 $("#"+themes[i]).attr("rel", "alternate stylesheet")
             }
         }
-        $("#orange-red").addClass("theme-template-active");
         callback(loop);
     }
     var ellipses_loop = setInterval(function() {
@@ -91,24 +92,22 @@ $("document").ready(function () {
 
     // The inital top element
     // Get the svg document content
-    var svg = document.getElementById("us-map").contentDocument;
-    console.log(svg);
-    // Get one of the SVG items by ID;
-    var top_element = $("#AK", svg);
-    console.log(top_element);
-    // When mousing over a state
-    $("path", svg).mouseenter( function() {
-        // Put it on top
-        $(this).insertAfter(top_element);
-        top_element = $(this);
-        // Set styling
-        $(this).css("filter", "contrast(85%) brightness(115%)").css("stroke-width", "3");
-    // Return the styling on leaving
-    }).mouseleave( function() {
-        $(this).css("filter", "brightness(100%) contrast(100%)").css("stroke-width", "1");
-    });
-
-
+    window.setTimeout(function() {
+        var svg = document.getElementById("us-map").contentDocument;
+        // Get one of the SVG items by ID;
+        var top_element = $("#AK", svg);
+        // When mousing over a state
+        $("path", svg).mouseenter( function() {
+            // Put it on top
+            $(this).insertAfter(top_element);
+            top_element = $(this);
+            // Set styling
+            $(this).css("filter", "contrast(85%) brightness(115%)").css("stroke-width", "3");
+            // Return the styling on leaving
+        }).mouseleave( function() {
+            $(this).css("filter", "brightness(100%) contrast(100%)").css("stroke-width", "1");
+        });
+    }, 250);
 
     // On theme-circle click, change the active theme
     $(".theme-template").click( function() {
@@ -117,18 +116,17 @@ $("document").ready(function () {
         ];
         // Change the circle to be "active"
         var theme_id = $(this).attr("id");
-        console.log("Theme to change to: " +theme_id);
         $(".theme-template-active").addClass("theme-template").removeClass("theme-template-active");
         $(this).addClass("theme-template-active").removeClass("theme-template");
         // Change the stylesheet reference
-        $("#"+theme_id).attr("rel", "stylesheet");
+        $("#"+theme_id+"-theme").attr("rel", "stylesheet");
         for(let theme of themes) {
             if(theme != theme_id) {
-                $("#"+theme).attr("rel", "alternate stylesheet");
+                $("#"+theme+"-theme").attr("rel", "alternate stylesheet");
             }
         }
         // Recolor the map
-        window.setTimeout(function() { displayWeights(); } , 10);
+        window.setTimeout(function() { displayWeights(); } , 50);
         // displayWeights();
     });
 

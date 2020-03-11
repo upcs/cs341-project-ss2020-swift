@@ -54,7 +54,6 @@ function displayWeights(){
   var svg = document.getElementById("us-map").contentDocument;
   // If it exists
   $(svg).ready( function() {
-    console.log("svg ready!");
     for (let state of states){
       let weight = weights[state];
       if (maxWeight != 0) weight /= maxWeight;
