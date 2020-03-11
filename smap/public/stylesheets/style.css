@@ -356,4 +356,15 @@ path {
 /***  About Section Styling ***/
 /******************************/
 
-/* TODO: Add the about section */
+#about-header {
+    text-align: center;
+    padding: 30px;
+    background-color: var(--group-color);
+}
+
+#about-content {
+    padding-left: 200px;
+    padding-right: 200px;
+    padding-top: 45px;
+    padding-bottom: 45px;
+}
