@@ -13,7 +13,7 @@
     --accent-color:             rgba(80,  80,  240, 1);     /* Medium Accent */
     --accent-color-dark:        rgba(160, 160, 255, 1);     /* Darker Accent */
     --secondary-color-light:    rgba(70,  70,  90,  1);     /* Brighter Secondary */
-    --secondary-color-dark:     rgba(40,  40,  50,  1);     /* Darker Secondary */
+    --secondary-color-dark:     rgba(0,   0,   30,  1);     /* Darker Secondary */
     --font-sans:                'Quicksand', sans-serif;
     --font-serif:               'EB Garamond', serif;
 }

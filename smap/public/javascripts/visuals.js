@@ -23,16 +23,18 @@ $("document").ready(function () {
         }, 1000);
     }
     function load_themes(callback, loop) {
-        const brightness = ["light", "light", "light", "dark", "dark", "dark"];
         const themes = [
             "orange-red", "green-blue", "pink-purple", "dark-red", "dark-green", "dark-blue"
         ];
-        for(var i = 0; i < brightness.length; i++) {
-            var stylesheet = "stylesheets/themes/"+brightness[i]+"/"+themes[i]+"-theme.css"
-            $("#theme-css").attr("href", stylesheet);
+        for(var i = 0; i < themes.length; i++) {
+            if(i !== themes.length - 1) {
+                $("#"+themes[i+1]).attr("rel", "stylesheet");
+                $("#"+themes[i]).attr("rel", "alternate stylesheet")
+            } else {
+                $("#"+themes[0]).attr("rel", "stylesheet");
+                $("#"+themes[i]).attr("rel", "alternate stylesheet")
+            }
         }
-        stylesheet = "stylesheets/themes/light/orange-red-theme.css"
-        $("#theme-css").attr("href", stylesheet);
         $("#orange-red").addClass("theme-template-active");
         callback(loop);
     }
@@ -88,16 +90,14 @@ $("document").ready(function () {
 
 
     // The inital top element
-    // Get the Object by ID
-    var svg = document.getElementById("us-map");
-    // Get the SVG document inside the Object tag
-    var svgDoc = svg.contentDocument;
+    // Get the svg document content
+    var svg = document.getElementById("us-map").contentDocument;
+    console.log(svg);
     // Get one of the SVG items by ID;
-    // var svgItem = svgDoc.getElementById(state);
-    var top_element = $("#AK", svgDoc);
+    var top_element = $("#AK", svg);
     console.log(top_element);
     // When mousing over a state
-    $("path", svgDoc).mouseenter( function() {
+    $("path", svg).mouseenter( function() {
         // Put it on top
         $(this).insertAfter(top_element);
         top_element = $(this);
@@ -112,16 +112,24 @@ $("document").ready(function () {
 
     // On theme-circle click, change the active theme
     $(".theme-template").click( function() {
+        const themes = [
+            "orange-red", "green-blue", "pink-purple", "dark-red", "dark-green", "dark-blue"
+        ];
         // Change the circle to be "active"
         var theme_id = $(this).attr("id");
-        var brightness = $(this).parent().attr("id");
+        console.log("Theme to change to: " +theme_id);
         $(".theme-template-active").addClass("theme-template").removeClass("theme-template-active");
         $(this).addClass("theme-template-active").removeClass("theme-template");
         // Change the stylesheet reference
-        var stylesheet = "stylesheets/themes/"+brightness+"/"+theme_id+"-theme.css"
-        $("#theme-css").attr("href", stylesheet);
+        $("#"+theme_id).attr("rel", "stylesheet");
+        for(let theme of themes) {
+            if(theme != theme_id) {
+                $("#"+theme).attr("rel", "alternate stylesheet");
+            }
+        }
         // Recolor the map
-        displayWeights();
+        window.setTimeout(function() { displayWeights(); } , 10);
+        // displayWeights();
     });
 
 
@@ -192,11 +200,7 @@ function mixColor(weight) {
     return ("rgba("+ result[0] +", "+ result[1] +", "+ result[2] +", 1)");
 }
 
-function colorState(state, weight) {
-    // Get the Object by ID
-    var svg = document.getElementById("us-map");
-    // Get the SVG document inside the Object tag
-    var svgDoc = svg.contentDocument;
+function colorState(svgDoc, state, weight) {
     // Get one of the SVG items by ID;
     var svgItem = svgDoc.getElementById(state);
     // Set the colour to something else

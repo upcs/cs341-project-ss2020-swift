@@ -102,6 +102,7 @@ body {
         "slider-remover slider slider"
 		"slider-remover ticks ticks"
     ;
+    align-self: start;
     margin-bottom: 4px;
     padding: 8px;
     /* Coloring */
@@ -150,7 +151,6 @@ body {
 .statistic-slider {
     /* Positioning and Display */
     display: grid;
-    align-items: center;
     grid-area: slider;
     height: 10px;
     margin: 10px;
@@ -207,6 +207,7 @@ body {
     grid-area: sliders;
     display: grid;
     padding: 4px;
+    align-content: start;
     /* Other */
     overflow-y: auto;
     /* Note: The following two settings are specific to Firefox */
@@ -383,8 +384,8 @@ body {
 
 #theme-selector {
 	grid-area: theme-selector;
-	width: 70%;
-	height: 70%;
+	width: 80%;
+	height: 80%;
 }
 
 #theme-selector:hover {
@@ -392,10 +393,7 @@ body {
     filter: invert(100%) contrast(60%) drop-shadow(0px 0px 8px var(--accent-color-dark));
     transition-duration: 0.25s;
 }
-#theme-selector {
-	width: 70%;
-	height: 70%;
-}
+
 .theme-template {
 	width: 60px;
 	height: 60px;
@@ -457,8 +455,9 @@ body {
 #theme-selector-container {
 	grid-area: theme-selector;
 	display: grid;
-	align-items: center;
-	height: 100%;
+	align-items: stretch;
+    align-self: stretch;
+	/* height: 100%; */
 }
 #theme-selector-container:hover #theme-container {
 	display: inline-grid !important;
