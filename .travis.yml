@@ -2,7 +2,7 @@ language: node_js
 node_js:
   - 10
 before_install:
-    - openssl aes-256-cbc -K $encrypted_0a6446eb3ae3_key -iv $encrypted_0a6446eb3ae3_iv -in passwords.json.enc -out /smap/routes/passwords.json -d
+  - openssl aes-256-cbc -K $encrypted_0a6446eb3ae3_key -iv $encrypted_0a6446eb3ae3_iv -in passwords.json.enc -out ./smap/routes/passwords.json -d
 install:
   - cd smap
   - npm install
