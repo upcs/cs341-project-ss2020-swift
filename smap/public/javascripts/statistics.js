@@ -58,13 +58,13 @@ function normalizeStats(row){
     let max = row["AL"];
     let min = max;
 
-    //find the best
+    //find the min and max values
     for (let state of states){
         max = Math.max(max, row[state]);
         min = Math.min(min, row[state]);
     }
 
-    //Normalize
+    //Normalize, such that largest will always be 1 and smallest will always be 0
     let invert = row["invert_flag"] !== 0;
     max -= min;
     for (let state of states){
@@ -75,6 +75,9 @@ function normalizeStats(row){
     }
 }
 
+//A linerar way of handling the weights, such that the difference between slider values (the tick marks on client side)
+//is the same ratio for 1 to 2 as it is for 3 to 4
+//merely multiplying by the slider value meant a 50% increase for 1 to 2 but a 20% increase for 4 to 5
 function calculateWeight(value){
   const ratio = 1.8;
   return Math.pow(ratio, value - 1);

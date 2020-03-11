@@ -49,6 +49,7 @@ function parseDataURL(query) {
 //Gets the data for the /api/data endpoint
 //  cats - an array of categories to get data for
 //Returns: an object of the form {category: Data}, or undefined if any category does not exist
+//Note that at this point, the data is NOT normalized
 function getData(cats, callback){
   console.log("CATSSSSSSS: " + cats);
   let query = mysql.format(rawQuery, [states, cats]);
