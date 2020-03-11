@@ -5,7 +5,6 @@
 
 var mysql = require("mysql");
 var dbms = require("../dbms");
-var normalize = require("./normalization");
 var consts = require("./constants");
 
 //Dummy return data - will be replaced with DB connection in the future
@@ -60,11 +59,6 @@ function getData(cats, callback){
       callback(undefined);
       return;
     }
-
-    for (let stat of results){
-      normalize(stat);
-    }
-
     callback(results);
   });
 }

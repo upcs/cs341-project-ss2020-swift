@@ -54,6 +54,32 @@ $(document).ready(() => {
   });
 });
 
+function normalizeStats(row){
+    let max = row["AL"];
+    let min = max;
+
+    //find the best
+    for (let state of states){
+        max = Math.max(max, row[state]);
+        min = Math.min(min, row[state]);
+    }
+
+    //Normalize
+    let invert = row["invert_flag"] !== 0;
+    max -= min;
+    for (let state of states){
+        row[state] = (row[state] - min) / max;
+        if (invert){
+          row[state] = 1 - row[state];
+        }
+    }
+}
+
+function calculateWeight(value){
+  const ratio = 1.8;
+  return Math.pow(ratio, value - 1);
+}
+
 //Reads the weights from the global data object and uses them to display the map.
 function displayWeights(){
   //Sum up weights for each state
@@ -70,7 +96,7 @@ function displayWeights(){
           weight = 0;
           break;
         }
-        weight += stat.weight * stat.data[state];
+        weight += calculateWeight(stat.weight) * stat.data[state];
       }
     }
     weights[state] = weight;
@@ -80,6 +106,7 @@ function displayWeights(){
   //Normalize and display
   for (let state of states){
     let weight = weights[state];
+    // console.log(`State ${state} has weight ${weight}`);
     if (maxWeight != 0) weight /= maxWeight;
     $("#" + state, map).css("fill", mix_color(weight));
   }
@@ -138,7 +165,7 @@ Stat.prototype.enable = function(){
 
   //Add event listeners
   $(".statistic-slider", this.slider).change((event) => {
-    this.updateWeight(event.target.value);
+    this.updateWeight(Number(event.target.value));
   });
 
   $(".statistic-slider-remover", this.slider).click((event) => {
@@ -152,6 +179,8 @@ Stat.prototype.enable = function(){
         alert("AHHHHHHHHHHHH");
       } else {
         this.data = data[0];
+        normalizeStats(this.data);
+        // console.log(this.data);
         displayWeights();
       }
     });
