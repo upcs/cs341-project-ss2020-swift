@@ -103,11 +103,11 @@ function Stat(category, weight){
     console.log("Document not yet ready");
     return;
   }
-  if (data.stats[category.id]){
-    delete data.stats[category.id];
-    data.active.delete(category.id);
+  if (data.stats[category.stat_id]){
+    delete data.stats[category.stat_id];
+    data.active.delete(category.stat_id);
   }
-  data.stats[category.id] = this;
+  data.stats[category.stat_id] = this;
 
   this.category = category;
   this.weight = weight;
@@ -130,11 +130,11 @@ Stat.prototype.updateWeight = function(weight){
 //Moves the category to the active tab and adds a slider
 Stat.prototype.enable = function(){
   this.enabled = true;
-  data.active.add(this.category.id);
+  data.active.add(this.category.stat_id);
   this.slider.remove();
   this.slider = makeActiveSlider(this.category.title, this.weight);
   this.updateWeight(this.weight);
-  data.active.add(this.category.id);
+  data.active.add(this.category.stat_id);
 
   //Add event listeners
   $(".statistic-slider", this.slider).change((event) => {
@@ -147,7 +147,7 @@ Stat.prototype.enable = function(){
 
   //Fetches the data if we do not have it.
   if(!this.data){
-    $.get("/api/data?cat=" + this.category.id, "", (data, status, xhr) => {
+    $.get("/api/data?cat=" + this.category.stat_id, "", (data, status, xhr) => {
       if (status !== "success"){
         alert("AHHHHHHHHHHHH");
       } else {
@@ -162,7 +162,7 @@ Stat.prototype.enable = function(){
 //Moves the category to the inactive tab and removes the slider
 Stat.prototype.disable = function(){
   this.enabled = false;
-  data.active.delete(this.category.id);
+  data.active.delete(this.category.stat_id);
   if (this.slider){
     this.slider.remove();
   }
@@ -177,8 +177,8 @@ Stat.prototype.disable = function(){
 //Deletes a statistic
 Stat.prototype.delete = function(){
   this.slider.remove();
-  data.active.remove(this.category.id);
-  delete data.stats[category.id];
+  data.active.remove(this.category.stat_id);
+  delete data.stats[category.stat_id];
 }
 
 //Creates an active slider from the template and adds it to the page

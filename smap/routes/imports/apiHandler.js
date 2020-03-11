@@ -10,7 +10,7 @@ var consts = require("./constants");
 
 //Dummy return data - will be replaced with DB connection in the future
 var dummyData = {crime_rate: {NV: 1, OR: 2}, salary: {NV: 5, OR: 7}, gdp: {NV: 8, OR: 25}};
-var dummyCats = [{id:2, stat_name_short:"GDP"}, {id:3, stat_name_short:"Education Expenditure"}];
+var dummyCats = [{stat_id:2, stat_name_short:"GDP"}, {stat_id:3, stat_name_short:"Education Expenditure"}];
 var dummyCats2 = [{id:2, stat_name_short:"GDP"}];
 
 const rawQuery = consts.rawQuery;
@@ -29,9 +29,12 @@ function getCats(callback){
       //telling the function to not carry oooooonnnn
       return;
     }
-    console.log("BBBBBBBBBBBBBBBBBBBBresults: " + results);
-    console.log("BBBBBBBBBBBBBBBBBBBBresults[1][stat_id]: " + results[1]["stat_id"]);
-    console.log("BBBBBBBBBBBBBBBBBBBBresults[1][stat_name_short]: " + results[1]["stat_name_short"]); 
+    // console.log("BBBBBBBBBBBBBBBBBBBBBdummyCats[1][id]: " + dummyCats[1]["id"]);
+    console.log("DDDDDDDDDDDDDDDDDDDDdummyCats[1][stat_id]: " + dummyCats[1]["stat_id"]);
+
+    // console.log("BBBBBBBBBBBBBBBBBBBBresults: " + results);
+    // console.log("BBBBBBBBBBBBBBBBBBBBresults[1][stat_id]: " + results[1]["stat_id"]);
+    console.log("BBBBBBBBBBBBBBBBBBBBresults[1][stat_name_short]: " + results[1]["stat_name_short"]);
 
     callback(results);
   });
@@ -41,9 +44,11 @@ function getCats(callback){
 //Gets the data for the /api/data endpoint
 //  cats - an array of categories to get data for
 //Returns: an object of the form {category: Data}, or undefined if any category does not exist
-function getData(cats, callback){
-  console.log("CATSSSSSSS: " + cats);
-  let query = mysql.format(rawQuery, [states, cats]);
+function getData(cat_ids, callback){
+  console.log("cat_idsSSSSSS: " + cat_ids);
+  let query = mysql.format(rawQuery, [states, cat_ids]);
+
+  console.log("EEEEEEEEEEEapiHandler.js:[getData]: query: " + query);
 
   dbms.dbquery(query, function(error, results){
     if(error){
@@ -57,6 +62,7 @@ function getData(cats, callback){
     }
 
     callback(results);
+    return;
   });
 }
 
@@ -67,6 +73,11 @@ function parseDataURL(query) {
 
   //remember, queries will be the stat_id, aka a number
   let cat = query.cat;
+
+  console.log("apiHandler.js[parseDataURL]: query:" + query);
+  console.log("apiHandler.js[parseDataURL]: query as a string:" + JSON.stringify(query));
+  console.log("apiHandler.js[parseDataURL]: query.cat:" + query.cat);
+  // console.log("apiHandler.js[parseDataURL]: query.stat_id:" + query.stat_id);
 
   if (cat === undefined){
     return undefined;
