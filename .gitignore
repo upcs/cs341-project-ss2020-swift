@@ -112,3 +112,6 @@ dist
 
 #ensuring that we don't upload the .txt files that contain sensitive database info
 passwords.json
+
+#Travis.ci files
+/coverage
