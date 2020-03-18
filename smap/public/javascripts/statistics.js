@@ -4,7 +4,9 @@
 
 "use strict";
 
+const MIN_WEIGHT = 1;
 const DEFAULT_WEIGHT = 3; //The weight of a slider that is just made active
+const MAX_WEIGHT = 5;
 const states = ["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI",
 "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS",
 "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR",
