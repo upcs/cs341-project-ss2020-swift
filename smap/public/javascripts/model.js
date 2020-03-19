@@ -24,35 +24,35 @@ var map; //The map SVG
 //  in a change in the HTML. Usage of the functions in this module should guarantee this.
 var data = {active: new Set(), stats:{}};
 
-//Used to initialize global variables
-$(document).ready(() => {
-  let active =  $("#active_slider_template");
-  activeSliderTemplate = active.clone();
-  activeSliderTemplate.removeAttr("id");
-  active.remove();
 
-  let inactive = $("#inactive_slider_template");
-  inactiveSliderTemplate = inactive.clone();
-  inactiveSliderTemplate.removeAttr("id");
-  inactive.remove();
+function normalizeStats(row){
+    let max = row["AL"];
+    let min = max;
 
-  sliderContainer = $("#statistics-sliders");
-  selectionContainer = $("#statistics-selector");
-  map = $("#us-map");
-
-  //Gets list of categories and creates those sliders
-  $.get("/api/cats", "", function(data, status, res){
-    if (status !== "success"){
-      console.log("Error getting categories");
-      alert("AHHHH");
-    } else {
-      for (let cat of data){
-        cat.title = cat.stat_name_short;
-        new Stat(cat, DEFAULT_WEIGHT);
-      }
+    //find the min and max values
+    for (let state of states){
+        max = Math.max(max, row[state]);
+        min = Math.min(min, row[state]);
     }
-  });
-});
+
+    //Normalize, such that largest will always be 1 and smallest will always be 0
+    let invert = row["invert_flag"] !== 0;
+    max -= min;
+    for (let state of states){
+        row[state] = (row[state] - min) / max;
+        if (invert){
+          row[state] = 1 - row[state];
+        }
+    }
+}
+
+//A linerar way of handling the weights, such that the difference between slider values (the tick marks on client side)
+//is the same ratio for 1 to 2 as it is for 3 to 4
+//merely multiplying by the slider value meant a 50% increase for 1 to 2 but a 20% increase for 4 to 5
+function calculateWeight(value){
+  const ratio = 1.8;
+  return Math.pow(ratio, value - 1);
+}
 
 //Reads the weights from the global data object and uses them to display the map.
 function displayWeights(){
@@ -70,7 +70,7 @@ function displayWeights(){
           weight = 0;
           break;
         }
-        weight += stat.weight * stat.data[state];
+        weight += calculateWeight(stat.weight) * stat.data[state];
       }
     }
     weights[state] = weight;
@@ -80,8 +80,9 @@ function displayWeights(){
   //Normalize and display
   for (let state of states){
     let weight = weights[state];
+    // console.log(`State ${state} has weight ${weight}`);
     if (maxWeight != 0) weight /= maxWeight;
-    $("#" + state, map).css("fill", mix_color(weight));
+    colorState(state, weight);
   }
 }
 
@@ -99,13 +100,13 @@ Constructor arguments:
  category - a category object, which must have a title
  weight - The weight the stat has in calcuations if it is active*/
 function Stat(category, weight){
-  if(!sliderContainer){
-    console.log("Document not yet ready");
-    return;
-  }
-  if (data.stats[category.stat_id]){
-    delete data.stats[category.stat_id];
-    data.active.delete(category.stat_id);
+  // if(!sliderContainer){
+  //   console.log("Document not yet ready");
+  //   return;
+  // }
+  if (data.stats[category.id]){
+    delete data.stats[category.id];
+    data.active.delete(category.id);
   }
   data.stats[category.stat_id] = this;
 
@@ -138,7 +139,7 @@ Stat.prototype.enable = function(){
 
   //Add event listeners
   $(".statistic-slider", this.slider).change((event) => {
-    this.updateWeight(event.target.value);
+    this.updateWeight(Number(event.target.value));
   });
 
   $(".statistic-slider-remover", this.slider).click((event) => {
@@ -152,6 +153,8 @@ Stat.prototype.enable = function(){
         alert("AHHHHHHHHHHHH");
       } else {
         this.data = data[0];
+        normalizeStats(this.data);
+        // console.log(this.data);
         displayWeights();
       }
     });
@@ -181,23 +184,7 @@ Stat.prototype.delete = function(){
   delete data.stats[category.stat_id];
 }
 
-//Creates an active slider from the template and adds it to the page
-function makeActiveSlider(title, weight){
-  let slider = activeSliderTemplate.clone();
-  $(".statistic-slider", slider).attr("value", weight);
-  $(".statistic-slider-title", slider).html(title);
-  sliderContainer.append(slider);
-  return slider;
-}
-
-//Creates an inactive slider from the template and adds it to the page
-function makeInactiveSlider(title){
-  let slider = inactiveSliderTemplate.clone();
-  $(".statistic-option-title", slider).html(title);
-  selectionContainer.append(slider);
-  return slider;
-}
-
+// For testing purposes. More details later
 if(typeof module !== "undefined" && module.exports){
   module.exports = {
     Stat: Stat,
