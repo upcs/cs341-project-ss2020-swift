@@ -135,16 +135,15 @@ $("document").ready(function () {
     // Scrolling effects
     var lastMove = 0;
     // TODO: Fix to work when about section exists.
-    $("#arrow").click( function() {
-        $(window).scrollTop(789);
+    $("#nav-arrow").click( function() {
+        $("html, body").animate({ scrollTop: 789 }, 1000);
     });
 
     $(window).scroll( function() {
-        scroll_val = Math.floor($(this).scrollTop());
-        console.log("Scroll value: " + scroll_val);
-        if(Date.now() - lastMove > 16) {
+        let scroll_val = Math.floor($(window).scrollTop());
+        if(Date.now() - lastMove > 33) {
             $("#settings").css("left", -1*scroll_val);
-            $("#map-container").css("filter", "opacity(" + ((888 - scroll_val) / 888) + ")");
+            $("#map-container").css("filter", "opacity(" + ((500 - scroll_val) / 500) + ")");
             lastMove = Date.now();
         }
     });
