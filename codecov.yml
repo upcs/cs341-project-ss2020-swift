@@ -1,5 +1,2 @@
 codecov:
   token: 33eac3ce-2ec7-4f42-bb95-fb94918f79c8
-  
-fixes:
-  - "::smap/"
