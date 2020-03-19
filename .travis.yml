@@ -1,0 +1,12 @@
+language: node_js
+node_js:
+  - 10
+before_install:
+  - openssl aes-256-cbc -K $encrypted_683f6e61624a_key -iv $encrypted_683f6e61624a_iv -in passwords.json.enc -out ./smap/routes/passwords.json -d
+install:
+  - cd smap
+  - npm install
+  - npm install -g codecov
+script:
+  - npm test
+  - codecov
