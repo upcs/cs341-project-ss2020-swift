@@ -9,7 +9,7 @@ var consts = require("./constants");
 
 //Dummy return data - will be replaced with DB connection in the future
 var dummyData = {crime_rate: {NV: 1, OR: 2}, salary: {NV: 5, OR: 7}, gdp: {NV: 8, OR: 25}};
-var dummyCats = [{stat_id:2, stat_name_short:"GDP"}, {stat_id:3, stat_name_short:"Education Expenditure"}];
+var dummyCats = [{stat_id:2, stat_name_short:"DUMMY CAT-- GDP"}, {stat_id:3, stat_name_short:"DUMMY CAT-- Education Expenditure"}];
 var dummyCats2 = [{id:2, stat_name_short:"GDP"}];
 
 const rawQuery = consts.rawQuery;
@@ -28,14 +28,17 @@ function getCats(callback){
       //telling the function to not carry oooooonnnn
       return;
     }
-    // console.log("BBBBBBBBBBBBBBBBBBBBBdummyCats[1][id]: " + dummyCats[1]["id"]);
-    console.log("DDDDDDDDDDDDDDDDDDDDdummyCats[1][stat_id]: " + dummyCats[1]["stat_id"]);
+    console.log("<apiHandler.js> dummyCats[0][stat_id]: " + dummyCats[1]["stat_id"]);
+    console.log("<apiHandler.js> dummyCats[0][stat_name_short]: " + dummyCats[1]["stat_name_short"]);
 
-    // console.log("BBBBBBBBBBBBBBBBBBBBresults: " + results);
-    // console.log("BBBBBBBBBBBBBBBBBBBBresults[1][stat_id]: " + results[1]["stat_id"]);
-    console.log("BBBBBBBBBBBBBBBBBBBBresults[1][stat_name_short]: " + results[1]["stat_name_short"]);
+    console.log("<apiHandler.js> results[0][stat_id]: " + results[0]["stat_id"]);
+    console.log("<apiHandler.js> results[0][stat_name_short]: " + results[0]["stat_name_short"]);
 
-    callback(results);
+    console.log("<apiHandler.js> results[1][stat_id]: " + results[1]["stat_id"]);
+    console.log("<apiHandler.js> results[1][stat_name_short]: " + results[1]["stat_name_short"]);
+
+    // callback(results);
+    callback(dummyCats);
   });
   // return dummyCats;
 }

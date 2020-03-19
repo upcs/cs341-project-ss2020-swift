@@ -19,9 +19,11 @@ router.get('/cats', function(req, res, next) {
       // return;
     }
     // return contents, a object (dictionary) containing the key/value pairs of requested categories
-    // console.log("AAAAAAAAAAAAAAAAAresults: " + results);
-    // console.log("AAAAAAAAAAAAAAAAAresults[1]: " + results[1]);
-    console.log("AAAAAAAAAAAAAAAAAresults[1][stat_id]: " + results[1]["stat_id"]);
+    console.log("<api.js>results[0][stat_id]: " + results[0]["stat_id"]);
+    console.log("<api.js>results[0][stat_name_short]: " + results[0]["stat_name_short"]);
+
+    console.log("<api.js>results[1][stat_id]: " + results[1]["stat_id"]);
+    console.log("<api.js>results[1][stat_name_short]: " + results[1]["stat_name_short"]);
     res.json(results);
   });
 
@@ -36,7 +38,7 @@ router.get('/data', function(req, res, next){
     return;
   }
 
-  console.log("api.js[router.get /data]: cats: " + cats); 
+  console.log("api.js[router.get /data]: cats: " + cats);
 
   //Gets data associated with those categories, or throws 404 if any category does not exist
   let contents = handler.getData(cats, function(results){
