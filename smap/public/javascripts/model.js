@@ -25,7 +25,35 @@ var map; //The map SVG
 var data = {active: new Set(), stats:{}};
 
 
-// TODO: possible refactor (split up into 2 functions, one for calculating the weights, one for display)
+function normalizeStats(row){
+    let max = row["AL"];
+    let min = max;
+
+    //find the min and max values
+    for (let state of states){
+        max = Math.max(max, row[state]);
+        min = Math.min(min, row[state]);
+    }
+
+    //Normalize, such that largest will always be 1 and smallest will always be 0
+    let invert = row["invert_flag"] !== 0;
+    max -= min;
+    for (let state of states){
+        row[state] = (row[state] - min) / max;
+        if (invert){
+          row[state] = 1 - row[state];
+        }
+    }
+}
+
+//A linerar way of handling the weights, such that the difference between slider values (the tick marks on client side)
+//is the same ratio for 1 to 2 as it is for 3 to 4
+//merely multiplying by the slider value meant a 50% increase for 1 to 2 but a 20% increase for 4 to 5
+function calculateWeight(value){
+  const ratio = 1.8;
+  return Math.pow(ratio, value - 1);
+}
+
 //Reads the weights from the global data object and uses them to display the map.
 function displayWeights(){
   //Sum up weights for each state
@@ -42,7 +70,7 @@ function displayWeights(){
           weight = 0;
           break;
         }
-        weight += stat.weight * stat.data[state];
+        weight += calculateWeight(stat.weight) * stat.data[state];
       }
     }
     weights[state] = weight;
@@ -52,6 +80,7 @@ function displayWeights(){
   //Normalize and display
   for (let state of states){
     let weight = weights[state];
+    // console.log(`State ${state} has weight ${weight}`);
     if (maxWeight != 0) weight /= maxWeight;
     colorState(state, weight);
   }
@@ -110,7 +139,7 @@ Stat.prototype.enable = function(){
 
   //Add event listeners
   $(".statistic-slider", this.slider).change((event) => {
-    this.updateWeight(event.target.value);
+    this.updateWeight(Number(event.target.value));
   });
 
   $(".statistic-slider-remover", this.slider).click((event) => {
@@ -124,6 +153,8 @@ Stat.prototype.enable = function(){
         alert("AHHHHHHHHHHHH");
       } else {
         this.data = data[0];
+        normalizeStats(this.data);
+        // console.log(this.data);
         displayWeights();
       }
     });

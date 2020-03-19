@@ -38,7 +38,7 @@ describe('getData', () => {
         expect(Object.keys(data[0]).length).toBe(53);
 
         //check the value of just one state
-        expect(data[0]["NV"]).toBe(0.716474607678499);
+        expect(data[0]["NV"]).toBe(61864);
 
         done();
       } catch (error) {
@@ -62,8 +62,8 @@ describe('getData', () => {
         expect(Object.keys(data[1]).length).toBe(53);
 
         //check the value of just one state
-        expect(data[0]["NV"]).toBe(0.671916474960184);
-        expect(data[1]["NV"]).toBe(0.716474607678499);
+        expect(data[0]["NV"]).toBe(49361);
+        expect(data[1]["NV"]).toBe(61864);
 
         done();
       } catch (error) {
@@ -125,7 +125,7 @@ describe('getData', () => {
         expect(Object.keys(data[0]).length).toBe(53);
 
         //check the value of just one state
-        expect(data[0]["NV"]).toBe(0.716474607678499);
+        expect(data[0]["NV"]).toBe(61864);
 
         done();
       } catch (error) {
