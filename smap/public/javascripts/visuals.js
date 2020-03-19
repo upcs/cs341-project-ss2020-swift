@@ -198,10 +198,15 @@ function mixColor(weight) {
     return ("rgba("+ result[0] +", "+ result[1] +", "+ result[2] +", 1)");
 }
 
-function colorState(svgDoc, state, weight) {
-    // Get one of the SVG items by ID;
-    var svgItem = svgDoc.getElementById(state);
-    // Set the colour to something else
-    var border = $(":root").css("--secondary-color-dark");
-    svgItem.setAttribute("style", "stroke-width: 1; stroke: "+border+"; fill: "+mixColor(weight)+";");
+function colorState(state, weight) {
+    // Get the svg
+    var svgDoc = document.getElementById("us-map").contentDocument;
+    // If it exists
+    $(svgDoc).ready( function() {
+        // Get one of the SVG items by ID;
+        var svgItem = svgDoc.getElementById(state);
+        // Set the colour to something else
+        var border = $(":root").css("--secondary-color-dark");
+        svgItem.setAttribute("style", "stroke-width: 1; stroke: "+border+"; fill: "+mixColor(weight)+";");
+    });
 }

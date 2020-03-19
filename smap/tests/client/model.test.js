@@ -36,7 +36,7 @@ test('Create a slider', (done) => {
   let inactive_slider = $("#inactive_slider_template");
   let active_slider = $("#active_slider_template");
   //Has side effects, so must be included in the test
-  let script = require("../../public/javascripts/statistics");
+  let script = require("../../public/javascripts/model");
 
   // Note: Check if function is called
   window.colorState = jest.fn( () => {} );

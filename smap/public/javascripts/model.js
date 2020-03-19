@@ -50,16 +50,11 @@ function displayWeights(){
   }
 
   //Normalize and display
-  // Get the svg
-  var svg = document.getElementById("us-map").contentDocument;
-  // If it exists
-  $(svg).ready( function() {
-    for (let state of states){
-      let weight = weights[state];
-      if (maxWeight != 0) weight /= maxWeight;
-      colorState(svg, state, weight);
-    }
-  });
+  for (let state of states){
+    let weight = weights[state];
+    if (maxWeight != 0) weight /= maxWeight;
+    colorState(state, weight);
+  }
 }
 
 /*Stat constructor.
