@@ -16,4 +16,5 @@
     --secondary-color-dark:     rgba(180, 0,   0,   1);     /* Darker Secondary */
     --font-sans:                'Quicksand', sans-serif;
     --font-serif:               'EB Garamond', serif;
+    --inversion:                0%;
 }
