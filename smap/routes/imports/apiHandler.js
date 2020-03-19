@@ -46,27 +46,27 @@ function getCats(callback){
 //Gets the data for the /api/data endpoint
 //  cats - an array of categories to get data for
 //Returns: an object of the form {category: Data}, or undefined if any category does not exist
-function getData(cat_ids, callback){
-  console.log("cat_idsSSSSSS: " + cat_ids);
-  let query = mysql.format(rawQuery, [states, cat_ids]);
-
-  console.log("EEEEEEEEEEEapiHandler.js:[getData]: query: " + query);
-
-  dbms.dbquery(query, function(error, results){
-    if(error){
-      console.log("You are a failure and you will never succeed");
-      callback(undefined);
-      return;
-    }
-
-    for (let stat of results){
-      normalize(stat);
-    }
-
-    callback(results);
-    return;
-  });
-}
+// function getData(cat_ids, callback){
+//   console.log("cat_idsSSSSSS: " + cat_ids);
+//   let query = mysql.format(rawQuery, [states, cat_ids]);
+//
+//   console.log("EEEEEEEEEEEapiHandler.js:[getData]: query: " + query);
+//
+//   dbms.dbquery(query, function(error, results){
+//     if(error){
+//       console.log("You are a failure and you will never succeed");
+//       callback(undefined);
+//       return;
+//     }
+//
+//     for (let stat of results){
+//       normalize(stat);
+//     }
+//
+//     callback(results);
+//     return;
+//   });
+// }
 
 //Parses the request query for the /api/data endpoint
 //  query - the request query object
@@ -100,6 +100,8 @@ function parseDataURL(query) {
   return cat;
 }
 
+
+//refer to comments at line 46 
 //Gets the data for the /api/data endpoint
 //  cats - an array of categories to get data for
 //Returns: an object of the form {category: Data}, or undefined if any category does not exist
@@ -124,7 +126,7 @@ function getData(cats, callback){
     callback(results);
     // if this breaks it might be because of the merge resolutions.
     // try uncommenting the following block. Signed, your past selves...
-    return;
+    // return;
   });
 }
 
