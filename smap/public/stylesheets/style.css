@@ -1,10 +1,6 @@
 /* Bunger, Liao, Marcinko, Regier, Robinson */
 
 /************************************************************************/
-/* Items are organized in order of appearance, top to bottom in the DOM */
-/************************************************************************/
-
-/************************************************************************/
 /* Template for new element styling:
     [tag, class, id]
         /* Positioning and Display */
@@ -82,15 +78,15 @@ body {
     z-index: 2;
     /* Coloring */
     background-color: var(--group-color);
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.125);
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.35);
     /* Fonts and Text */
     text-align: center;
 }
 
 
-/***********************/
-/***  Slider Styling ***/
-/***********************/
+/************************/
+/***  Slider Styling  ***/
+/************************/
 
 .statistic-slider-container {
     /* Positioning and Display */
@@ -162,31 +158,35 @@ body {
     box-shadow: 0px 0px 2px inset var(--secondary-color-light);
     /* Other */
     -webkit-appearance: none !important;
-	z-index: 3;
+    z-index: 2;
 
 }
 
+/* TODO: This will be fixed at a later time, as it creates a weird scrollbar */
 .statistic-slider-ticks {
+    /* Positioning and Display */
 	display: flex;
 	justify-content: space-between;
 	grid-area: ticks;
 	width: 103.6%;
 	margin-left: 18px;
 	margin-top: -20px;
-
 }
 
 .statistic-slider-ticks p {
+    /* Positioning and Display */
 	position: relative;
 	display: flex;
 	justify-content: center;
-	text-align: center;
-	width: 1.66px;
-	background: var(--color-dark);
+    text-align: center;
 	height: 8px;
-	line-height: 35px;
 	margin-right: 50px;
+    width: 1.66px;
+    /* Coloring */
+    background: var(--color-dark);
+    /* Fonts and Text */
 	font-size: 12px;
+    line-height: 35px;
 }
 
 #statistics-sliders-header {
@@ -226,9 +226,9 @@ body {
     background-color: var(--secondary-color-light);
 }
 
-/*************************/
-/***  Selector Styling ***/
-/*************************/
+/**************************/
+/***  Selector Styling  ***/
+/**************************/
 
 .statistic-option {
     /* Positioning and Display */
@@ -316,21 +316,29 @@ body {
 /***  SVG/Map Specific Styling  ***/
 /**********************************/
 
-
 #map-container {
     /* Positioning and Display */
-    grid-area: map;
+    grid-row: 1/1;
+    grid-column: 2/2;
     display: grid;
     align-items: center;
     /* Coloring */
     background-color: var(--color-light);
-    /* Fonts and Text */
-    text-align: center;
 }
 
-/************************/
-/***  Nav-bar Styling ***/
-/************************/
+#us-map {
+    /* Positioning and Display */
+    max-width: 100%;
+}
+
+object {
+    /* Other */
+    filter: drop-shadow(0px 0px 3px var(--secondary-color-dark));
+}
+
+/*************************/
+/***  Nav-bar Styling  ***/
+/*************************/
 
 #nav-bar {
     /* Positioning and Display */
@@ -341,8 +349,7 @@ body {
 	grid-template-columns: [right padding]5.5% auto [arrow]30% auto [theme-selector]5.5%;
     grid-template-areas: ". . center-nav . theme-selector" ;
     /* Coloring */
-    background-color: var(--group-color);
-
+    background-color: var(--subgroup-color);
 }
 
 #nav-arrow {
@@ -368,21 +375,12 @@ body {
     justify-content: center;
 }
 
-#map-container {
-    background-color: var(--color-light);
-	grid-row: 1/1;
-	grid-column: 2/2;
-    display: grid;
-    align-items: center;
-}
-
-#us-map {
-	max-width: 100%;
-}
-
-/* theme selector*/
+/******************************/
+/*** Theme Selector Styling ***/
+/******************************/
 
 #theme-selector {
+    /* Positioning and Display */
 	grid-area: theme-selector;
 	width: 80%;
 	height: 80%;
@@ -395,6 +393,7 @@ body {
 }
 
 .theme-template {
+    /* Positioning and Display */
 	width: 60px;
 	height: 60px;
 	display: inline-grid;
@@ -404,12 +403,15 @@ body {
 		"background accent"
 		"background secondary"
 	;
+    margin: 10px;
+    /* Borders */
 	border: 3px solid #878787;
 	border-radius: 40px;
+    /* Other */
 	overflow: hidden;
-	margin: 10px;
 }
 .theme-template-active {
+    /* Positioning and Display */
 	width: 60px;
 	height: 60px;
 	display: inline-grid;
@@ -419,55 +421,67 @@ body {
 		"background accent"
 		"background secondary"
 	;
+    margin: 10px;
+    /* Borders */
 	border: 3px solid #878787;
 	border-radius: 40px;
-	overflow: hidden;
-	box-shadow: 0px 0px 8px #878787;
-	margin: 10px;
+    /* Other */
+    box-shadow: 0px 0px 8px #878787;
+    overflow: hidden;
 }
 
 #dark .theme-template-active {
+    /* Coloring */
 	border-color: #DDDDDD;
 }
 
 #light .theme-template-active {
+    /* Coloring */
 	border-color: #333333;
 }
 
 .background {
+    /* Positioning and Display */
 	grid-area: background;
 	align-items: stretch;
 }
 
 .accent {
+    /* Positioning and Display */
 	grid-area: accent;
 	align-items: stretch;
 }
 
 .secondary {
+    /* Positioning and Display */
 	grid-area: secondary;
 	align-items: stretch;
 }
 
 #theme-container {
+    /* Positioning and Display */
 	position: absolute;
 	bottom: 9.75%;
 	right: 0;
 	display: none;
 	grid-template-columns: 50% auto;
-	background-color: #000000;
-	border: 2px solid #808080;
+    /* Borders */
+    border: 2px solid #808080;
+    /* Coloring */
+    background-color: #000000;
 }
 
 #theme-selector-container {
+    /* Positioning and Display */
 	grid-area: theme-selector;
 	display: grid;
 	align-items: stretch;
     align-self: stretch;
-	/* height: 100%; */
+	z-index: 3;
 }
 
 #theme-selector-container:hover #theme-container {
+    /* Positioning and Display */
 	display: inline-grid !important;
 }
 
@@ -478,90 +492,118 @@ body {
 }
 
 #dark {
-	padding: 10px;
-	background-color: #404040;
+    /* Positioning and Display */
 	display: grid;
+    padding: 10px;
+    /* Coloring */
+    background-color: #404040;
 }
 
 #light {
-	padding: 10px;
-	background-color: #CCCCCC;
-	display: grid;
-	transform: scale(-1, 1);
+    /* Positioning and Display */
+    display: grid;
+    padding: 10px;
+    /* Coloring */
+    background-color: #CCCCCC;
+    /* Other */
+    transform: scale(-1, 1);
 }
 
 #dark .theme-template:hover {
+    /* Other */
 	box-shadow: 0px 0px 5px #FFFFFF;
 }
 
 #dark .theme-template-active:hover {
+    /* Other */
 	box-shadow: 0px 0px 5px #BBBBBB;
 }
 
 #light .theme-template:hover {
+    /* Other */
 	box-shadow: 0px 0px 5px #000000;
 }
 
 #light .theme-template-active:hover {
+    /* Other */
 	box-shadow: 0px 0px 5px #333333;
 }
 
 #init {
+    /* Positioning and Display */
     position: fixed;
     display: grid;
     align-items: center;
-    text-align: center;
     top: 0;
     bottom: 0;
     right: 0;
     left: 0;
-    background-color: #DADADA;
-    color: #555555;
     z-index: 100;
+    /* Coloring */
+    background-color: #DADADA;
+    /* Fonts and Text */
+    color: #555555;
+    text-align: center;
+    /* Other */
     box-shadow: 0px 0px 150px inset #999999;
 }
 
 #ellipses {
+    /* Fonts and Text */
     font-size: 80px;
     letter-spacing: -5px;
 }
 
-/* About section */
+/***********************/
+/***  About section  ***/
+/***********************/
 
 #about-header {
-    text-align: center;
+    /* Positioning and Display */
     padding: 30px;
-    background-color: var(--group-color);
+    /* Coloring */
+    background-color: var(--subgroup-color);
+    /* Fonts and Text */
+    text-align: center;
 }
 
 #about-content {
+    /* Positioning and Display */
     padding-left: 15%;
     padding-right: 15%;
     padding-top: 50px;
     padding-bottom: 100px;
-    font-size: 20px;
+    /* Coloring */
     background-color: var(--color-light);
+    /* Fonts and Text */
+    font-size: 20px;
     line-height: 35px;
 }
 
 .bottom-social {
+    /* Positioning and Display */
     width: 70px;
     height: 70px;
     padding: 5px;
+    /* Other */
     filter: invert(var(--inversion));
 }
 
 .bottom-social:hover {
+    /* Other */
     opacity: 75%;
 }
 
 .bottom-social:active {
+    /* Other */
     opacity: 50%;
 }
 
 #bottom-bar {
+    /* Positioning and Display */
     padding-top: 50px;
     padding-left: 15%;
     padding-right: 15%;
+    /* Coloring */
     background-color: var(--group-color);
 }
