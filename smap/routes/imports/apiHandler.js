@@ -37,8 +37,8 @@ function getCats(callback){
     console.log("<apiHandler.js> results[1][stat_id]: " + results[1]["stat_id"]);
     console.log("<apiHandler.js> results[1][stat_name_short]: " + results[1]["stat_name_short"]);
 
-    // callback(results);
-    callback(dummyCats);
+    callback(results);
+    // callback(dummyCats);
   });
   // return dummyCats;
 }
@@ -101,7 +101,7 @@ function parseDataURL(query) {
 }
 
 
-//refer to comments at line 46 
+//refer to comments at line 46
 //Gets the data for the /api/data endpoint
 //  cats - an array of categories to get data for
 //Returns: an object of the form {category: Data}, or undefined if any category does not exist

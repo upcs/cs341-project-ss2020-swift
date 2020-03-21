@@ -26,7 +26,6 @@ router.get('/cats', function(req, res, next) {
     console.log("<api.js>results[1][stat_name_short]: " + results[1]["stat_name_short"]);
     res.json(results);
   });
-
 });
 
 // response to request for data for specific categories, as specified by URL encoding
@@ -47,9 +46,9 @@ router.get('/data', function(req, res, next){
       return;
     }
 
-    console.log("CCCCCCCCCCCCCCCCCCCCCCCCCresults: " + results);
-    console.log("CCCCCCCCCCCCCCCCCCCCCCCCCresults[0]: " + results[0]);
-    console.log("CCCCCCCCCCCCCCCCCCCCCCCCCresults[1]: " + results[1]);
+    console.log("<api.js> results: " + results);
+    console.log("<api.js> results[0]: " + results[0]);
+    console.log("<api.js> results[1]: " + results[1]);
     // console.log("CCCCCCCCCCCCCCCCCCCCCCCCCresults[1][stat_id]: " + results[1]["stat_id"]);
 
     // return contents, a object (dictionary) containing the key/value pairs of requested categories

@@ -26,6 +26,9 @@ var data = {active: new Set(), stats:{}};
 
 
 function normalizeStats(row){
+  console.log("<model.js> <normalizeStates() row: " + row);
+  console.log("<model.js> <normalizeStates() row[1]: " + row[1]);
+  console.log("<model.js> <normalizeStates() row[AL]: " + row["AL"]);
     let max = row["AL"];
     let min = max;
 
@@ -153,6 +156,9 @@ Stat.prototype.enable = function(){
         alert("<statistics.js> AHHHHHHH FAILURE!!!");
       } else {
         this.data = data[0];
+        console.log("\n<model.js> </api/data?cat=> this.data: " + this.data);
+        console.log("\n<model.js> </api/data?cat=> this.data[stat_id]: " + this.data["stat_id"]);
+        console.log("\n<model.js> </api/data?cat=> this.data[stat_name_short]: " + this.data["stat_name_short"]);
         normalizeStats(this.data);
         // console.log(this.data);
         displayWeights();
