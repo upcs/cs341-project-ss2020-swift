@@ -82,13 +82,16 @@ $("document").ready(function () {
     //Gets list of categories and creates those sliders
     $.get("/api/cats", "", function(data, status, res){
       if (status !== "success"){
-        console.log("Error getting categories");
-        alert("AHHHH");
+        //console.log("<visuals>: Error getting categories");
       } else {
         for (let cat of data){
           cat.title = cat.stat_name_short;
           new Stat(cat, DEFAULT_WEIGHT);
         }
+
+        // console.log("<visuals.js> data: " + data);
+        // console.log("<visuals.js> data[1]: " + data[1]); //returns Object object[] for dummy and results
+        // console.log("<visuals.js> data[1][0]: " + data[1][0]); //returns undefined sometimes
       }
     });
 
@@ -202,6 +205,7 @@ function mixColor(weight) {
 }
 
 function colorState(state, weight) {
+  console.log("<visuals.js> <colorState> state: " + state + "\tweight: " + weight + "\n");
     // Get the svg
     var svgDoc = document.getElementById("us-map").contentDocument;
     // If it exists
