@@ -42,27 +42,26 @@ test('Create a slider', (done) => {
   window.colorState = jest.fn( () => {} );
   window.makeActiveSlider = jest.fn( () => { return active_slider; } );
   window.makeInactiveSlider = jest.fn( () => { return inactive_slider; } );
+  //you can uncomment line below if you reWIRE(../../public/javascripts/model) from a few lines prior
   // script.__set__("displayWeights", () => {});
   // var spy = jest.spyOn(script, "displayWeights").mockImplementation( () => {} );
 
+  let stat = new script.Stat({title:"test stat", id:0}, script.DEFAULT_WEIGHT);
+  expect($(".statistic-option").length).toEqual(1);
+  expect(window.makeActiveSlider.mock.calls.length).toBe(0);
+  // expect($(".statistic-slider-container").length).toEqual(0);
+  inactive_slider.click();
+  expect($(".statistic-option").length).toEqual(0);
+  expect(window.makeActiveSlider.mock.calls.length).toBe(1);
 
-  //The ready function. Since these callbacks are called in order,
-  //  the one in statistics.js is called first to set up the event listener.
-  $(function() {
-    //Try-catch needed since this is an async test
-    //See: https://jestjs.io/docs/en/asynchronous
-    try {
-      let stat = new script.Stat({title:"test stat", id:0}, script.DEFAULT_WEIGHT);
-      expect($(".statistic-option").length).toEqual(1);
-      expect(window.makeActiveSlider.mock.calls.length).toBe(0);
-      // expect($(".statistic-slider-container").length).toEqual(0);
-      inactive_slider.click();
-      expect($(".statistic-option").length).toEqual(0);
-      expect(window.makeActiveSlider.mock.calls.length).toBe(1);
-      // expect($(".statistic-slider-container").length).toEqual(1);
-      done();
-    } catch (error) {
-      done(error);
-    }
-  });
+
+
+//reference for async tests
+    //The ready function. Since these callbacks are called in order,
+    //  the one in visuals.js is called first to set up the event listener.
+    // $(function() {
+      //Try-catch needed since this is an async test
+      //See: https://jestjs.io/docs/en/asynchronous
+      //some test code in here
+    // });
 });
