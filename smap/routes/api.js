@@ -18,12 +18,11 @@ router.get('/cats', function(req, res, next) {
       next(createError(404));
       // return;
     }
-    // return contents, a object (dictionary) containing the key/value pairs of requested categories
-    console.log("<api.js>results[0][stat_id]: " + results[0]["stat_id"]);
-    console.log("<api.js>results[0][stat_name_short]: " + results[0]["stat_name_short"]);
 
-    console.log("<api.js>results[1][stat_id]: " + results[1]["stat_id"]);
-    console.log("<api.js>results[1][stat_name_short]: " + results[1]["stat_name_short"]);
+    // console.log("<api.js>results[0][stat_id]: " + results[0]["stat_id"]);
+    // console.log("<api.js>results[0][stat_name_short]: " + results[0]["stat_name_short"]);
+
+    // return contents, a object (dictionary) containing the key/value pairs of requested categories
     res.json(results);
   });
 });
@@ -46,9 +45,8 @@ router.get('/data', function(req, res, next){
       return;
     }
 
-    console.log("<api.js> results: " + results);
-    console.log("<api.js> results[0]: " + results[0]);
-    console.log("<api.js> results[1]: " + results[1]);
+    // console.log("<api.js> results: " + results);
+    // console.log("<api.js> results[0]: " + results[0]);
     // console.log("CCCCCCCCCCCCCCCCCCCCCCCCCresults[1][stat_id]: " + results[1]["stat_id"]);
 
     // return contents, a object (dictionary) containing the key/value pairs of requested categories

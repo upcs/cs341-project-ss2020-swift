@@ -165,22 +165,6 @@ Stat.prototype.enable = function(){
       }
     });
   }
-
-  //the following is from a merge, uncomment if stuff stops working.
-  //signed your past selves....
-
-  // //Gets list of categories and creates those sliders
-  // $.get("/api/cats", "", function(data, status, res){
-  //   if (status !== "success"){
-  //     console.log("Error getting categories");
-  //     alert("<statistics.js></api/cats> FAILURE!!!");
-  //   } else {
-  //     alert("<statistics.js></api/cats> data: " + data);
-  //     for (let cat of data){
-  //       cat.title = cat.stat_name_short;
-  //       new Stat(cat, DEFAULT_WEIGHT);
-  //     }
-
 }
 
 //Called to remove a statistic from the SMAP calculation

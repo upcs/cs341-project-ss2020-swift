@@ -28,45 +28,13 @@ function getCats(callback){
       //telling the function to not carry oooooonnnn
       return;
     }
-    console.log("<apiHandler.js> dummyCats[0][stat_id]: " + dummyCats[1]["stat_id"]);
-    console.log("<apiHandler.js> dummyCats[0][stat_name_short]: " + dummyCats[1]["stat_name_short"]);
-
-    console.log("<apiHandler.js> results[0][stat_id]: " + results[0]["stat_id"]);
-    console.log("<apiHandler.js> results[0][stat_name_short]: " + results[0]["stat_name_short"]);
-
-    console.log("<apiHandler.js> results[1][stat_id]: " + results[1]["stat_id"]);
-    console.log("<apiHandler.js> results[1][stat_name_short]: " + results[1]["stat_name_short"]);
+  
+    // console.log("<apiHandler.js> results[0][stat_id]: " + results[0]["stat_id"]);
+    // console.log("<apiHandler.js> results[0][stat_name_short]: " + results[0]["stat_name_short"]);
 
     callback(results);
-    // callback(dummyCats);
   });
-  // return dummyCats;
 }
-
-//Gets the data for the /api/data endpoint
-//  cats - an array of categories to get data for
-//Returns: an object of the form {category: Data}, or undefined if any category does not exist
-// function getData(cat_ids, callback){
-//   console.log("cat_idsSSSSSS: " + cat_ids);
-//   let query = mysql.format(rawQuery, [states, cat_ids]);
-//
-//   console.log("EEEEEEEEEEEapiHandler.js:[getData]: query: " + query);
-//
-//   dbms.dbquery(query, function(error, results){
-//     if(error){
-//       console.log("You are a failure and you will never succeed");
-//       callback(undefined);
-//       return;
-//     }
-//
-//     for (let stat of results){
-//       normalize(stat);
-//     }
-//
-//     callback(results);
-//     return;
-//   });
-// }
 
 //Parses the request query for the /api/data endpoint
 //  query - the request query object
@@ -76,9 +44,9 @@ function parseDataURL(query) {
   //remember, queries will be the stat_id, aka a number
   let cat = query.cat;
 
-  console.log("apiHandler.js[parseDataURL]: query:" + query);
-  console.log("apiHandler.js[parseDataURL]: query as a string:" + JSON.stringify(query));
-  console.log("apiHandler.js[parseDataURL]: query.cat:" + query.cat);
+  // console.log("apiHandler.js[parseDataURL]: query:" + query);
+  // console.log("apiHandler.js[parseDataURL]: query as a string:" + JSON.stringify(query));
+  // console.log("apiHandler.js[parseDataURL]: query.cat:" + query.cat);
   // console.log("apiHandler.js[parseDataURL]: query.stat_id:" + query.stat_id);
 
   if (cat === undefined){
@@ -117,16 +85,7 @@ function getData(cats, callback){
       return;
     }
 
-    // if this breaks it might be because of the merge resolutions.
-    // try uncommenting the following block. Signed, your past selves...
-    // for (let stat of results){
-    //   normalize(stat);
-    // }
-
     callback(results);
-    // if this breaks it might be because of the merge resolutions.
-    // try uncommenting the following block. Signed, your past selves...
-    // return;
   });
 }
 
