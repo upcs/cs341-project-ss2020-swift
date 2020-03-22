@@ -78,20 +78,16 @@ $("document").ready(function () {
     //Gets list of categories and creates those sliders
     $.get("/api/cats", "", function(data, status, res){
       if (status !== "success"){
-        console.log("<visuals>: Error getting categories");
-        alert("<visuals>: Error getting categories");
+        //console.log("<visuals>: Error getting categories");
       } else {
         for (let cat of data){
           cat.title = cat.stat_name_short;
           new Stat(cat, DEFAULT_WEIGHT);
         }
-        var message = "<visuals.js> /cats successful\n" +
-        "<visuals.js> data: " + data;
 
-        alert(message);
-        console.log("<visuals.js> data: " + data);
-        console.log("<visuals.js> data[1]: " + data[1]); //returns Object object[] for dummy and results
-        console.log("<visuals.js> data[1][0]: " + data[1][0]); //returns undefined sometimes
+        // console.log("<visuals.js> data: " + data);
+        // console.log("<visuals.js> data[1]: " + data[1]); //returns Object object[] for dummy and results
+        // console.log("<visuals.js> data[1][0]: " + data[1][0]); //returns undefined sometimes
       }
     });
 
