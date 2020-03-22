@@ -18,4 +18,3 @@ deploy:
   provider: gae
   keyfile: keyfile.json
   project: swift-smap
-  on: gcloud_app

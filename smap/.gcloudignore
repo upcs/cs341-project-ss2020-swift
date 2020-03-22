@@ -22,3 +22,7 @@ coverage/
 
 # Demos
 public/demos/
+
+# Key file
+keyfile.json.enc
+keyfile.json
