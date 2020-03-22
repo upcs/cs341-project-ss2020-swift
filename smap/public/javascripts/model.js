@@ -26,6 +26,9 @@ var data = {active: new Set(), stats:{}};
 
 
 function normalizeStats(row){
+  console.log("<model.js> <normalizeStates() row: " + row);
+  console.log("<model.js> <normalizeStates() row[1]: " + row[1]);
+  console.log("<model.js> <normalizeStates() row[AL]: " + row["AL"]);
     let max = row["AL"];
     let min = max;
 
@@ -108,7 +111,7 @@ function Stat(category, weight){
     delete data.stats[category.id];
     data.active.delete(category.id);
   }
-  data.stats[category.id] = this;
+  data.stats[category.stat_id] = this;
 
   this.category = category;
   this.weight = weight;
@@ -131,11 +134,11 @@ Stat.prototype.updateWeight = function(weight){
 //Moves the category to the active tab and adds a slider
 Stat.prototype.enable = function(){
   this.enabled = true;
-  data.active.add(this.category.id);
+  data.active.add(this.category.stat_id);
   this.slider.remove();
   this.slider = makeActiveSlider(this.category.title, this.weight);
   this.updateWeight(this.weight);
-  data.active.add(this.category.id);
+  data.active.add(this.category.stat_id);
 
   //Add event listeners
   $(".statistic-slider", this.slider).change((event) => {
@@ -148,11 +151,14 @@ Stat.prototype.enable = function(){
 
   //Fetches the data if we do not have it.
   if(!this.data){
-    $.get("/api/data?cat=" + this.category.id, "", (data, status, xhr) => {
+    $.get("/api/data?cat=" + this.category.stat_id, "", (data, status, xhr) => {
       if (status !== "success"){
-        alert("AHHHHHHHHHHHH");
+        alert("<statistics.js> AHHHHHHH FAILURE!!!");
       } else {
         this.data = data[0];
+        console.log("\n<model.js> </api/data?cat=> this.data: " + this.data);
+        console.log("\n<model.js> </api/data?cat=> this.data[stat_id]: " + this.data["stat_id"]);
+        console.log("\n<model.js> </api/data?cat=> this.data[stat_name_short]: " + this.data["stat_name_short"]);
         normalizeStats(this.data);
         // console.log(this.data);
         displayWeights();
@@ -165,7 +171,7 @@ Stat.prototype.enable = function(){
 //Moves the category to the inactive tab and removes the slider
 Stat.prototype.disable = function(){
   this.enabled = false;
-  data.active.delete(this.category.id);
+  data.active.delete(this.category.stat_id);
   if (this.slider){
     this.slider.remove();
   }
@@ -180,8 +186,8 @@ Stat.prototype.disable = function(){
 //Deletes a statistic
 Stat.prototype.delete = function(){
   this.slider.remove();
-  data.active.remove(this.category.id);
-  delete data.stats[category.id];
+  data.active.remove(this.category.stat_id);
+  delete data.stats[category.stat_id];
 }
 
 // For testing purposes. More details later
