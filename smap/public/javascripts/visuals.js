@@ -1,7 +1,7 @@
 'use strict';
 
 $("document").ready(function () {
-    ////////////////////
+    /////////////////////
     // START ANIMATION //
     function clear_loading(loop) {
         window.setTimeout(function() {
@@ -22,6 +22,10 @@ $("document").ready(function () {
                 $("#loading").animate({fontSize: "100px"}, 400);
             }, 1500 );
         }, 1000);
+        // Print load
+        let load_time = (window.performance.now() / 1000);
+        console.log("Page load time: " + load_time + "s");
+        console.log("Time until page operable: "+ (load_time+2.5) +"s");
     }
     function load_themes(callback, loop) {
         const themes = [
@@ -78,16 +82,12 @@ $("document").ready(function () {
     //Gets list of categories and creates those sliders
     $.get("/api/cats", "", function(data, status, res){
       if (status !== "success"){
-        //console.log("<visuals>: Error getting categories");
+        console.log("[!] Error getting categories");
       } else {
         for (let cat of data){
           cat.title = cat.stat_name_short;
           new Stat(cat, DEFAULT_WEIGHT);
         }
-
-        // console.log("<visuals.js> data: " + data);
-        // console.log("<visuals.js> data[1]: " + data[1]); //returns Object object[] for dummy and results
-        // console.log("<visuals.js> data[1][0]: " + data[1][0]); //returns undefined sometimes
       }
     });
 
@@ -144,7 +144,7 @@ $("document").ready(function () {
 
     $(window).scroll( function() {
         let scroll_val = Math.floor($(window).scrollTop());
-        if(Date.now() - lastMove > 33) {
+        if(window.performance.now() - lastMove > 33) {
             $("#settings").css("left", -1*scroll_val);
             $("#map-container").css("filter", "opacity(" + ((500 - scroll_val) / 500) + ")");
             lastMove = Date.now();
@@ -201,7 +201,6 @@ function mixColor(weight) {
 }
 
 function colorState(state, weight) {
-  console.log("<visuals.js> <colorState> state: " + state + "\tweight: " + weight + "\n");
     // Get the svg
     var svgDoc = document.getElementById("us-map").contentDocument;
     // If it exists
