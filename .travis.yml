@@ -18,3 +18,4 @@ deploy:
   provider: gae
   keyfile: keyfile.json
   project: swift-smap
+  skip_cleanup: true
