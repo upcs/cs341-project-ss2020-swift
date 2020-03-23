@@ -88,6 +88,18 @@ $("document").ready(function () {
       }
     });
 
+    //Gets metadata information and populates the windows
+    $.get("/api/meta", "", function(data, status, res){
+        if (status !== "success"){
+          console.log("Error getting metadata");
+          alert("AHHHH no metadata");
+        } else {
+        //   for (let cat of data){
+        //     cat.title = cat.stat_name_short;
+        //     new Stat(cat, DEFAULT_WEIGHT);
+        //   }
+        }
+      });
 
 
     // The inital top element
