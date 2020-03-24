@@ -49,8 +49,16 @@ function getMeta(callback){
       return;
     }
   
-    console.log(results);
-    console.log("Results!!!!" + results[0].note[0]);
+    //console.log(JSON.stringify(results));
+    //console.log("Results!!!!" + JSON.stringify(results[0]));
+    console.log("AAAAAAAAAAAAAAAA!!!!" + JSON.stringify(results[10]));
+    console.log("!!!!" + JSON.stringify(results[10].stat_id));
+
+    console.log("MEep morp " + results[10].note);
+    console.log("lack of meep morp" + results[1].note  + "!");
+
+    // let str = String.fromCharCode.apply(null, results[10].note.data);
+    // console.log("WHYYYYYYY " + str);
 
     callback(results);
   });
