@@ -25,10 +25,11 @@ var map; //The map SVG
 //  in a change in the HTML. Usage of the functions in this module should guarantee this.
 var data = {active: new Set(), stats:{}};
 
-
-//changes row in place so that lowest value is 0 and highest is 1.
-  //this is linear, so a state halfway from lowest to highest would have value 0.5
-// @param row: an object containing all the column names such as stat_id, stat_name_short and all the states
+//Converts values into a range between 0 and 1
+//Args:
+//  row - a dictionary mapping states to numbers. (ex. stat_name_short)
+//        in addition, there must be an invert_flag key, which should have value
+//        0 to not invert and 1 otherwise.
 function normalizeStats(row){
     let max = row["AL"];
     let min = max;
@@ -39,8 +40,12 @@ function normalizeStats(row){
         min = Math.min(min, row[state]);
     }
 
+    if (max === min){
+      return;
+    }
+
     //Normalize, such that largest will always be 1 and smallest will always be 0
-    let invert = row["invert_flag"] !== 0;
+    let invert = row["invert_flag"] === 1;
     max -= min;
     for (let state of states){
         row[state] = (row[state] - min) / max;
@@ -66,15 +71,15 @@ function calculateWeight(value){
 function displayWeights(){
   //Sum up weights for each state
   let weights = {};
-  let maxWeight = 0;
   for (let state of states){
     let weight = 0;
     for (let catID of data.active){
       let stat = data.stats[catID];
       if(stat.data){
         let stateData = stat.data[state];
-        if(!stateData){
+        if(stateData === undefined){
           //Data not present for this state, so bail
+          console.error("Data for state " + state + " stat " + stat.category.title + " not found");
           weight = 0;
           break;
         }
@@ -82,14 +87,14 @@ function displayWeights(){
       }
     }
     weights[state] = weight;
-    maxWeight = Math.max(maxWeight, weight);
   }
 
-  //Normalize and display
+  //Normalize
+  normalizeStats(weights);
+
+  //
   for (let state of states){
     let weight = weights[state];
-    // console.log(`State ${state} has weight ${weight}`);
-    if (maxWeight != 0) weight /= maxWeight;
     colorState(state, weight);
   }
 }
@@ -116,7 +121,7 @@ function Stat(category, weight){
     delete data.stats[category.id];
     data.active.delete(category.id);
   }
-  data.stats[category.id] = this;
+  data.stats[category.stat_id] = this;
 
   this.category = category;
   this.weight = weight;
@@ -139,11 +144,11 @@ Stat.prototype.updateWeight = function(weight){
 //Moves the category to the active tab and adds a slider
 Stat.prototype.enable = function(){
   this.enabled = true;
-  data.active.add(this.category.id);
+  data.active.add(this.category.stat_id);
   this.slider.remove();
   this.slider = makeActiveSlider(this.category.title, this.weight);
   this.updateWeight(this.weight);
-  data.active.add(this.category.id);
+  data.active.add(this.category.stat_id);
 
   //Add event listeners
   $(".statistic-slider", this.slider).change((event) => {
@@ -156,9 +161,9 @@ Stat.prototype.enable = function(){
 
   //Fetches the data if we do not have it.
   if(!this.data){
-    $.get("/api/data?cat=" + this.category.id, "", (data, status, xhr) => {
+    $.get("/api/data?cat=" + this.category.stat_id, "", (data, status, xhr) => {
       if (status !== "success"){
-        alert("AHHHHHHHHHHHH");
+        alert("<statistics.js> AHHHHHHH FAILURE!!!");
       } else {
         this.data = data[0];
 
@@ -174,7 +179,7 @@ Stat.prototype.enable = function(){
 //Moves the category to the inactive tab and removes the slider
 Stat.prototype.disable = function(){
   this.enabled = false;
-  data.active.delete(this.category.id);
+  data.active.delete(this.category.stat_id);
   if (this.slider){
     this.slider.remove();
   }
@@ -189,8 +194,8 @@ Stat.prototype.disable = function(){
 //Deletes a statistic
 Stat.prototype.delete = function(){
   this.slider.remove();
-  data.active.remove(this.category.id);
-  delete data.stats[category.id];
+  data.active.remove(this.category.stat_id);
+  delete data.stats[category.stat_id];
 }
 
 // For testing purposes. More details later
