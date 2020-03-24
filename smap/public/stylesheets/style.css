@@ -318,20 +318,15 @@ body {
 
 #map-container {
     /* Positioning and Display */
-    grid-row: 1/1;
-    grid-column: 2/2;
-    display: grid;
-    align-items: center;
-    /* Coloring */
-    background-color: var(--color-light);
+    grid-row: 0/1;
+    grid-column: 2/4;
+    align-self: center;
 }
 
 #us-map {
     /* Positioning and Display */
+    align-self: center;
     max-width: 100%;
-}
-
-object {
     /* Other */
     filter: drop-shadow(0px 0px 3px var(--secondary-color-dark));
 }
@@ -346,8 +341,10 @@ object {
 	grid-column: 1/4;
     display: grid;
     align-items: center;
-	grid-template-columns: [right padding]5.5% auto [arrow]30% auto [theme-selector]5.5%;
-    grid-template-areas: ". . center-nav . theme-selector" ;
+	grid-template-columns:
+        [right-nav-padding]5.5% [spacing]29.5% [arrow]30% [legend]29.5% [theme-selector]5.5%
+    ;
+    grid-template-areas: "spacing1 spacing2 center-nav legend theme-selector" ;
     /* Coloring */
     background-color: var(--subgroup-color);
 }
@@ -370,9 +367,25 @@ object {
 
 #center-nav {
     /* Positioning and Display */
+    display: grid;
     grid-area: center-nav;
-	display: grid;
     justify-content: center;
+}
+
+#map-legend-container {
+    /* Positioning and Display */
+    grid-area: legend;
+    justify-self: center;
+    align-self: middle;
+    /* Other */
+    user-select: none;
+}
+
+#map-legend {
+    /* Positioning and Display */
+    display: inline-block;
+    width: 150px;
+    vertical-align: middle;
 }
 
 /******************************/
@@ -562,7 +575,7 @@ object {
     /* Positioning and Display */
     padding: 30px;
     /* Coloring */
-    background-color: var(--subgroup-color);
+    background-color: var(--group-color);
     /* Fonts and Text */
     text-align: center;
 }
