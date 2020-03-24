@@ -88,6 +88,7 @@ $("document").ready(function () {
           cat.title = cat.stat_name_short;
           new Stat(cat, DEFAULT_WEIGHT);
         }
+        restoreFromStorage();
       }
     });
 
