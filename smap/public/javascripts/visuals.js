@@ -159,8 +159,9 @@ $("document").ready(function () {
         let scroll_val = Math.floor($(window).scrollTop());
         if(window.performance.now() - lastMove > 33) {
             $("#settings").css("left", -1*scroll_val);
-            $("#map-container").css("filter", "opacity(" + ((500 - scroll_val) / 500) + ")");
-            lastMove = Date.now();
+            $("#map-container").css("filter", "opacity(" + ((550 - scroll_val) / 350) + ")");
+            $("#map-legend-container").css("filter", "opacity(" + ((550 - scroll_val) / 350) + ")");
+            lastMove = window.performance.now();
         }
     });
 });
