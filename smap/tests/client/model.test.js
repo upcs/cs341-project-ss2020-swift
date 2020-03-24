@@ -227,4 +227,70 @@ describe('updateCategoryStorage', () => {
     expect(setItem.mock.calls.length).toEqual(2);
     expect(setItem.mock.calls[1]).toEqual([model.storage.ACTIVE_SLIDER_KEY, "2,3"]);
   });
-})
+});
+
+describe('updateWeightStorage', () => {
+  let spy;
+  let setItem;
+  let removeItem;
+
+  beforeEach(() => {
+    resetData();
+    setItem = jest.fn(() => {});
+    removeItem = jest.fn(() => {});
+    spy = jest.spyOn(window, 'localStorage', 'get').mockImplementation(() => {
+      return {
+        setItem: setItem,
+        removeItem: removeItem
+      }
+    });
+
+    //This will call setItem and removeItem
+    model.storage.reset();
+  });
+
+  afterEach(() => {
+    spy.mockRestore();
+  });
+
+  test('not restored', () => {
+    model.data.stats[2] = {weight: 1};
+    expect(model.data.restored).toEqual(false);
+    expect(setItem.mock.calls.length).toEqual(1);
+    expect(removeItem.mock.calls.length).toEqual(1);
+    model.storage.updateWeight(2);
+    expect(setItem.mock.calls.length).toEqual(1);
+    expect(removeItem.mock.calls.length).toEqual(1);
+  });
+
+  test('invalid weight', () => {
+    model.data.stats[2] = {weight: -1};
+    model.data.restored = true;
+    expect(setItem.mock.calls.length).toEqual(1);
+    expect(removeItem.mock.calls.length).toEqual(1);
+    model.storage.updateWeight(2);
+    expect(setItem.mock.calls.length).toEqual(1);
+    expect(removeItem.mock.calls.length).toEqual(2);
+    expect(removeItem.mock.calls[1]).toEqual([model.storage.ACTIVE_SLIDER_PREFIX+"2"]);
+  });
+
+  test('invalid cat', () => {
+    model.data.restored = true;
+    expect(setItem.mock.calls.length).toEqual(1);
+    expect(removeItem.mock.calls.length).toEqual(1);
+    model.storage.updateWeight(2);
+    expect(setItem.mock.calls.length).toEqual(1);
+    expect(removeItem.mock.calls.length).toEqual(1);
+  });
+
+  test('valid cat', () => {
+    model.data.stats[2] = {weight: 4};
+    model.data.restored = true;
+    expect(setItem.mock.calls.length).toEqual(1);
+    expect(removeItem.mock.calls.length).toEqual(1);
+    model.storage.updateWeight(2);
+    expect(setItem.mock.calls.length).toEqual(2);
+    expect(setItem.mock.calls[1]).toEqual([model.storage.ACTIVE_SLIDER_PREFIX+"2", 4]);
+    expect(removeItem.mock.calls.length).toEqual(1);
+  });
+});
