@@ -33,10 +33,12 @@ function Data(){
   this.restored = false;
 }
 
+//Converts values into a range between 0 and 1
+//Args:
+//  row - a dictionary mapping states to numbers.
+//        in addition, there must be an invert_flag key, which should have value
+//        0 to not invert and 1 otherwise.
 function normalizeStats(row){
-  console.log("<model.js> <normalizeStates() row: " + row);
-  console.log("<model.js> <normalizeStates() row[1]: " + row[1]);
-  console.log("<model.js> <normalizeStates() row[AL]: " + row["AL"]);
     let max = row["AL"];
     let min = max;
 
@@ -46,8 +48,12 @@ function normalizeStats(row){
         min = Math.min(min, row[state]);
     }
 
+    if (max === min){
+      return;
+    }
+
     //Normalize, such that largest will always be 1 and smallest will always be 0
-    let invert = row["invert_flag"] !== 0;
+    let invert = row["invert_flag"] === 1;
     max -= min;
     for (let state of states){
         row[state] = (row[state] - min) / max;
@@ -69,15 +75,15 @@ function calculateWeight(value){
 function displayWeights(){
   //Sum up weights for each state
   let weights = {};
-  let maxWeight = 0;
   for (let state of states){
     let weight = 0;
     for (let catID of data.active){
       let stat = data.stats[catID];
       if(stat.data){
         let stateData = stat.data[state];
-        if(!stateData){
+        if(stateData === undefined){
           //Data not present for this state, so bail
+          console.error("Data for state " + state + " stat " + stat.category.title + " not found");
           weight = 0;
           break;
         }
@@ -85,14 +91,14 @@ function displayWeights(){
       }
     }
     weights[state] = weight;
-    maxWeight = Math.max(maxWeight, weight);
   }
 
-  //Normalize and display
+  //Normalize
+  normalizeStats(weights);
+
+  //
   for (let state of states){
     let weight = weights[state];
-    // console.log(`State ${state} has weight ${weight}`);
-    if (maxWeight != 0) weight /= maxWeight;
     colorState(state, weight);
   }
 }

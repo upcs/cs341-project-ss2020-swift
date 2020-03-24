@@ -91,18 +91,18 @@ $("document").ready(function () {
     });
 
     //Gets metadata information and populates the windows
-    $.get("/api/meta", "", function(data, status, res){
-        if (status !== "success"){
-          console.log("Error getting metadata");
-          alert("AHHHH no metadata");
-        } else {
-            alert(data[1].published_by + " " + data[0].published_by);
-        //   for (let cat of data){
-        //     cat.title = cat.stat_name_short;
-        //     new Stat(cat, DEFAULT_WEIGHT);
-        //   }
-        }
-      });
+    // $.get("/api/meta", "", function(data, status, res){
+    //     if (status !== "success"){
+    //       console.log("Error getting metadata");
+    //       alert("AHHHH no metadata");
+    //     } else {
+    //         alert(data[1].published_by + " " + data[0].published_by);
+    //     //   for (let cat of data){
+    //     //     cat.title = cat.stat_name_short;
+    //     //     new Stat(cat, DEFAULT_WEIGHT);
+    //     //   }
+    //     }
+    //   });
 
 
     // The inital top element
@@ -158,8 +158,9 @@ $("document").ready(function () {
         let scroll_val = Math.floor($(window).scrollTop());
         if(window.performance.now() - lastMove > 33) {
             $("#settings").css("left", -1*scroll_val);
-            $("#map-container").css("filter", "opacity(" + ((500 - scroll_val) / 500) + ")");
-            lastMove = Date.now();
+            $("#map-container").css("filter", "opacity(" + ((550 - scroll_val) / 350) + ")");
+            $("#map-legend-container").css("filter", "opacity(" + ((550 - scroll_val) / 350) + ")");
+            lastMove = window.performance.now();
         }
     });
 });
