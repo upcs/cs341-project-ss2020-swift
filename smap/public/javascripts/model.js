@@ -25,6 +25,9 @@ var map; //The map SVG
 var data = {active: new Set(), stats:{}};
 
 
+//changes row in place so that lowest value is 0 and highest is 1.
+  //this is linear, so a state halfway from lowest to highest would have value 0.5
+// @param row: an object containing all the column names such as stat_id, stat_name_short and all the states
 function normalizeStats(row){
     let max = row["AL"];
     let min = max;
@@ -153,8 +156,9 @@ Stat.prototype.enable = function(){
         alert("AHHHHHHHHHHHH");
       } else {
         this.data = data[0];
+
+        // this.data is an object with all of the column names ["stat_id"], ["stat_name_short"], ["AL"], ["AK"], etc.
         normalizeStats(this.data);
-        // console.log(this.data);
         displayWeights();
       }
     });
@@ -188,6 +192,7 @@ Stat.prototype.delete = function(){
 if(typeof module !== "undefined" && module.exports){
   module.exports = {
     Stat: Stat,
+    normalizeStats: normalizeStats,
     DEFAULT_WEIGHT: DEFAULT_WEIGHT
   }
 }
