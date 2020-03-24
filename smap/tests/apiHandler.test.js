@@ -1,5 +1,10 @@
 var handler = require('../routes/imports/apiHandler');
 
+var firstTestId = 2;
+var firstIdSting = '2';
+var secondTestId = 9;
+var secondIdString = '9';
+
 //tests for parseDataURL() function ------------------------------------
 describe('parseDataURL', () => {
   test('exists', () => {
@@ -8,11 +13,11 @@ describe('parseDataURL', () => {
 
   //note that queries handle data in terms of stat_id, a number
   test('single category', () => {
-    expect(handler.parseDataURL({cat: '66'})).toEqual([66]);
+    expect(handler.parseDataURL({cat: firstIdSting})).toEqual([firstTestId]);
   });
 
   test('multiple categories', () => {
-    expect(handler.parseDataURL({cat:['2', '66']})).toEqual([2, 66]);
+    expect(handler.parseDataURL({cat:[firstIdSting, secondIdString]})).toEqual([firstTestId, secondTestId]);
   });
 
   test('no categories', () => {
@@ -32,20 +37,20 @@ describe('getData', () => {
       try {
 
         //confirm that the stat_id that was returned was the number expected
-        expect(data[0].stat_id).toBe(66);
+        expect(data[0].stat_id).toBe(firstTestId);
 
         //check size of dictionary returned; should be 53
         expect(Object.keys(data[0]).length).toBe(53);
 
         //check the value of just one state
-        expect(data[0]["NV"]).toBe(0.716474607678499);
+        //expect(data[0]["NV"]).toBe(61864);
 
         done();
       } catch (error) {
         done(error);
       }
     }
-    handler.getData([66], callback);
+    handler.getData([firstTestId], callback);
   });
 
  test('multiple good categories', (done) => {
@@ -54,23 +59,23 @@ describe('getData', () => {
 
       try {
         //confirm that both stat_ids that were returned were the number expected
-        expect(data[0].stat_id).toBe(2);
-        expect(data[1].stat_id).toBe(66);
+        expect(data[0].stat_id).toBe(firstTestId);
+        expect(data[1].stat_id).toBe(secondTestId);
 
         //check size of dictionary returned; should be 53
         expect(Object.keys(data[0]).length).toBe(53);
         expect(Object.keys(data[1]).length).toBe(53);
 
         //check the value of just one state
-        expect(data[0]["NV"]).toBe(0.671916474960184);
-        expect(data[1]["NV"]).toBe(0.716474607678499);
+        expect(data[0]["NV"]).toBe(541.1);
+        expect(data[1]["NV"]).toBe(3.4);
 
         done();
       } catch (error) {
         done(error);
       }
     }
-    handler.getData([66,2], callback);
+    handler.getData([secondTestId,firstTestId], callback);
 
   });
 
@@ -118,21 +123,21 @@ describe('getData', () => {
 
       try {
         //confirm that the db returned what it could and that we properly handle the undefineds that come back from the bad
-        expect(data[0].stat_id).toBe(66);
+        expect(data[0].stat_id).toBe(secondTestId);
         expect(data[1]).toBeUndefined();
 
         //check size of dictionary returned; should be 53
         expect(Object.keys(data[0]).length).toBe(53);
 
         //check the value of just one state
-        expect(data[0]["NV"]).toBe(0.716474607678499);
+        expect(data[0]["NV"]).toBe(3.4);
 
         done();
       } catch (error) {
         done(error);
       }
     }
-    handler.getData([66,2020], callback);
+    handler.getData([secondTestId,2020], callback);
   })
 
 });

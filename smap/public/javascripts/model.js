@@ -26,35 +26,38 @@ var map; //The map SVG
 //  in a change in the HTML. Usage of the functions in this module should guarantee this.
 var data = {active: new Set(), stats:{}};
 
-//Used to initialize global variables
-$(document).ready(() => {
-  let active =  $("#active_slider_template");
-  activeSliderTemplate = active.clone();
-  activeSliderTemplate.removeAttr("id");
-  active.remove();
 
-  let inactive = $("#inactive_slider_template");
-  inactiveSliderTemplate = inactive.clone();
-  inactiveSliderTemplate.removeAttr("id");
-  inactive.remove();
+function normalizeStats(row){
+  console.log("<model.js> <normalizeStates() row: " + row);
+  console.log("<model.js> <normalizeStates() row[1]: " + row[1]);
+  console.log("<model.js> <normalizeStates() row[AL]: " + row["AL"]);
+    let max = row["AL"];
+    let min = max;
 
-  sliderContainer = $("#statistics-sliders");
-  selectionContainer = $("#statistics-selector");
-  map = $("#us-map");
-
-  //Gets list of categories and creates those sliders
-  $.get("/api/cats", "", function(data, status, res){
-    if (status !== "success"){
-      console.log("Error getting categories");
-      alert("AHHHH");
-    } else {
-      for (let cat of data){
-        cat.title = cat.stat_name_short;
-        new Stat(cat, DEFAULT_WEIGHT);
-      }
+    //find the min and max values
+    for (let state of states){
+        max = Math.max(max, row[state]);
+        min = Math.min(min, row[state]);
     }
-  });
-});
+
+    //Normalize, such that largest will always be 1 and smallest will always be 0
+    let invert = row["invert_flag"] !== 0;
+    max -= min;
+    for (let state of states){
+        row[state] = (row[state] - min) / max;
+        if (invert){
+          row[state] = 1 - row[state];
+        }
+    }
+}
+
+//A linerar way of handling the weights, such that the difference between slider values (the tick marks on client side)
+//is the same ratio for 1 to 2 as it is for 3 to 4
+//merely multiplying by the slider value meant a 50% increase for 1 to 2 but a 20% increase for 4 to 5
+function calculateWeight(value){
+  const ratio = 1.8;
+  return Math.pow(ratio, value - 1);
+}
 
 //Reads the weights from the global data object and uses them to display the map.
 function displayWeights(){
@@ -72,7 +75,7 @@ function displayWeights(){
           weight = 0;
           break;
         }
-        weight += stat.weight * stat.data[state];
+        weight += calculateWeight(stat.weight) * stat.data[state];
       }
     }
     weights[state] = weight;
@@ -82,8 +85,9 @@ function displayWeights(){
   //Normalize and display
   for (let state of states){
     let weight = weights[state];
+    // console.log(`State ${state} has weight ${weight}`);
     if (maxWeight != 0) weight /= maxWeight;
-    $("#" + state, map).css("fill", mix_color(weight));
+    colorState(state, weight);
   }
 }
 
@@ -101,15 +105,15 @@ Constructor arguments:
  category - a category object, which must have a title
  weight - The weight the stat has in calcuations if it is active*/
 function Stat(category, weight){
-  if(!sliderContainer){
-    console.log("Document not yet ready");
-    return;
-  }
+  // if(!sliderContainer){
+  //   console.log("Document not yet ready");
+  //   return;
+  // }
   if (data.stats[category.id]){
     delete data.stats[category.id];
     data.active.delete(category.id);
   }
-  data.stats[category.id] = this;
+  data.stats[category.stat_id] = this;
 
   this.category = category;
   this.weight = weight;
@@ -132,15 +136,15 @@ Stat.prototype.updateWeight = function(weight){
 //Moves the category to the active tab and adds a slider
 Stat.prototype.enable = function(){
   this.enabled = true;
-  data.active.add(this.category.id);
+  data.active.add(this.category.stat_id);
   this.slider.remove();
   this.slider = makeActiveSlider(this.category.title, this.weight);
   this.updateWeight(this.weight);
-  data.active.add(this.category.id);
+  data.active.add(this.category.stat_id);
 
   //Add event listeners
   $(".statistic-slider", this.slider).change((event) => {
-    this.updateWeight(event.target.value);
+    this.updateWeight(Number(event.target.value));
   });
 
   $(".statistic-slider-remover", this.slider).click((event) => {
@@ -149,11 +153,16 @@ Stat.prototype.enable = function(){
 
   //Fetches the data if we do not have it.
   if(!this.data){
-    $.get("/api/data?cat=" + this.category.id, "", (data, status, xhr) => {
+    $.get("/api/data?cat=" + this.category.stat_id, "", (data, status, xhr) => {
       if (status !== "success"){
-        alert("AHHHHHHHHHHHH");
+        alert("<statistics.js> AHHHHHHH FAILURE!!!");
       } else {
         this.data = data[0];
+        console.log("\n<model.js> </api/data?cat=> this.data: " + this.data);
+        console.log("\n<model.js> </api/data?cat=> this.data[stat_id]: " + this.data["stat_id"]);
+        console.log("\n<model.js> </api/data?cat=> this.data[stat_name_short]: " + this.data["stat_name_short"]);
+        normalizeStats(this.data);
+        // console.log(this.data);
         displayWeights();
       }
     });
@@ -164,7 +173,7 @@ Stat.prototype.enable = function(){
 //Moves the category to the inactive tab and removes the slider
 Stat.prototype.disable = function(){
   this.enabled = false;
-  data.active.delete(this.category.id);
+  data.active.delete(this.category.stat_id);
   if (this.slider){
     this.slider.remove();
   }
@@ -179,27 +188,11 @@ Stat.prototype.disable = function(){
 //Deletes a statistic
 Stat.prototype.delete = function(){
   this.slider.remove();
-  data.active.remove(this.category.id);
-  delete data.stats[category.id];
+  data.active.remove(this.category.stat_id);
+  delete data.stats[category.stat_id];
 }
 
-//Creates an active slider from the template and adds it to the page
-function makeActiveSlider(title, weight){
-  let slider = activeSliderTemplate.clone();
-  $(".statistic-slider", slider).attr("value", weight);
-  $(".statistic-slider-title", slider).html(title);
-  sliderContainer.append(slider);
-  return slider;
-}
-
-//Creates an inactive slider from the template and adds it to the page
-function makeInactiveSlider(title){
-  let slider = inactiveSliderTemplate.clone();
-  $(".statistic-option-title", slider).html(title);
-  selectionContainer.append(slider);
-  return slider;
-}
-
+// For testing purposes. More details later
 if(typeof module !== "undefined" && module.exports){
   module.exports = {
     Stat: Stat,
