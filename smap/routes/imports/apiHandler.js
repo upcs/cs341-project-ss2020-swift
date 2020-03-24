@@ -37,6 +37,7 @@ function getCats(callback){
   });
 }
 
+//Finds metadata for all available categories
 function getMeta(callback){
   console.log("meta...");
   let query = metadata;
@@ -57,8 +58,8 @@ function getMeta(callback){
     console.log("MEep morp " + results[10].note);
     console.log("lack of meep morp" + results[1].note  + "!");
 
-    // let str = String.fromCharCode.apply(null, results[10].note.data);
-    // console.log("WHYYYYYYY " + str);
+    //for future reference: text in BLOBs will look like ASCII values
+    //unless it is referenced as results[x].note 
 
     callback(results);
   });
