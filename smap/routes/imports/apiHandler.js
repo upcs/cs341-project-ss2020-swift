@@ -15,6 +15,7 @@ var dummyCats2 = [{id:2, stat_name_short:"GDP"}];
 const rawQuery = consts.rawQuery;
 const states = consts.states;
 const catsQuery = consts.cats;
+const metadata = consts.metadata;
 
 //Finds all valid categories for which data can be fetched
 function getCats(callback){
@@ -35,6 +36,22 @@ function getCats(callback){
     callback(results);
   });
 }
+
+// function getMeta(callback){
+//   console.log("meta...");
+//   let query = metadata;
+//   console.log("query: " + query);
+//   dbms.dbquery(query, function(error, results){
+//     if(error){
+//       console.log("You are a failure and you will never succeed");
+//       callback(undefined);
+//       //telling the function to not carry oooooonnnn
+//       return;
+//     }
+  
+//     callback(results);
+//   });
+// }
 
 //Parses the request query for the /api/data endpoint
 //  query - the request query object
@@ -93,4 +110,5 @@ module.exports = {
   getCats: getCats,
   parseDataURL: parseDataURL,
   getData: getData
+  //getMeta: getMeta
 }
