@@ -29,7 +29,7 @@ function getCats(callback){
       //telling the function to not carry oooooonnnn
       return;
     }
-  
+
     // console.log("<apiHandler.js> results[0][stat_id]: " + results[0]["stat_id"]);
     // console.log("<apiHandler.js> results[0][stat_name_short]: " + results[0]["stat_name_short"]);
 
@@ -49,18 +49,9 @@ function getMeta(callback){
       //telling the function to not carry oooooonnnn
       return;
     }
-  
-    //console.log(JSON.stringify(results));
-    //console.log("Results!!!!" + JSON.stringify(results[0]));
-    console.log("AAAAAAAAAAAAAAAA!!!!" + JSON.stringify(results[10]));
-    console.log("!!!!" + JSON.stringify(results[9].stat_id));
-
-    console.log("MEep morp " + results[9].note);
-    console.log("lack of meep morp" + results[1].note  + "!");
 
     //for future reference: text in BLOBs will look like ASCII values
     //unless it is referenced as results[x].note 
-
     callback(results);
   });
 }
