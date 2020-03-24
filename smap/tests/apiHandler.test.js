@@ -141,3 +141,30 @@ describe('getData', () => {
   })
 
 });
+
+//tests for getMeta() function ------------------------------------
+describe('getMeta', () => {
+  test('exists', () => {
+    expect(handler).toHaveProperty('getMeta');
+  });
+
+  test('getting the right number of data/rows', (done) => {
+    function callback(data){
+ 
+      try {
+
+        //check size of dictionary returned; should be the same as the number of statistics we have
+        //plus a row for headers
+        expect(Object.keys(data).length).toBe(11);
+
+        
+
+        done();
+      } catch (error) {
+        done(error);
+      }
+    }
+    handler.getMeta(callback);
+  });
+
+});
