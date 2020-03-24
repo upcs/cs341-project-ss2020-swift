@@ -64,8 +64,79 @@ test('Create a slider', () => {
     // });
 });
 
+
+//TODO: test if all values are the same
+
 //describe appends the message in the first param before each test in the block
 describe('normalizeStats: ', () => {
+  test("50 good states, no inversion, using require NOT rewire", () => {
+    //require runs the script
+      //in jquery stuff, require makes a document.ready
+    let script = require("../../public/javascripts/model");
+
+    let row = {
+      stat_id: 1,
+      invert_flag: 0,
+      AL: 100,
+      AK: 300,
+      AZ: 200,
+      /////////
+      AR: 100,
+      CA: 100,
+      CO: 100,
+      CT: 100,
+      DE: 100,
+      FL: 100,
+      GA: 100,
+      HI: 100,
+      ID: 100,
+      IL: 100,
+      IN: 100,
+      IA: 100,
+      KS: 100,
+      KY: 100,
+      LA: 100,
+      ME: 100,
+      MD: 100,
+      MA: 100,
+      MI: 100,
+      MN: 100,
+      MS: 100,
+      MO: 100,
+      MT: 100,
+      NE: 100,
+      NV: 100,
+      NH: 100,
+      NJ: 100,
+      NM: 100,
+      NY: 100,
+      NC: 100,
+      ND: 100,
+      OH: 100,
+      OK: 100,
+      OR: 100,
+      PA: 100,
+      RI: 100,
+      SC: 100,
+      SD: 100,
+      TN: 100,
+      TX: 100,
+      UT: 100,
+      VT: 100,
+      VA: 100,
+      WA: 100,
+      WV: 100,
+      WI: 100,
+      WY: 100
+    }
+
+    script.normalizeStats(row);
+
+    expect(row["AK"]).toEqual(1); //max
+    expect(row["AL"]).toEqual(0); //min
+    expect(row["AZ"]).toEqual(.5);
+  });
+
   test("3 good states, no inversion", () => {
     //require runs the script
       //in jquery stuff, require makes a document.ready
@@ -152,4 +223,68 @@ describe('normalizeStats: ', () => {
     expect(row["AZ"]).toEqual(0); //min
   });
 
+  test("all states same value", () => {
+    let script = rewire("../../public/javascripts/model");
+    let states = script.__get__("states");
+
+    //starting at index 3, remove 47 states
+    states.splice(3,47);
+
+    let row = {
+      stat_id: 1,
+      invert_flag: 0,
+      AL: 100,
+      AK: 100,
+      AZ: 100
+    }
+
+    script.normalizeStats(row); //modifies in place from
+    expect(row["AL"]).toEqual(0);
+    expect(row["AK"]).toEqual(0);
+    expect(row["AZ"]).toEqual(0);
+  });
+
+  test("all states are negative except max which is 0", () => {
+    let script = rewire("../../public/javascripts/model");
+    let states = script.__get__("states");
+
+    //starting at index 3, remove 47 states
+    states.splice(3,47);
+
+    let row = {
+      stat_id: 1,
+      invert_flag: 0,
+      AL: -100,
+      AK: -100,
+      AZ: 0
+    }
+
+    script.normalizeStats(row); //modifies in place from
+    expect(row["AL"]).toEqual(0);
+    expect(row["AK"]).toEqual(0);
+    expect(row["AZ"]).toEqual(1);
+  });
 });
+
+// describe('calculateWeight: ', () => {
+//   test("1.8^0", () => {
+//     script = require("../../public/javascripts/model");
+//     expect(script.calculateWeight(0)).toEqual(1);
+//     expect(script.calculateWeight(1)).toEqual(1.8);
+//     expect(script.calculateWeight(2)).toEqual(3.24);
+//     expect(script.calculateWeight(-1)).toEqual(0);
+//     expect(script.calculateWeight(1.5)).toEqual(0);
+//   });
+// });
+//
+
+
+
+
+
+
+
+
+
+
+//
