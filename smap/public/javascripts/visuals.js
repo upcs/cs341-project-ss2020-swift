@@ -77,8 +77,6 @@ $("document").ready(function () {
     selectionContainer = $("#statistics-selector");
     map = $("#us-map");
 
-
-
     //Gets list of categories and creates those sliders
     $.get("/api/cats", "", function(data, status, res){
       if (status !== "success"){

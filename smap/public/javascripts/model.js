@@ -25,8 +25,13 @@ var map; //The map SVG
 //  restored: whether or not storage has been read to load active categories
 //This is the single source of truth - a change in these objects should be reflected
 //  in a change in the HTML. Usage of the functions in this module should guarantee this.
-var data = {active: new Set(), stats:{}, restored: false};
+var data = new Data();
 
+function Data(){
+  this.active = new Set();
+  this.stats = {};
+  this.restored = false;
+}
 
 function normalizeStats(row){
   console.log("<model.js> <normalizeStates() row: " + row);
@@ -106,9 +111,9 @@ Constructor arguments:
  category - a category object, which must have a title
  weight - The weight the stat has in calcuations if it is active*/
 function Stat(category, weight){
-  if (data.stats[category.id]){
-    delete data.stats[category.id];
-    data.active.delete(category.id);
+  if (data.stats[category.stat_id]){
+    delete data.stats[category.stat_id];
+    data.active.delete(category.stat_id);
   }
   data.stats[category.stat_id] = this;
 
@@ -204,6 +209,9 @@ Stat.prototype.delete = function(){
   slider_cat3 = value3;
   theme = ???
 */
+const ACTIVE_SLIDER_KEY = "active_sliders";
+const ACTIVE_SLIDER_PREFIX = "slider_";
+
 //EXTERNAL CITATION:
 //  The following code is from
 //  https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API/Using_the_Web_Storage_API
@@ -233,7 +241,7 @@ function storageAvailable(type) {
 }
 
 //EXTERNAL CITATION: https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API
-var storage = storageAvailable('localStorage') ? window.localStorage : null;
+var storage;// = storageAvailable('localStorage') ? window.localStorage : null;
 
 /*
   Called when document loaded.
@@ -244,27 +252,26 @@ var storage = storageAvailable('localStorage') ? window.localStorage : null;
   Side effects: sets data.restored to true
 */
 function restoreFromStorage(){
+  storage = storageAvailable('localStorage') ? window.localStorage : null;
   if (storage) {
-    let sliders = storage.getItem('active_sliders');
+    let sliders = storage.getItem(ACTIVE_SLIDER_KEY);
     if (sliders) {
       let cats = sliders.split(",");
       for (let cat of cats){
         cat = Number(cat);
         let stat = data.stats[cat];
-        if (stat instanceof Stat){
+        console.log(data.stats)
+        if (stat){
           stat.enable();
-
-          // Even though this is done in enable, this is needed to prevent
-          // active list from being overwritten in case window is closed during
-          // loading.
-          data.active.add(cat);
-          let value = Number(storage.getItem(`slider_${cat}`));
+          let value = Number(storage.getItem(ACTIVE_SLIDER_PREFIX + cat));
           if (value !== undefined && value >= MIN_WEIGHT && value <= MAX_WEIGHT){
             stat.updateWeight(value);
           }
         }
       }
     }
+  } else {
+    console.error("Cannot read from localStorage");
   }
   data.restored = true;
 }
@@ -277,7 +284,7 @@ function updateCategoryStorage(){
   if (storage && data.restored){
     let active = data.active.values();
     let activeArr = Array.from(active);
-    storage.setItem('active_sliders', activeArr.join(","));
+    storage.setItem(ACTIVE_SLIDER_KEY, activeArr.join(","));
   }
 }
 
@@ -296,9 +303,9 @@ function updateWeightStorage(cat){
     if (stat){
       let value = stat.weight;
       if (value < 0){
-        storage.removeItem(`slider_${cat}`);
+        storage.removeItem(ACTIVE_SLIDER_PREFIX + cat);
       } else {
-        storage.setItem(`slider_${cat}`, value);
+        storage.setItem(ACTIVE_SLIDER_PREFIX + cat, value);
       }
     }
   }
@@ -311,6 +318,16 @@ function updateWeightStorage(cat){
 if(typeof module !== "undefined" && module.exports){
   module.exports = {
     Stat: Stat,
-    DEFAULT_WEIGHT: DEFAULT_WEIGHT
+    data: data,
+    Data: Data,
+    DEFAULT_WEIGHT: DEFAULT_WEIGHT,
+    storage: {
+      available: storageAvailable,
+      updateCategory: updateCategoryStorage,
+      updateWeight: updateWeightStorage,
+      restore: restoreFromStorage,
+      ACTIVE_SLIDER_KEY: ACTIVE_SLIDER_KEY,
+      ACTIVE_SLIDER_PREFIX: ACTIVE_SLIDER_PREFIX
+    }
   }
 }
