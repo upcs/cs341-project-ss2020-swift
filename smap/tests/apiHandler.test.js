@@ -148,7 +148,7 @@ describe('getMeta', () => {
     expect(handler).toHaveProperty('getMeta');
   });
 
-  test('getting the right number of data/rows', (done) => {
+  test('validating data', (done) => {
     function callback(data){
  
       try {
@@ -157,7 +157,9 @@ describe('getMeta', () => {
         //plus a row for headers
         expect(Object.keys(data).length).toBe(11);
 
-        
+        //confirming that the data obtained for ome of the rows is correct
+        let str = String.fromCharCode.apply(null, data[secondTestId].note);
+        expect(str).toBe("Nonfarm jobs. Change in annual averages, not seasonally adjusted.");
 
         done();
       } catch (error) {
@@ -165,6 +167,36 @@ describe('getMeta', () => {
       }
     }
     handler.getMeta(callback);
+  });
+
+});
+
+//tests for getCats() frunction -----------------------------------
+describe('getCats', () => {
+  test('exists', () => {
+    expect(handler).toHaveProperty('getCats');
+  });
+
+  test('validating data', (done) => {
+    function callback(data){
+ 
+      try {
+
+        //check size of dictionary returned; should be the same as the number of statistics we have
+        //plus a row for headers
+        expect(Object.keys(data).length).toBe(10);
+
+        //confirming that the data obtained for ome of the rows is correct
+        expect(data[1].stat_id).toBe(firstTestId);  //will need to fix after 
+        expect(data[1].stat_name_short).toBe("Reported violent crime rate ");  //will need to fix after 
+
+
+        done();
+      } catch (error) {
+        done(error);
+      }
+    }
+    handler.getCats(callback);
   });
 
 });
