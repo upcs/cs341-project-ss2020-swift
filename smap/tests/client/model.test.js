@@ -96,8 +96,8 @@ describe('restoreFromStorage', () => {
 
   test('null storage', () => {
     let script = rewire(path);
-    let available = jest.fn(() => false);
-    script.__set__('storageAvailable', available);
+    let available = jest.fn(() => {});
+    script.__set__('setStorage', available);
     let storage = window.localStorage;
     storage.setItem(script.storage.ACTIVE_SLIDER_KEY, "3");
     model.data.stats[3] = new FakeStat(3)
@@ -168,3 +168,63 @@ describe('restoreFromStorage', () => {
     expect(model.data.restored).toBeTruthy();
   });
 });
+
+describe('updateCategoryStorage', () => {
+
+  let spy;
+  let setItem;
+
+  beforeEach(() => {
+    resetData();
+    setItem = jest.fn(() => {});
+    spy = jest.spyOn(window, 'localStorage', 'get').mockImplementation(() => {
+      return {
+        setItem: setItem,
+        removeItem: () => {}
+      }
+    });
+
+    //This will call setItem and removeItem
+    model.storage.reset();
+  });
+
+  afterEach(() => {
+    spy.mockRestore();
+  });
+
+  test('not restored', () => {
+    model.data.active.add(2);
+    expect(model.data.restored).toBeFalsy();
+    expect(setItem.mock.calls.length).toEqual(1);
+    model.storage.updateCategory();
+    expect(setItem.mock.calls.length).toEqual(1);
+  });
+
+  test('nothing active', () => {
+    model.data.restored = true;
+    expect(model.data.active.size).toEqual(0);
+    expect(setItem.mock.calls.length).toEqual(1);
+    model.storage.updateCategory();
+    expect(setItem.mock.calls.length).toEqual(2);
+    expect(setItem.mock.calls[1]).toEqual([model.storage.ACTIVE_SLIDER_KEY, ""]);
+  });
+
+  test('one active', () => {
+    model.data.restored = true;
+    model.data.active.add(2);
+    expect(setItem.mock.calls.length).toEqual(1);
+    model.storage.updateCategory();
+    expect(setItem.mock.calls.length).toEqual(2);
+    expect(setItem.mock.calls[1]).toEqual([model.storage.ACTIVE_SLIDER_KEY, "2"]);
+  });
+
+  test('many active', () => {
+    model.data.restored = true;
+    model.data.active.add(2);
+    model.data.active.add(3);
+    expect(setItem.mock.calls.length).toEqual(1);
+    model.storage.updateCategory();
+    expect(setItem.mock.calls.length).toEqual(2);
+    expect(setItem.mock.calls[1]).toEqual([model.storage.ACTIVE_SLIDER_KEY, "2,3"]);
+  });
+})

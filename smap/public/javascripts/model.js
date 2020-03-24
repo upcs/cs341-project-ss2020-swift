@@ -241,7 +241,10 @@ function storageAvailable(type) {
 }
 
 //EXTERNAL CITATION: https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API
-var storage;// = storageAvailable('localStorage') ? window.localStorage : null;
+var storage;
+function setStorage(){
+  storage = storageAvailable('localStorage') ? window.localStorage : null;
+}
 
 /*
   Called when document loaded.
@@ -252,7 +255,7 @@ var storage;// = storageAvailable('localStorage') ? window.localStorage : null;
   Side effects: sets data.restored to true
 */
 function restoreFromStorage(){
-  storage = storageAvailable('localStorage') ? window.localStorage : null;
+  setStorage();
   if (storage) {
     let sliders = storage.getItem(ACTIVE_SLIDER_KEY);
     if (sliders) {
@@ -260,7 +263,6 @@ function restoreFromStorage(){
       for (let cat of cats){
         cat = Number(cat);
         let stat = data.stats[cat];
-        console.log(data.stats)
         if (stat){
           stat.enable();
           let value = Number(storage.getItem(ACTIVE_SLIDER_PREFIX + cat));
@@ -326,6 +328,7 @@ if(typeof module !== "undefined" && module.exports){
       updateCategory: updateCategoryStorage,
       updateWeight: updateWeightStorage,
       restore: restoreFromStorage,
+      reset: setStorage,
       ACTIVE_SLIDER_KEY: ACTIVE_SLIDER_KEY,
       ACTIVE_SLIDER_PREFIX: ACTIVE_SLIDER_PREFIX
     }
