@@ -17,7 +17,7 @@ router.get('/cats', function(req, res, next) {
   let contents = handler.getCats(function(results){
     if(!results){
       next(createError(404));
-      // return;
+      return;
     }
 
     // console.log("<api.js>results[0][stat_id]: " + results[0]["stat_id"]);
@@ -54,7 +54,7 @@ router.get('/meta', function(req, res, next){
   let contents = handler.getMeta(function(results){
     if(!results){
       next(createError(404));
-      // return;
+      return;
     }
 
     // console.log("<api.js>results[0][stat_id]: " + results[0]["stat_id"]);
