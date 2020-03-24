@@ -154,12 +154,11 @@ describe('getMeta', () => {
       try {
 
         //check size of dictionary returned; should be the same as the number of statistics we have
-        //plus a row for headers
-        expect(Object.keys(data).length).toBe(11);
+        expect(Object.keys(data).length).toBe(10);
 
         //confirming that the data obtained for ome of the rows is correct
         let str = data[secondTestId].note.toString('utf-8');
-        expect(str).toBe("Nonfarm jobs. Change in annual averages, not seasonally adjusted.");
+        expect(str).toBe("n.a.");
         done();
       } catch (error) {
         done(error);
@@ -182,7 +181,6 @@ describe('getCats', () => {
       try {
 
         //check size of dictionary returned; should be the same as the number of statistics we have
-        //plus a row for headers
         expect(Object.keys(data).length).toBe(10);
 
         //confirming that the data obtained for ome of the rows is correct

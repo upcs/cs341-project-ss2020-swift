@@ -53,9 +53,9 @@ function getMeta(callback){
     //console.log(JSON.stringify(results));
     //console.log("Results!!!!" + JSON.stringify(results[0]));
     console.log("AAAAAAAAAAAAAAAA!!!!" + JSON.stringify(results[10]));
-    console.log("!!!!" + JSON.stringify(results[10].stat_id));
+    console.log("!!!!" + JSON.stringify(results[9].stat_id));
 
-    console.log("MEep morp " + results[10].note);
+    console.log("MEep morp " + results[9].note);
     console.log("lack of meep morp" + results[1].note  + "!");
 
     //for future reference: text in BLOBs will look like ASCII values
