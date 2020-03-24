@@ -44,7 +44,7 @@ function normalizeStats(row){
     }
 
     //Normalize, such that largest will always be 1 and smallest will always be 0
-    let invert = row["invert_flag"] !== 0;
+    let invert = row["invert_flag"] === 1;
     max -= min;
     for (let state of states){
         row[state] = (row[state] - min) / max;
@@ -85,7 +85,6 @@ function displayWeights(){
   }
 
   //Normalize
-  weights["invert_flag"] = 0;
   normalizeStats(weights);
 
   //
