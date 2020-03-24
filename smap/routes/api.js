@@ -14,7 +14,18 @@ router.get('/', function(req, res, next) {
 
 // response to request for categories available
 router.get('/cats', function(req, res, next) {
-  res.json(handler.getCats());
+  let contents = handler.getCats(function(results){
+    if(!results){
+      next(createError(404));
+      // return;
+    }
+
+    // console.log("<api.js>results[0][stat_id]: " + results[0]["stat_id"]);
+    // console.log("<api.js>results[0][stat_name_short]: " + results[0]["stat_name_short"]);
+
+    // return contents, a object (dictionary) containing the key/value pairs of requested categories
+    res.json(results);
+  });
 });
 
 // response to request for data for specific categories, as specified by URL encoding
@@ -38,9 +49,19 @@ router.get('/data', function(req, res, next){
   });
 });
 
-// response to request for metadata for all of the categories...
-// router.get('/meta', function(req, res, next){
-//   res.json(handler.getMeta());
-// });
+//response to request for metadata for all of the categories...
+router.get('/meta', function(req, res, next){
+  let contents = handler.getMeta(function(results){
+    if(!results){
+      next(createError(404));
+      // return;
+    }
+
+    // console.log("<api.js>results[0][stat_id]: " + results[0]["stat_id"]);
+    // console.log("<api.js>results[0][stat_name_short]: " + results[0]["stat_name_short"]);
+
+    // return contents, a object (dictionary) containing the key/value pairs of requested categories
+    res.json(results);
+  });});
 
 module.exports = router;

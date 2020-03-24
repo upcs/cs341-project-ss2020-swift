@@ -97,6 +97,7 @@ $("document").ready(function () {
           console.log("Error getting metadata");
           alert("AHHHH no metadata");
         } else {
+            alert(data[1].published_by + " " + data[0].published_by);
         //   for (let cat of data){
         //     cat.title = cat.stat_name_short;
         //     new Stat(cat, DEFAULT_WEIGHT);

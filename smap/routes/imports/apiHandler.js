@@ -37,21 +37,24 @@ function getCats(callback){
   });
 }
 
-// function getMeta(callback){
-//   console.log("meta...");
-//   let query = metadata;
-//   console.log("query: " + query);
-//   dbms.dbquery(query, function(error, results){
-//     if(error){
-//       console.log("You are a failure and you will never succeed");
-//       callback(undefined);
-//       //telling the function to not carry oooooonnnn
-//       return;
-//     }
+function getMeta(callback){
+  console.log("meta...");
+  let query = metadata;
+  console.log("query: " + query);
+  dbms.dbquery(query, function(error, results){
+    if(error){
+      console.log("You are a failure and you will never succeed");
+      callback(undefined);
+      //telling the function to not carry oooooonnnn
+      return;
+    }
   
-//     callback(results);
-//   });
-// }
+    console.log(results);
+    console.log("Results!!!!" + results[0].note[0]);
+
+    callback(results);
+  });
+}
 
 //Parses the request query for the /api/data endpoint
 //  query - the request query object
@@ -109,6 +112,6 @@ function getData(cats, callback){
 module.exports = {
   getCats: getCats,
   parseDataURL: parseDataURL,
-  getData: getData
-  //getMeta: getMeta
+  getData: getData,
+  getMeta: getMeta
 }
