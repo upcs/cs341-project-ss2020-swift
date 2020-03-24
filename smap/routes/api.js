@@ -12,9 +12,19 @@ router.get('/', function(req, res, next) {
   next(createError(404));
 });
 
-// response to request for categories available
 router.get('/cats', function(req, res, next) {
-  res.json(handler.getCats());
+  let contents = handler.getCats(function(results){
+    if(!results){
+      next(createError(404));
+      // return;
+    }
+
+    // console.log("<api.js>results[0][stat_id]: " + results[0]["stat_id"]);
+    // console.log("<api.js>results[0][stat_name_short]: " + results[0]["stat_name_short"]);
+
+    // return contents, a object (dictionary) containing the key/value pairs of requested categories
+    res.json(results);
+  });
 });
 
 // response to request for data for specific categories, as specified by URL encoding
@@ -26,12 +36,18 @@ router.get('/data', function(req, res, next){
     return;
   }
 
+  console.log("api.js[router.get /data]: cats: " + cats);
+
   //Gets data associated with those categories, or throws 404 if any category does not exist
   let contents = handler.getData(cats, function(results){
     if(!results){
       next(createError(404));
       return;
     }
+
+    // console.log("<api.js> results: " + results);
+    // console.log("<api.js> results[0]: " + results[0]);
+    // console.log("CCCCCCCCCCCCCCCCCCCCCCCCCresults[1][stat_id]: " + results[1]["stat_id"]);
 
     // return contents, a object (dictionary) containing the key/value pairs of requested categories
     res.json(results);
