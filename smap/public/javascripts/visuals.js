@@ -92,18 +92,18 @@ $("document").ready(function () {
     });
 
     //Gets metadata information and populates the windows
-    $.get("/api/meta", "", function(data, status, res){
-        if (status !== "success"){
-          console.log("Error getting metadata");
-          alert("AHHHH no metadata");
-        } else {
-            alert(data[1].published_by + " " + data[0].published_by);
-        //   for (let cat of data){
-        //     cat.title = cat.stat_name_short;
-        //     new Stat(cat, DEFAULT_WEIGHT);
-        //   }
-        }
-      });
+    // $.get("/api/meta", "", function(data, status, res){
+    //     if (status !== "success"){
+    //       console.log("Error getting metadata");
+    //       alert("AHHHH no metadata");
+    //     } else {
+    //         alert(data[1].published_by + " " + data[0].published_by);
+    //     //   for (let cat of data){
+    //     //     cat.title = cat.stat_name_short;
+    //     //     new Stat(cat, DEFAULT_WEIGHT);
+    //     //   }
+    //     }
+    //   });
 
 
     // The inital top element
