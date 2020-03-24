@@ -15,6 +15,7 @@ var dummyCats2 = [{id:2, stat_name_short:"GDP"}];
 const rawQuery = consts.rawQuery;
 const states = consts.states;
 const catsQuery = consts.cats;
+const metadata = consts.metadata;
 
 //Finds all valid categories for which data can be fetched
 function getCats(callback){
@@ -31,6 +32,34 @@ function getCats(callback){
   
     // console.log("<apiHandler.js> results[0][stat_id]: " + results[0]["stat_id"]);
     // console.log("<apiHandler.js> results[0][stat_name_short]: " + results[0]["stat_name_short"]);
+
+    callback(results);
+  });
+}
+
+//Finds metadata for all available categories
+function getMeta(callback){
+  console.log("meta...");
+  let query = metadata;
+  console.log("query: " + query);
+  dbms.dbquery(query, function(error, results){
+    if(error){
+      console.log("You are a failure and you will never succeed");
+      callback(undefined);
+      //telling the function to not carry oooooonnnn
+      return;
+    }
+  
+    //console.log(JSON.stringify(results));
+    //console.log("Results!!!!" + JSON.stringify(results[0]));
+    console.log("AAAAAAAAAAAAAAAA!!!!" + JSON.stringify(results[10]));
+    console.log("!!!!" + JSON.stringify(results[10].stat_id));
+
+    console.log("MEep morp " + results[10].note);
+    console.log("lack of meep morp" + results[1].note  + "!");
+
+    //for future reference: text in BLOBs will look like ASCII values
+    //unless it is referenced as results[x].note 
 
     callback(results);
   });
@@ -92,5 +121,6 @@ function getData(cats, callback){
 module.exports = {
   getCats: getCats,
   parseDataURL: parseDataURL,
-  getData: getData
+  getData: getData,
+  getMeta: getMeta
 }
