@@ -347,6 +347,8 @@ body {
     grid-template-areas: "spacing1 spacing2 center-nav legend theme-selector" ;
     /* Coloring */
     background-color: var(--subgroup-color);
+    /* Other */
+    user-select: none;
 }
 
 #nav-arrow {
@@ -377,8 +379,6 @@ body {
     grid-area: legend;
     justify-self: center;
     align-self: middle;
-    /* Other */
-    user-select: none;
 }
 
 #map-legend {
