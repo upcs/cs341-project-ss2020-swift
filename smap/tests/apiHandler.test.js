@@ -150,7 +150,7 @@ describe('getMeta', () => {
 
   test('validating data', (done) => {
     function callback(data){
- 
+
       try {
 
         //check size of dictionary returned; should be the same as the number of statistics we have
@@ -158,9 +158,8 @@ describe('getMeta', () => {
         expect(Object.keys(data).length).toBe(11);
 
         //confirming that the data obtained for ome of the rows is correct
-        let str = String.fromCharCode.apply(null, data[secondTestId].note);
+        let str = data[secondTestId].note.toString('utf-8');
         expect(str).toBe("Nonfarm jobs. Change in annual averages, not seasonally adjusted.");
-
         done();
       } catch (error) {
         done(error);
@@ -179,7 +178,7 @@ describe('getCats', () => {
 
   test('validating data', (done) => {
     function callback(data){
- 
+
       try {
 
         //check size of dictionary returned; should be the same as the number of statistics we have
@@ -187,8 +186,8 @@ describe('getCats', () => {
         expect(Object.keys(data).length).toBe(10);
 
         //confirming that the data obtained for ome of the rows is correct
-        expect(data[1].stat_id).toBe(firstTestId);  //will need to fix after 
-        expect(data[1].stat_name_short).toBe("Reported violent crime rate ");  //will need to fix after 
+        expect(data[1].stat_id).toBe(firstTestId);  //will need to fix after
+        expect(data[1].stat_name_short).toBe("Reported violent crime rate ");  //will need to fix after
 
 
         done();
