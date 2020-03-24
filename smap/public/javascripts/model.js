@@ -40,17 +40,23 @@ function normalizeStats(row){
         min = Math.min(min, row[state]);
     }
 
-    if (max === min){
-      return;
+    if (max === min && max == 0){
+        return; //everything is already zero
+    } else if(max===min){
+        for (let state of states){
+            row[state] = 0.5; //assign everything to be the middle value
+        }
+        return;
     }
 
     //Normalize, such that largest will always be 1 and smallest will always be 0
     let invert = row["invert_flag"] === 1;
     max -= min;
+
     for (let state of states){
         row[state] = (row[state] - min) / max;
         if (invert){
-          row[state] = 1 - row[state];
+            row[state] = 1 - row[state];
         }
     }
 }
@@ -60,7 +66,7 @@ function normalizeStats(row){
 //merely multiplying by the slider value meant a 50% increase for 1 to 2 but a 20% increase for 4 to 5
 function calculateWeight(value){
   if(!Number.isInteger(value) || value<=0){
-      console.error("<model.js><calculateWeight> Invalid slider value");
+      console.error("<model.js><calculateWeight> Invalid slider value (must be int >= 1)");
       return 0;
   }
   const ratio = 1.8;
@@ -203,6 +209,7 @@ if(typeof module !== "undefined" && module.exports){
   module.exports = {
     Stat: Stat,
     normalizeStats: normalizeStats,
+    calculateWeight: calculateWeight,
     DEFAULT_WEIGHT: DEFAULT_WEIGHT
   }
 }

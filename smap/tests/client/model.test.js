@@ -65,8 +65,6 @@ test('Create a slider', () => {
 });
 
 
-//TODO: test if all values are the same
-
 //describe appends the message in the first param before each test in the block
 describe('normalizeStats: ', () => {
   test("50 good states, no inversion, using require NOT rewire", () => {
@@ -223,7 +221,7 @@ describe('normalizeStats: ', () => {
     expect(row["AZ"]).toEqual(0); //min
   });
 
-  test("all states same value", () => {
+  test("all states same value, not 0", () => {
     let script = rewire("../../public/javascripts/model");
     let states = script.__get__("states");
 
@@ -236,6 +234,27 @@ describe('normalizeStats: ', () => {
       AL: 100,
       AK: 100,
       AZ: 100
+    }
+
+    script.normalizeStats(row); //modifies in place from
+    expect(row["AL"]).toEqual(0.5);
+    expect(row["AK"]).toEqual(0.5);
+    expect(row["AZ"]).toEqual(0.5);
+  });
+
+  test("all states 0", () => {
+    let script = rewire("../../public/javascripts/model");
+    let states = script.__get__("states");
+
+    //starting at index 3, remove 47 states
+    states.splice(3,47);
+
+    let row = {
+      stat_id: 1,
+      invert_flag: 0,
+      AL: 0,
+      AK: 0,
+      AZ: 0
     }
 
     script.normalizeStats(row); //modifies in place from
@@ -266,17 +285,34 @@ describe('normalizeStats: ', () => {
   });
 });
 
-// describe('calculateWeight: ', () => {
-//   test("1.8^0", () => {
-//     script = require("../../public/javascripts/model");
-//     expect(script.calculateWeight(0)).toEqual(1);
-//     expect(script.calculateWeight(1)).toEqual(1.8);
-//     expect(script.calculateWeight(2)).toEqual(3.24);
-//     expect(script.calculateWeight(-1)).toEqual(0);
-//     expect(script.calculateWeight(1.5)).toEqual(0);
-//   });
-// });
-//
+describe('calculateWeight: ', () => {
+  test("1.8^0", () => {
+    let script = require("../../public/javascripts/model");
+
+    let zero = 0;
+
+    let ans = script.calculateWeight(0);
+
+    expect(ans).toEqual(0);
+    expect(script.calculateWeight(1)).toEqual(1);
+    expect(script.calculateWeight(2)).toEqual(1.8);
+    expect(script.calculateWeight(3)).toEqual(3.24);
+    expect(script.calculateWeight(-1)).toEqual(0);
+    expect(script.calculateWeight(1.5)).toEqual(0);
+  });
+});
+
+
+  test("'calculate weight: ", () => {
+    //require runs the script
+      //in jquery stuff, require makes a document.ready
+    let script = require("../../public/javascripts/model");
+
+    // script.normalizeStats(row);
+    script.calculateWeight(1);
+    // script.calculateWeight3(2);
+
+  });
 
 
 
