@@ -184,8 +184,8 @@ describe('getCats', () => {
         expect(Object.keys(data).length).toBe(10);
 
         //confirming that the data obtained for ome of the rows is correct
-        expect(data[1].stat_id).toBe(firstTestId);  //will need to fix after
-        expect(data[1].stat_name_short).toBe("Reported violent crime rate ");  //will need to fix after
+        expect(data[1].stat_id).toBe(firstTestId);
+        expect(data[1].stat_name_short).toBe("Reported violent crime rate ");
 
 
         done();
