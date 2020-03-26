@@ -303,17 +303,6 @@ describe('calculateWeight: ', () => {
 });
 
 
-  test("'calculate weight: ", () => {
-    //require runs the script
-      //in jquery stuff, require makes a document.ready
-    let script = require("../../public/javascripts/model");
-
-    // script.normalizeStats(row);
-    script.calculateWeight(1);
-    // script.calculateWeight3(2);
-
-  });
-
 
 
 
