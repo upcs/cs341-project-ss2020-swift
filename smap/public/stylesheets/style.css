@@ -792,7 +792,7 @@ body {
     grid-template-areas:
         "good-stats good-stats-details"
         "bad-stats bad-stats-details"
-    ;    
+    ;
 }
 
 #subgrid-item1{
