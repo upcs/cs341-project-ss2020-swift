@@ -10,6 +10,7 @@ const states = ["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI"
 "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR",
 "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"];
 
+
 //Global variables
 var sliderContainer; //Where the active sliders are stored
 var selectionContainer; //Where the inactive sliders are stored
@@ -26,7 +27,7 @@ var data = {active: new Set(), stats:{}};
 
 //Converts values into a range between 0 and 1
 //Args:
-//  row - a dictionary mapping states to numbers.
+//  row - a dictionary mapping states to numbers. (ex. stat_name_short)
 //        in addition, there must be an invert_flag key, which should have value
 //        0 to not invert and 1 otherwise.
 function normalizeStats(row){
@@ -39,25 +40,35 @@ function normalizeStats(row){
         min = Math.min(min, row[state]);
     }
 
-    if (max === min){
-      return;
+    if (max === min && max == 0){
+        return; //everything is already zero
+    } else if(max===min){
+        for (let state of states){
+            row[state] = 0.5; //assign everything to be the middle value
+        }
+        return;
     }
 
     //Normalize, such that largest will always be 1 and smallest will always be 0
     let invert = row["invert_flag"] === 1;
     max -= min;
+
     for (let state of states){
         row[state] = (row[state] - min) / max;
         if (invert){
-          row[state] = 1 - row[state];
+            row[state] = 1 - row[state];
         }
     }
 }
 
-//A linerar way of handling the weights, such that the difference between slider values (the tick marks on client side)
+//A more intuitive (exponential) way of handling the weights, such that the difference between slider values (the tick marks on client side)
 //is the same ratio for 1 to 2 as it is for 3 to 4
 //merely multiplying by the slider value meant a 50% increase for 1 to 2 but a 20% increase for 4 to 5
 function calculateWeight(value){
+  if(!Number.isInteger(value) || value<=0){
+      console.error("<model.js><calculateWeight> Invalid slider value (must be int >= 1)");
+      return 0;
+  }
   const ratio = 1.8;
   return Math.pow(ratio, value - 1);
 }
@@ -161,11 +172,9 @@ Stat.prototype.enable = function(){
         alert("<statistics.js> AHHHHHHH FAILURE!!!");
       } else {
         this.data = data[0];
-        console.log("\n<model.js> </api/data?cat=> this.data: " + this.data);
-        console.log("\n<model.js> </api/data?cat=> this.data[stat_id]: " + this.data["stat_id"]);
-        console.log("\n<model.js> </api/data?cat=> this.data[stat_name_short]: " + this.data["stat_name_short"]);
+
+        // this.data is an object with all of the column names ["stat_id"], ["stat_name_short"], ["AL"], ["AK"], etc.
         normalizeStats(this.data);
-        // console.log(this.data);
         displayWeights();
       }
     });
@@ -199,6 +208,8 @@ Stat.prototype.delete = function(){
 if(typeof module !== "undefined" && module.exports){
   module.exports = {
     Stat: Stat,
+    normalizeStats: normalizeStats,
+    calculateWeight: calculateWeight,
     DEFAULT_WEIGHT: DEFAULT_WEIGHT
   }
 }
