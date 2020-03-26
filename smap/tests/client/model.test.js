@@ -289,8 +289,6 @@ describe('calculateWeight: ', () => {
   test("1.8^0", () => {
     let script = require("../../public/javascripts/model");
 
-    let zero = 0;
-
     let ans = script.calculateWeight(0);
 
     expect(ans).toEqual(0);
