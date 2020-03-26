@@ -346,7 +346,7 @@ if(typeof module !== "undefined" && module.exports){
       reset: setStorage,
       ACTIVE_SLIDER_KEY: ACTIVE_SLIDER_KEY,
       ACTIVE_SLIDER_PREFIX: ACTIVE_SLIDER_PREFIX
-    }
+    },
     normalizeStats: normalizeStats,
     calculateWeight: calculateWeight
   }
