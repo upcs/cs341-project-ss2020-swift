@@ -621,17 +621,128 @@ body {
     background-color: var(--group-color);
 }
 
+/*******************************/
+/***  Metadata Alert Styling ***/
+/*******************************/
+
+.alert-container {
+    /* display: none; */
+    display: grid;
+    grid-template-columns: auto 65%;
+    grid-template-areas: ". alert .";
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 10;
+    right: 0;
+    top: 0;
+    left: 0;
+    bottom: 0;
+}
+
+#metadata-alert {
+    background-color: var(--color-light);
+    padding: 20px;
+    padding-right: 30px;
+    padding-left: 30px;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.75);
+    border-bottom-left-radius: 10px;
+    display: grid;
+    align-items: center;
+    grid-row-gap: 30px;
+    justify-content: space-around;
+    grid-template-rows: auto auto;
+    grid-template-columns: auto;
+    grid-template-areas:
+        "metadata-title . metadata-date"
+        "metadata-notes metadata-notes metadata-notes"
+        "metadata-publisher metadata-publisher metadata-publisher"
+    ;
+    z-index: 12;
+}
+
+#metadata-title {
+    grid-area: metadata-title;
+    font-size: 28px;
+}
+
+#metadata-date {
+    grid-area: metadata-date;
+    font-size: 28px;
+}
+
+#metadata-notes {
+    grid-area: metadata-notes;
+}
+
+#metadata-publisher {
+    grid-area: metadata-publisher;
+}
+
+.alert-close {
+    float: right;
+    padding: 6px;
+    padding-left: 30px;
+    padding-right: 30px;
+    border-radius: 0px 0px 10px 10px;
+    background-color: var(--accent-color);
+    box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.5);
+    font-weight: bold;
+    font-size: 18px;
+    color: rgba(0, 0, 0, 1);
+    user-select: none;
+    cursor: pointer;
+}
+
+.alert-close:hover {
+    background-color: var(--accent-color-light);
+}
+
+.alert-close:active {
+    background-color: var(--accent-color-dark);
+}
+
+.alert-background {
+    width: 100%;
+    border-radius: 0px 0px 10px 10px;
+    padding-bottom: 35px;
+    background-color: rgba(120, 120, 120, 1);
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.75);
+    z-index: 11;
+}
+
+.alert-body-and-close {
+    grid-area: alert;
+}
+
+.blurred {
+    -webkit-filter: blur(10px);
+    -moz-filter: blur(10px);
+    -o-filter: blur(10px);
+    -ms-filter: blur(10px);
+    filter: blur(10px);
+}
+
+.hidden {
+    display: none;
+}
+
+.unscrollable {
+    overflow: hidden;
+}
+
 /******************************/
 /***  State Window Section  ***/
 /******************************/
 
 #state-window-background {
     position: fixed;
-    display: block; 
-    width: 100%; 
-    height: 100%; 
-    top: 0; 
-    left: 0; 
+    display: block;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
     right: 0;
     bottom: 0;
     background-color: rgba(100,0,100,0.5); /* Black background with opacity */
@@ -639,83 +750,63 @@ body {
     cursor: pointer; /* Add a pointer on hover */
 }
 
-#state-window{
-    position: fixed; 
-    display: grid;  
-    width: 70%; 
-    height: 50%; 
-    /* top: 0; 
-    left: ; 
-    right: 0;
-    bottom: 0; */
-    margin-left: 15%;
-    margin-right: 15%;
-    margin-top: 10%; 
-    /* TODO: fix the vertical margins to be more stable */
-
+#state-window-container{
+    display: grid;
     background-color: rgba(255,255,255,1); /* full white */
-    z-index: 4; /* Specify a stack order in case you're using a different order for other elements */
-    cursor: pointer; /* Add a pointer on hover */
-
-    grid-template-columns: auto auto auto;
-    grid-template-rows: auto auto auto;
-    background-color: #00FF00;
-    padding: 10px;     
+    height: 500px;
+    grid-template-columns: 33% 67%;
+    grid-template-rows: 20% 80%;
+    grid-template-areas:
+        "state-name state-rank"
+        "state-display state-window-data-container"
+    ;
+    /* padding: 10px; */
 }
 
 .grid-item{
-    background-color: rgba(0,0,255,1);
-    border: 1px solid rgba(0,0,100,0.7); 
-     padding: 20px;
+    background-color: rgba(128,128,255,1); /* blue */
+    border: 1px solid rgba(0,0,100,0.7); /* less blue */
+    /* padding: 20px; */
     font-size: 30px;
     text-align: center;
 }
 
-#grid-item1{
-    grid-column-start: 1; 
-    grid-column-end: 2; 
-    grid-row-start: 1; 
-    grid-column-end: 2; 
+#grid-item-state-name{
+    grid-area: state-name;
 }
 
-#grid-item2{
-    grid-column-start: 2; 
-    grid-column-end: 3;
-    grid-row-start: 1; 
-    grid-column-end: 2; 
+#grid-item-state-rank{
+    grid-area: state-rank;
 }
 
-#grid-item3{
-    grid-column-start: 1; 
-    grid-column-end: 4;
-    grid-row-start: 2; 
-    grid-column-end: 6; 
+#grid-item-state-display{
+    grid-area: state-display;
 }
 
-#grid-item4{
-    grid-column-start: 2; 
-    grid-column-end: 3;
-    grid-row-start: 2; 
-    grid-column-end: 4; 
+#state-window-data-container{
+    grid-area: state-window-data-container;
+    display: grid;
+    background-color: var(--color-light);
+    grid-template-columns: 50% 50%;
+    grid-template-rows: 50% 50%;
+    grid-template-areas:
+        "good-stats good-stats-details"
+        "bad-stats bad-stats-details"
+    ;    
 }
 
-#grid-item5{
-    grid-column-start: 3; 
-    grid-column-end: 4;
-    grid-row-start: 2; 
-    grid-column-end: 4; 
+#subgrid-item1{
+    grid-area: good-stats
 }
 
-#grid-item6{
-    grid-column-start: 2; 
-    grid-column-end: 3;
-    grid-row-start: 4; 
-    grid-column-end: 6; 
+#subgrid-item2{
+    grid-area: good-stats-details
 }
 
-#grid-item7{
-    grid-column-start: 3; 
-    grid-column-end: 4;
-    grid-row-start: 4; 
-    grid-column-end: 6; 
+#subgrid-item3{
+    grid-area: bad-stats
+}
+
+#subgrid-item4{
+    grid-area: bad-stats-details
 }
