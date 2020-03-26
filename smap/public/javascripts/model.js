@@ -4,7 +4,9 @@
 
 "use strict";
 
+const MIN_WEIGHT = 1;
 const DEFAULT_WEIGHT = 3; //The weight of a slider that is just made active
+const MAX_WEIGHT = 5;
 const states = ["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI",
 "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS",
 "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR",
@@ -21,9 +23,16 @@ var map; //The map SVG
 //An object storing all statistics
 //  active: a set of active category ids
 //  stats: an object mapping category ids to Stat objects
+//  restored: whether or not storage has been read to load active categories
 //This is the single source of truth - a change in these objects should be reflected
 //  in a change in the HTML. Usage of the functions in this module should guarantee this.
-var data = {active: new Set(), stats:{}};
+var data = new Data();
+
+function Data(){
+  this.active = new Set();
+  this.stats = {};
+  this.restored = false;
+}
 
 //Converts values into a range between 0 and 1
 //Args:
@@ -119,13 +128,9 @@ Constructor arguments:
  category - a category object, which must have a title
  weight - The weight the stat has in calcuations if it is active*/
 function Stat(category, weight){
-  // if(!sliderContainer){
-  //   console.log("Document not yet ready");
-  //   return;
-  // }
-  if (data.stats[category.id]){
-    delete data.stats[category.id];
-    data.active.delete(category.id);
+  if (data.stats[category.stat_id]){
+    delete data.stats[category.stat_id];
+    data.active.delete(category.stat_id);
   }
   data.stats[category.stat_id] = this;
 
@@ -140,6 +145,7 @@ function Stat(category, weight){
 //Updates the HTML to reflect this new weight
 Stat.prototype.updateWeight = function(weight){
   this.weight = weight;
+  updateWeightStorage(this.category.stat_id);
   if (this.enabled){
     $(".statistic-slider", this.slider).attr("value", weight);
     displayWeights();
@@ -164,6 +170,8 @@ Stat.prototype.enable = function(){
   $(".statistic-slider-remover", this.slider).click((event) => {
     this.disable();
   });
+
+  updateCategoryStorage();
 
   //Fetches the data if we do not have it.
   if(!this.data){
@@ -194,6 +202,7 @@ Stat.prototype.disable = function(){
   //Add event listeners
   this.slider.click((event) => {this.enable()});
 
+  updateCategoryStorage();
   displayWeights();
 }
 
@@ -204,12 +213,141 @@ Stat.prototype.delete = function(){
   delete data.stats[category.stat_id];
 }
 
+
+//region storage
+
+/*
+  Storage format: (catN is the id of a category)
+  active_sliders = cat1,cat2,cat3;
+  slider_cat1 = value1;
+  slider_cat2 = value2;
+  slider_cat3 = value3;
+  theme = ???
+*/
+const ACTIVE_SLIDER_KEY = "active_sliders";
+const ACTIVE_SLIDER_PREFIX = "slider_";
+
+//EXTERNAL CITATION:
+//  The following code is from
+//  https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API/Using_the_Web_Storage_API
+function storageAvailable(type) {
+    var storage;
+    try {
+        storage = window[type];
+        var x = '__storage_test__';
+        storage.setItem(x, x);
+        storage.removeItem(x);
+        return true;
+    }
+    catch(e) {
+        return e instanceof DOMException && (
+            // everything except Firefox
+            e.code === 22 ||
+            // Firefox
+            e.code === 1014 ||
+            // test name field too, because code might not be present
+            // everything except Firefox
+            e.name === 'QuotaExceededError' ||
+            // Firefox
+            e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
+            // acknowledge QuotaExceededError only if there's something already stored
+            (storage && storage.length !== 0);
+    }
+}
+
+//EXTERNAL CITATION: https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API
+var storage;
+function setStorage(){
+  storage = storageAvailable('localStorage') ? window.localStorage : null;
+}
+
+/*
+  Called when document loaded.
+  Reads local storage.
+  Set window configuration to these settings.
+
+  Arguments: none
+  Side effects: sets data.restored to true
+*/
+function restoreFromStorage(){
+  setStorage();
+  if (storage) {
+    let sliders = storage.getItem(ACTIVE_SLIDER_KEY);
+    if (sliders) {
+      let cats = sliders.split(",");
+      for (let cat of cats){
+        cat = Number(cat);
+        let stat = data.stats[cat];
+        if (stat){
+          stat.enable();
+          let value = Number(storage.getItem(ACTIVE_SLIDER_PREFIX + cat));
+          if (value !== undefined && value >= MIN_WEIGHT && value <= MAX_WEIGHT){
+            stat.updateWeight(value);
+          }
+        }
+      }
+    }
+  } else {
+    console.error("Cannot read from localStorage");
+  }
+  data.restored = true;
+}
+
+/*
+  Called to update list of active categories based on data.active
+*/
+function updateCategoryStorage(){
+  //Stores update list
+  if (storage && data.restored){
+    let active = data.active.values();
+    let activeArr = Array.from(active);
+    storage.setItem(ACTIVE_SLIDER_KEY, activeArr.join(","));
+  }
+}
+
+/*
+  Called to store the weight for a category. The value is found from the data
+  global variable.
+
+  Args:
+    cat: A category id.
+
+  Return: none
+*/
+function updateWeightStorage(cat){
+  if (storage && data.restored){
+    let stat = data.stats[cat];
+    if (stat){
+      let value = stat.weight;
+      if (value < 0){
+        storage.removeItem(ACTIVE_SLIDER_PREFIX + cat);
+      } else {
+        storage.setItem(ACTIVE_SLIDER_PREFIX + cat, value);
+      }
+    }
+  }
+}
+
+//endregion
+
+
 // For testing purposes. More details later
 if(typeof module !== "undefined" && module.exports){
   module.exports = {
     Stat: Stat,
+    data: data,
+    Data: Data,
+    DEFAULT_WEIGHT: DEFAULT_WEIGHT,
+    storage: {
+      available: storageAvailable,
+      updateCategory: updateCategoryStorage,
+      updateWeight: updateWeightStorage,
+      restore: restoreFromStorage,
+      reset: setStorage,
+      ACTIVE_SLIDER_KEY: ACTIVE_SLIDER_KEY,
+      ACTIVE_SLIDER_PREFIX: ACTIVE_SLIDER_PREFIX
+    },
     normalizeStats: normalizeStats,
-    calculateWeight: calculateWeight,
-    DEFAULT_WEIGHT: DEFAULT_WEIGHT
+    calculateWeight: calculateWeight
   }
 }

@@ -5,6 +5,16 @@
 
 const $ = require('jquery');
 const rewire = require('rewire');
+const path = '../../public/javascripts/model';
+const model = require(path);
+
+function resetData(){
+  model.data.active = new Set();
+  model.data.stats = {};
+  model.data.restored = false;
+}
+
+beforeEach(resetData);
 
 /*
   I tried so many ways to get external scripts to load correctly.
@@ -35,8 +45,9 @@ test('Create a slider', () => {
 
   let inactive_slider = $("#inactive_slider_template");
   let active_slider = $("#active_slider_template");
-  //Has side effects (when 'require' is replaced with 'rewire'), so must be included in the test
-  let script = require("../../public/javascripts/model");
+  
+  //Has side effects, so must be included in the test
+  let script = require(path);
 
   // Note: Check if function is called
   window.colorState = jest.fn( () => {} );
@@ -285,6 +296,224 @@ describe('normalizeStats: ', () => {
   });
 });
 
+describe('restoreFromStorage', () => {
+  function FakeStat(id){
+    this.category = {stat_id: id};
+    this.weight = model.DEFAULT_WEIGHT;
+  };
+
+  beforeEach(() => {
+    resetData();
+    FakeStat.prototype.enable = jest.fn(function(){model.data.active.add(this.category.stat_id)});
+    FakeStat.prototype.disable = jest.fn(function(){model.data.active.delete(this.category.stat_id)});
+    FakeStat.prototype.updateWeight = jest.fn(function(weight){this.weight = weight});
+  });
+
+  afterEach(() => {
+    window.localStorage.clear();
+  });
+
+  test('null storage', () => {
+    let script = rewire(path);
+    let available = jest.fn(() => {});
+    script.__set__('setStorage', available);
+    let storage = window.localStorage;
+    storage.setItem(script.storage.ACTIVE_SLIDER_KEY, "3");
+    model.data.stats[3] = new FakeStat(3)
+    expect(script.data.active.size).toEqual(0);
+    expect(available.mock.calls.length).toEqual(0);
+    expect(script.data.restored).toBeFalsy();
+    script.storage.restore();
+    expect(script.data.active.size).toEqual(0);
+    expect(available.mock.calls.length).toEqual(1);
+    expect(script.data.restored).toBeTruthy();
+  });
+
+  test('no weight stored', () => {
+    let storage = window.localStorage;
+    storage.setItem(model.storage.ACTIVE_SLIDER_KEY, "2");
+    model.data.stats[2] = new FakeStat(2);
+    expect(model.data.active.size).toEqual(0);
+    expect(FakeStat.prototype.enable.mock.calls.length).toEqual(0);
+    expect(model.data.restored).toBeFalsy();
+    model.storage.restore();
+    expect(model.data.active.size).toEqual(1);
+    expect(model.data.active).toContain(2);
+    expect(model.data.stats[2].weight).toEqual(model.DEFAULT_WEIGHT);
+    expect(FakeStat.prototype.enable.mock.calls.length).toEqual(1);
+    expect(model.data.restored).toBeTruthy();
+  });
+
+  test('one slider', () => {
+    let storage = window.localStorage;
+    storage.setItem(model.storage.ACTIVE_SLIDER_KEY, "2");
+    storage.setItem(model.storage.ACTIVE_SLIDER_PREFIX + "2", "4");
+    model.data.stats[2] = new FakeStat(2);
+    expect(model.data.active.size).toEqual(0);
+    expect(FakeStat.prototype.enable.mock.calls.length).toEqual(0);
+    expect(FakeStat.prototype.updateWeight.mock.calls.length).toEqual(0);
+    expect(model.data.restored).toBeFalsy();
+    model.storage.restore();
+    expect(model.data.active.size).toEqual(1);
+    expect(model.data.active).toContain(2);
+    expect(FakeStat.prototype.enable.mock.calls.length).toEqual(1);
+    expect(FakeStat.prototype.updateWeight.mock.calls.length).toEqual(1);
+    expect(FakeStat.prototype.updateWeight.mock.calls[0][0]).toEqual(4);
+    expect(model.data.stats[2].weight).toEqual(4);
+    expect(model.data.restored).toBeTruthy();
+  });
+
+  test('multiple sliders', () => {
+    let storage = window.localStorage;
+    storage.setItem(model.storage.ACTIVE_SLIDER_KEY, "2,3");
+    storage.setItem(model.storage.ACTIVE_SLIDER_PREFIX + "2", "4");
+    storage.setItem(model.storage.ACTIVE_SLIDER_PREFIX + "3", "1");
+    model.data.stats[2] = new FakeStat(2);
+    model.data.stats[3] = new FakeStat(3);
+    expect(model.data.active.size).toEqual(0);
+    expect(FakeStat.prototype.enable.mock.calls.length).toEqual(0);
+    expect(FakeStat.prototype.updateWeight.mock.calls.length).toEqual(0);
+    expect(model.data.restored).toBeFalsy();
+    model.storage.restore();
+    expect(model.data.active.size).toEqual(2);
+    expect(model.data.active).toContain(2);
+    expect(model.data.active).toContain(3);
+    expect(FakeStat.prototype.enable.mock.calls.length).toEqual(2);
+    expect(FakeStat.prototype.updateWeight.mock.calls.length).toEqual(2);
+    expect(FakeStat.prototype.updateWeight.mock.calls[0][0]).toEqual(4);
+    expect(FakeStat.prototype.updateWeight.mock.calls[1][0]).toEqual(1);
+    expect(model.data.stats[2].weight).toEqual(4);
+    expect(model.data.stats[3].weight).toEqual(1);
+    expect(model.data.restored).toBeTruthy();
+  });
+});
+
+describe('updateCategoryStorage', () => {
+
+  let spy;
+  let setItem;
+
+  beforeEach(() => {
+    resetData();
+    setItem = jest.fn(() => {});
+    spy = jest.spyOn(window, 'localStorage', 'get').mockImplementation(() => {
+      return {
+        setItem: setItem,
+        removeItem: () => {}
+      }
+    });
+
+    //This will call setItem and removeItem
+    model.storage.reset();
+  });
+
+  afterEach(() => {
+    spy.mockRestore();
+  });
+
+  test('not restored', () => {
+    model.data.active.add(2);
+    expect(model.data.restored).toBeFalsy();
+    expect(setItem.mock.calls.length).toEqual(1);
+    model.storage.updateCategory();
+    expect(setItem.mock.calls.length).toEqual(1);
+  });
+
+  test('nothing active', () => {
+    model.data.restored = true;
+    expect(model.data.active.size).toEqual(0);
+    expect(setItem.mock.calls.length).toEqual(1);
+    model.storage.updateCategory();
+    expect(setItem.mock.calls.length).toEqual(2);
+    expect(setItem.mock.calls[1]).toEqual([model.storage.ACTIVE_SLIDER_KEY, ""]);
+  });
+
+  test('one active', () => {
+    model.data.restored = true;
+    model.data.active.add(2);
+    expect(setItem.mock.calls.length).toEqual(1);
+    model.storage.updateCategory();
+    expect(setItem.mock.calls.length).toEqual(2);
+    expect(setItem.mock.calls[1]).toEqual([model.storage.ACTIVE_SLIDER_KEY, "2"]);
+  });
+
+  test('many active', () => {
+    model.data.restored = true;
+    model.data.active.add(2);
+    model.data.active.add(3);
+    expect(setItem.mock.calls.length).toEqual(1);
+    model.storage.updateCategory();
+    expect(setItem.mock.calls.length).toEqual(2);
+    expect(setItem.mock.calls[1]).toEqual([model.storage.ACTIVE_SLIDER_KEY, "2,3"]);
+  });
+});
+
+describe('updateWeightStorage', () => {
+  let spy;
+  let setItem;
+  let removeItem;
+
+  beforeEach(() => {
+    resetData();
+    setItem = jest.fn(() => {});
+    removeItem = jest.fn(() => {});
+    spy = jest.spyOn(window, 'localStorage', 'get').mockImplementation(() => {
+      return {
+        setItem: setItem,
+        removeItem: removeItem
+      }
+    });
+
+    //This will call setItem and removeItem
+    model.storage.reset();
+  });
+
+  afterEach(() => {
+    spy.mockRestore();
+  });
+
+  test('not restored', () => {
+    model.data.stats[2] = {weight: 1};
+    expect(model.data.restored).toEqual(false);
+    expect(setItem.mock.calls.length).toEqual(1);
+    expect(removeItem.mock.calls.length).toEqual(1);
+    model.storage.updateWeight(2);
+    expect(setItem.mock.calls.length).toEqual(1);
+    expect(removeItem.mock.calls.length).toEqual(1);
+  });
+
+  test('invalid weight', () => {
+    model.data.stats[2] = {weight: -1};
+    model.data.restored = true;
+    expect(setItem.mock.calls.length).toEqual(1);
+    expect(removeItem.mock.calls.length).toEqual(1);
+    model.storage.updateWeight(2);
+    expect(setItem.mock.calls.length).toEqual(1);
+    expect(removeItem.mock.calls.length).toEqual(2);
+    expect(removeItem.mock.calls[1]).toEqual([model.storage.ACTIVE_SLIDER_PREFIX+"2"]);
+  });
+
+  test('invalid cat', () => {
+    model.data.restored = true;
+    expect(setItem.mock.calls.length).toEqual(1);
+    expect(removeItem.mock.calls.length).toEqual(1);
+    model.storage.updateWeight(2);
+    expect(setItem.mock.calls.length).toEqual(1);
+    expect(removeItem.mock.calls.length).toEqual(1);
+  });
+
+  test('valid cat', () => {
+    model.data.stats[2] = {weight: 4};
+    model.data.restored = true;
+    expect(setItem.mock.calls.length).toEqual(1);
+    expect(removeItem.mock.calls.length).toEqual(1);
+    model.storage.updateWeight(2);
+    expect(setItem.mock.calls.length).toEqual(2);
+    expect(setItem.mock.calls[1]).toEqual([model.storage.ACTIVE_SLIDER_PREFIX+"2", 4]);
+    expect(removeItem.mock.calls.length).toEqual(1);
+  });
+});
+
 describe('calculateWeight: ', () => {
   test("1.8^0", () => {
     let script = require("../../public/javascripts/model");
@@ -299,15 +528,3 @@ describe('calculateWeight: ', () => {
     expect(script.calculateWeight(1.5)).toEqual(0);
   });
 });
-
-
-
-
-
-
-
-
-
-
-
-//
