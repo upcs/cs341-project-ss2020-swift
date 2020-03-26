@@ -620,3 +620,102 @@ body {
     /* Coloring */
     background-color: var(--group-color);
 }
+
+/******************************/
+/***  State Window Section  ***/
+/******************************/
+
+#state-window-background {
+    position: fixed;
+    display: block; 
+    width: 100%; 
+    height: 100%; 
+    top: 0; 
+    left: 0; 
+    right: 0;
+    bottom: 0;
+    background-color: rgba(100,0,100,0.5); /* Black background with opacity */
+    z-index: 3; /* Specify a stack order in case you're using a different order for other elements */
+    cursor: pointer; /* Add a pointer on hover */
+}
+
+#state-window{
+    position: fixed; 
+    display: grid;  
+    width: 70%; 
+    height: 50%; 
+    /* top: 0; 
+    left: ; 
+    right: 0;
+    bottom: 0; */
+    margin-left: 15%;
+    margin-right: 15%;
+    margin-top: 10%; 
+    /* TODO: fix the vertical margins to be more stable */
+
+    background-color: rgba(255,255,255,1); /* full white */
+    z-index: 4; /* Specify a stack order in case you're using a different order for other elements */
+    cursor: pointer; /* Add a pointer on hover */
+
+    grid-template-columns: auto auto auto;
+    grid-template-rows: auto auto auto;
+    background-color: #00FF00;
+    padding: 10px;     
+}
+
+.grid-item{
+    background-color: rgba(0,0,255,1);
+    border: 1px solid rgba(0,0,100,0.7); 
+     padding: 20px;
+    font-size: 30px;
+    text-align: center;
+}
+
+#grid-item1{
+    grid-column-start: 1; 
+    grid-column-end: 2; 
+    grid-row-start: 1; 
+    grid-column-end: 2; 
+}
+
+#grid-item2{
+    grid-column-start: 2; 
+    grid-column-end: 3;
+    grid-row-start: 1; 
+    grid-column-end: 2; 
+}
+
+#grid-item3{
+    grid-column-start: 1; 
+    grid-column-end: 4;
+    grid-row-start: 2; 
+    grid-column-end: 6; 
+}
+
+#grid-item4{
+    grid-column-start: 2; 
+    grid-column-end: 3;
+    grid-row-start: 2; 
+    grid-column-end: 4; 
+}
+
+#grid-item5{
+    grid-column-start: 3; 
+    grid-column-end: 4;
+    grid-row-start: 2; 
+    grid-column-end: 4; 
+}
+
+#grid-item6{
+    grid-column-start: 2; 
+    grid-column-end: 3;
+    grid-row-start: 4; 
+    grid-column-end: 6; 
+}
+
+#grid-item7{
+    grid-column-start: 3; 
+    grid-column-end: 4;
+    grid-row-start: 4; 
+    grid-column-end: 6; 
+}
