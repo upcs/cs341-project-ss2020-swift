@@ -130,18 +130,34 @@ $("document").ready(function () {
             "orange-red", "green-blue", "pink-purple", "dark-red", "dark-green", "dark-blue"
         ];
         // Change the circle to be "active"
-        var theme_id = $(this).attr("id");
+        var theme_id = $(this).attr("id") + "-theme";
         $(".theme-template-active").addClass("theme-template").removeClass("theme-template-active");
         $(this).addClass("theme-template-active").removeClass("theme-template");
         // Change the stylesheet reference
-        $("#"+theme_id+"-theme").attr("rel", "stylesheet");
-        for(let theme of themes) {
-            if(theme != theme_id) {
-                $("#"+theme+"-theme").attr("rel", "alternate stylesheet");
+        //$("#"+theme_id+"-theme").attr("rel", "stylesheet");
+
+        /*EXTERNAL CITATION
+        Disabling style sheets:
+          https://developer.mozilla.org/en-US/docs/Web/API/StyleSheet/disabled
+        Selecting stylesheets:
+          https://css-tricks.com/examples/AlternateStyleSheets/ (source code)
+        */
+        $("link[rel~='stylesheet']").each(function(_, theme) {
+            theme = $(theme);
+            if(theme.hasClass("theme")){
+              console.log(theme.attr("title"));
+              console.log(theme_id);
+              if(theme.attr("title") != theme_id) {
+                  //$("#"+theme+"-theme").attr("rel", "alternate stylesheet");
+                theme.prop("disabled", true);
+              } else {
+                console.log("Enabling stylesheet");
+                theme.prop("disabled", false);
+              }
             }
-        }
+        });
         // Recolor the map
-        window.setTimeout(function() { displayWeights(); } , 50);
+        displayWeights();
         // displayWeights();
     });
 
