@@ -90,7 +90,7 @@ function displayWeights(){
     let weight = 0;
     for (let catID of data.active){
       let stat = data.stats[catID];
-      if(stat.data){
+      if(stat.data){ //0 is false, 1+ is true
         let stateData = stat.data[state];
         if(stateData === undefined){
           //Data not present for this state, so bail
@@ -348,6 +348,7 @@ if(typeof module !== "undefined" && module.exports){
       ACTIVE_SLIDER_PREFIX: ACTIVE_SLIDER_PREFIX
     },
     normalizeStats: normalizeStats,
-    calculateWeight: calculateWeight
+    calculateWeight: calculateWeight, 
+    displayWeights: displayWeights
   }
 }

@@ -45,7 +45,7 @@ test('Create a slider', () => {
 
   let inactive_slider = $("#inactive_slider_template");
   let active_slider = $("#active_slider_template");
-  
+
   //Has side effects, so must be included in the test
   let script = require(path);
 
@@ -295,6 +295,166 @@ describe('normalizeStats: ', () => {
     expect(row["AZ"]).toEqual(1);
   });
 });
+
+describe('displayWeights', () => {
+    beforeEach(resetData);
+
+    test('no states, require', () => {
+        let script = require("../../public/javascripts/model");
+        let states = {
+          stat_id: 1,
+          invert_flag: 0,
+          AL: 100,
+          AK: 300,
+          AZ: 200,
+          /////////
+          AR: 100,
+          CA: 100,
+          CO: 100,
+          CT: 100,
+          DE: 100,
+          FL: 100,
+          GA: 100,
+          HI: 100,
+          ID: 100,
+          IL: 100,
+          IN: 100,
+          IA: 100,
+          KS: 100,
+          KY: 100,
+          LA: 100,
+          ME: 100,
+          MD: 100,
+          MA: 100,
+          MI: 100,
+          MN: 100,
+          MS: 100,
+          MO: 100,
+          MT: 100,
+          NE: 100,
+          NV: 100,
+          NH: 100,
+          NJ: 100,
+          NM: 100,
+          NY: 100,
+          NC: 100,
+          ND: 100,
+          OH: 100,
+          OK: 100,
+          OR: 100,
+          PA: 100,
+          RI: 100,
+          SC: 100,
+          SD: 100,
+          TN: 100,
+          TX: 100,
+          UT: 100,
+          VT: 100,
+          VA: 100,
+          WA: 100,
+          WV: 100,
+          WI: 100,
+          WY: 100
+      }
+
+        let row = {
+            stat_id: 1,
+            invert_flag: 0,
+            AL: 100,
+            AK: 200,
+            AZ: 300
+        }
+
+        let testWeights = {
+            AL: 100,
+            AK: 100,
+            AZ: 100
+        };
+
+        // let testWeights = {};
+
+        // window.colorState = function(state, weight){
+        //      testWeights[state] = weight;
+        // }
+
+        window.colorState = jest.fn((state, weight) => {
+            testWeights[state] = weight;
+        });
+
+        //making sure the function is called 50 times even though it won't be
+        // expect(window.colorState.mock.calls.length).toBe(50);
+
+        expect(testWeights["AL"]).toEqual(100);
+        expect(testWeights["AK"]).toEqual(100);
+        expect(testWeights["AZ"]).toEqual(100);
+
+        model.displayWeights();
+
+        expect(testWeights["AL"]).toEqual(0);
+        expect(testWeights["AK"]).toEqual(0);
+        expect(testWeights["AZ"]).toEqual(0);
+    });
+
+    /*
+        notes:
+            "window."" overrides colorState because it's defined in a different file from model.js
+            you can override it with jest.fn lambda or not.
+            If you use the jest.fn stuff,
+                then you're mocking the function. When you mock the function,
+                you can do things like test how many times the mock function is called in the test.
+            if not,
+                you can still compare to a list of outputs and expected outputs
+
+            require is once per file
+            rewire is rerun every call
+    */
+/*
+    test('1 state with non-zero data, no active data, rewire', () => {
+        let script = rewire("../../public/javascripts/model");
+        let states = script.__get__("states");
+
+        //starting at index 3, remove 47 states
+        states.splice(3,47);
+
+        let row = {
+          stat_id: 1,
+          invert_flag: 0,
+          AL: 100,
+          AK: 0,
+          AZ: 0
+        }
+
+        // console.log("weights[AL]: " + weights["AL"]);
+
+        expect(row["AL"]).toEqual(100);
+        expect(row["AK"]).toEqual(0);
+        expect(row["AZ"]).toEqual(0);
+
+        script.displayWeights();
+
+        expect(row["AL"]).toEqual(1);
+        expect(row["AK"]).toEqual(0);
+        expect(row["AZ"]).toEqual(0);
+    });
+*/
+    test('1 state, active data, stat.data==0', () => {
+        expect(1).toEqual(1);
+    });
+    test('1 state, active data, stat.data==1', () => {
+        expect(1).toEqual(1);
+    });
+
+
+    test('1 state, active data, stat.data==1, statData ==undefined', () => {
+        expect(1).toEqual(1);
+    });
+
+
+
+    //equal weight, unequal weight
+
+});
+
 
 describe('restoreFromStorage', () => {
   function FakeStat(id){
