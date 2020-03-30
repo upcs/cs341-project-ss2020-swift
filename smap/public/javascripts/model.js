@@ -112,17 +112,17 @@ function displayWeights(){
 
       // console.log("typeof(localStat[data]): " + typeof(localStat["data"]));
       if(typeof localStat !== 'undefined' && typeof localStat["data"] !== 'undefined'){ //if localStat["data"] is defined...
-          console.log("stringified localStat: " + JSON.stringify(localStat));
-        console.log("stringified localStat[data][AL]: " + JSON.stringify(localStat["data"]["AL"]));
+        //   console.log("stringified localStat: " + JSON.stringify(localStat));
+        // console.log("stringified localStat[data][AL]: " + JSON.stringify(localStat["data"]["AL"]));
 
-        let stateData = localStat[state];
+        let stateData = localStat.data[state];
         if(stateData === undefined){
           //Data not present for this state, so bail
           console.error("Data for state " + state + " stat " + localStat.category.title + " not found");
           weight = 0;
           break;
         }
-        weight += calculateWeight(stat.weight) * localStat[state];
+        weight += calculateWeight(localStat.weight) * stateData;
       }
     }
     weights[state] = weight;
