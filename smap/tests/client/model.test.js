@@ -299,7 +299,7 @@ describe('normalizeStats: ', () => {
 describe('displayWeights', () => {
     beforeEach(resetData);
 
-    test('no states, require', () => {
+    test('test1: no states, require', () => {
         let script = require("../../public/javascripts/model");
         let states = {
           stat_id: 1,
@@ -357,18 +357,20 @@ describe('displayWeights', () => {
           WY: 100
       }
 
+        /*
         let row = {
-            stat_id: 1,
-            invert_flag: 0,
-            AL: 100,
-            AK: 200,
-            AZ: 300
+        stat_id: 1,
+        invert_flag: 0,
+        AL: 100,
+        AK: 200,
+        AZ: 300
         }
+        */
 
         let testWeights = {
-            AL: 100,
-            AK: 100,
-            AZ: 100
+            AL: 99,
+            AK: 99,
+            AZ: 99
         };
 
         // let testWeights = {};
@@ -384,9 +386,9 @@ describe('displayWeights', () => {
         //making sure the function is called 50 times even though it won't be
         // expect(window.colorState.mock.calls.length).toBe(50);
 
-        expect(testWeights["AL"]).toEqual(100);
-        expect(testWeights["AK"]).toEqual(100);
-        expect(testWeights["AZ"]).toEqual(100);
+        expect(testWeights["AL"]).toEqual(99);
+        expect(testWeights["AK"]).toEqual(99);
+        expect(testWeights["AZ"]).toEqual(99);
 
         model.displayWeights();
 
@@ -408,51 +410,372 @@ describe('displayWeights', () => {
             require is once per file
             rewire is rerun every call
     */
-/*
-    test('1 state with non-zero data, no active data, rewire', () => {
-        let script = rewire("../../public/javascripts/model");
-        let states = script.__get__("states");
+    // //
+    // // test('test 2: no states, rewire', () => {
+    //     let script = rewire("../../public/javascripts/model");
+    //     let visuals = require("../../public/javascripts/model");
+    //     let states = {
+    //       stat_id: 1,
+    //       invert_flag: 0,
+    //       AL: 100,
+    //       AK: 300,
+    //       AZ: 200,
+    //       /////////
+    //       AR: 100,
+    //       CA: 100,
+    //       CO: 100,
+    //       CT: 100,
+    //       DE: 100,
+    //       FL: 100,
+    //       GA: 100,
+    //       HI: 100,
+    //       ID: 100,
+    //       IL: 100,
+    //       IN: 100,
+    //       IA: 100,
+    //       KS: 100,
+    //       KY: 100,
+    //       LA: 100,
+    //       ME: 100,
+    //       MD: 100,
+    //       MA: 100,
+    //       MI: 100,
+    //       MN: 100,
+    //       MS: 100,
+    //       MO: 100,
+    //       MT: 100,
+    //       NE: 100,
+    //       NV: 100,
+    //       NH: 100,
+    //       NJ: 100,
+    //       NM: 100,
+    //       NY: 100,
+    //       NC: 100,
+    //       ND: 100,
+    //       OH: 100,
+    //       OK: 100,
+    //       OR: 100,
+    //       PA: 100,
+    //       RI: 100,
+    //       SC: 100,
+    //       SD: 100,
+    //       TN: 100,
+    //       TX: 100,
+    //       UT: 100,
+    //       VT: 100,
+    //       VA: 100,
+    //       WA: 100,
+    //       WV: 100,
+    //       WI: 100,
+    //       WY: 100
+    //   }
+    //
+    //
+    //
+    //     /*
+    //     let row = {
+    //     stat_id: 1,
+    //     invert_flag: 0,
+    //     AL: 100,
+    //     AK: 200,
+    //     AZ: 300
+    //     }
+    //     */
+    //
+    //     let testWeights = {
+    //         AL: 99,
+    //         AK: 99,
+    //         AZ: 99
+    //     };
+    //
+    //     // window.colorState = jest.fn((state, weight) => {
+    //     //     testWeights[state] = weight;
+    //     // });
+    //
+    //     visuals.__set__("colorState", (state, weight) => {
+    //             testWeights[state] = weight;
+    //         });
+    //
+    //     //making sure the function is called 50 times even though it won't be
+    //     // expect(window.colorState.mock.calls.length).toBe(50);
+    //
+    //     expect(testWeights["AL"]).toEqual(99);
+    //     expect(testWeights["AK"]).toEqual(99);
+    //     expect(testWeights["AZ"]).toEqual(99);
+    //
+    //     model.displayWeights();
+    //
+    //     expect(testWeights["AL"]).toEqual(0);
+    //     expect(testWeights["AK"]).toEqual(0);
+    //     expect(testWeights["AZ"]).toEqual(0);
+    // });
 
-        //starting at index 3, remove 47 states
-        states.splice(3,47);
+    // test('1 state with non-zero data, no active data, rewire', () => {
+    //     let model = rewire("../../public/javascripts/model");
+    //     let visuals = require("../../public/javascripts/visuals");
+    //     let states = model.__get__("states");
+    //
+    //     //starting at index 3, remove 47 states
+    //     states.splice(3,47);
+    //
+    //     let testWeights = {
+    //         AL: 99,
+    //         AK: 99,
+    //         AZ: 99
+    //     };
+    //
+    //     window.colorState = function(state, weight){
+    //         testWeights[state] = weight;
+    //    }
+    //
+    //    // window.colorState = jest.fn((state, weight) => {
+    //    //     testWeights[state] = weight;
+    //    // });
+    //
+    //     // visuals.__set__("colorState", (state, weight) => {
+    //     //     testWeights[state] = weight;
+    //     // });
+    //
+    //     expect(testWeights["AL"]).toEqual(99);
+    //     expect(testWeights["AL"]).toEqual(99);
+    //     expect(testWeights["AL"]).toEqual(99);
+    //
+    //     // model.displayWeights();
+    //     //
+    //     // expect(row["AL"]).toEqual(1);
+    //     // expect(row["AK"]).toEqual(0);
+    //     // expect(row["AZ"]).toEqual(0);
+    // });
+    //
+    // test('1 state, active data, stat.data==0', () => {
+    //     expect(1).toEqual(1);
+    // });
+    //
+    // test('1 state with active data, stat.data==1, require', () => { //should work
+    //     let model = require("../../public/javascripts/model");
+    //     let states = {
+    //       stat_id: 1,
+    //       invert_flag: 0,
+    //       AL: 100,
+    //       AK: 300,
+    //       AZ: 200,
+    //       /////////
+    //       AR: 100,
+    //       CA: 100,
+    //       CO: 100,
+    //       CT: 100,
+    //       DE: 100,
+    //       FL: 100,
+    //       GA: 100,
+    //       HI: 100,
+    //       ID: 100,
+    //       IL: 100,
+    //       IN: 100,
+    //       IA: 100,
+    //       KS: 100,
+    //       KY: 100,
+    //       LA: 100,
+    //       ME: 100,
+    //       MD: 100,
+    //       MA: 100,
+    //       MI: 100,
+    //       MN: 100,
+    //       MS: 100,
+    //       MO: 100,
+    //       MT: 100,
+    //       NE: 100,
+    //       NV: 100,
+    //       NH: 100,
+    //       NJ: 100,
+    //       NM: 100,
+    //       NY: 100,
+    //       NC: 100,
+    //       ND: 100,
+    //       OH: 100,
+    //       OK: 100,
+    //       OR: 100,
+    //       PA: 100,
+    //       RI: 100,
+    //       SC: 100,
+    //       SD: 100,
+    //       TN: 100,
+    //       TX: 100,
+    //       UT: 100,
+    //       VT: 100,
+    //       VA: 100,
+    //       WA: 100,
+    //       WV: 100,
+    //       WI: 100,
+    //       WY: 100
+    //   }
+    //
+    //     // let row = {
+    //     //     stat_id: 1,
+    //     //     invert_flag: 0,
+    //     //     AL: 100,
+    //     //     AK: 200,
+    //     //     AZ: 300
+    //     // }
+    //
+    //     let testWeights = {
+    //         AL: 99,
+    //         AK: 99,
+    //         AZ: 99
+    //     };
+    //
+    //     model.data.active.add(1);
+    //     model.data.stats[0] = 1;
+    //
+    //     // let testWeights = {};
+    //
+    //     // window.colorState = function(state, weight){
+    //     //      testWeights[state] = weight;
+    //     // }
+    //
+    //     window.colorState = jest.fn((state, weight) => {
+    //         testWeights[state] = weight;
+    //     });
+    //
+    //     //making sure the function is called 50 times even though it won't be
+    //     // expect(window.colorState.mock.calls.length).toBe(50);
+    //
+    //     expect(testWeights["AL"]).toEqual(99);
+    //     expect(testWeights["AK"]).toEqual(99);
+    //     expect(testWeights["AZ"]).toEqual(99);
+    //
+    //     model.displayWeights();
+    //
+    //     expect(testWeights["AL"]).toEqual(0);
+    //     expect(testWeights["AZ"]).toEqual(1);
+    //     expect(testWeights["AK"]).toEqual(0.5);
+    // });
+    //
+    test('1 active statistic, stat.data==1, rewire', () => { //should work
+        let model = require("../../public/javascripts/model");
+        let visuals = require("../../public/javascripts/visuals");
+        // let states = model.__get__("states");
+        // states.splice(3,47);
 
-        let row = {
+        let states = {
           stat_id: 1,
           invert_flag: 0,
           AL: 100,
-          AK: 0,
-          AZ: 0
-        }
+          AK: 300,
+          AZ: 200,
+          /////////
+          AR: 100,
+          CA: 100,
+          CO: 100,
+          CT: 100,
+          DE: 100,
+          FL: 100,
+          GA: 100,
+          HI: 100,
+          ID: 100,
+          IL: 100,
+          IN: 100,
+          IA: 100,
+          KS: 100,
+          KY: 100,
+          LA: 100,
+          ME: 100,
+          MD: 100,
+          MA: 100,
+          MI: 100,
+          MN: 100,
+          MS: 100,
+          MO: 100,
+          MT: 100,
+          NE: 100,
+          NV: 100,
+          NH: 100,
+          NJ: 100,
+          NM: 100,
+          NY: 100,
+          NC: 100,
+          ND: 100,
+          OH: 100,
+          OK: 100,
+          OR: 100,
+          PA: 100,
+          RI: 100,
+          SC: 100,
+          SD: 100,
+          TN: 100,
+          TX: 100,
+          UT: 100,
+          VT: 100,
+          VA: 100,
+          WA: 100,
+          WV: 100,
+          WI: 100,
+          WY: 100
+      }
 
-        // console.log("weights[AL]: " + weights["AL"]);
+        let testWeights = {
+            AL: 99,
+            AK: 99,
+            AZ: 99
+        };
 
-        expect(row["AL"]).toEqual(100);
-        expect(row["AK"]).toEqual(0);
-        expect(row["AZ"]).toEqual(0);
+        let mockCatID = 1;
+        model.data.active.add(mockCatID);
 
-        script.displayWeights();
+        model.data.stats[mockCatID] = {
+            "category": {
+                "title": "fake title"
+            },
+            "data": {
+                "AL": 2,
+                "AK": 4,
+                "AZ": 6
+            }
+        };
 
-        expect(row["AL"]).toEqual(1);
-        expect(row["AK"]).toEqual(0);
-        expect(row["AZ"]).toEqual(0);
+        //
+        // model.data.stats[mockCatID] = new model.Stat(...)
+        // model.data.stats[mockCatID].data = {...}
+
+        // if(typeof(model.data.stats[mockCatID]) != 'undefined' &&
+        //     typeof(model.data.stats[mockCatID]["data"]) != 'undefined'){
+        //     model.localStat[data]["AL"] = 2;
+        //     model.localStat[data]["AK"] = 4;
+        //     model.localStat[data]["AZ"] = 6;
+        // }
+
+
+        //how am I supposed to mock localStat.data?
+
+        // let colorState = function(state, weight){
+        //      testWeights[state] = weight;
+        // }
+
+        window.colorState = jest.fn((state, weight) => {
+            testWeights[state] = weight;
+        });
+
+        //making sure the function is called 50 times even though it won't be
+        // expect(window.colorState.mock.calls.length).toBe(50);
+
+        expect(testWeights["AL"]).toEqual(99);
+        expect(testWeights["AK"]).toEqual(99);
+        expect(testWeights["AZ"]).toEqual(99);
+
+        model.displayWeights();
+
+        expect(testWeights["AL"]).toEqual(0);
+        expect(testWeights["AZ"]).toEqual(1);
+        expect(testWeights["AK"]).toEqual(0.5);
     });
-*/
-    test('1 state, active data, stat.data==0', () => {
-        expect(1).toEqual(1);
-    });
-    test('1 state, active data, stat.data==1', () => {
-        expect(1).toEqual(1);
-    });
-
-
-    test('1 state, active data, stat.data==1, statData ==undefined', () => {
-        expect(1).toEqual(1);
-    });
-
-
-
+    //
+    // test('1 state, active data, stat.data==1', () => {
+    //     expect(1).toEqual(1);
+    // });
+    //
+    // test('1 state, active data, stat.data==1, statData ==undefined', () => {
+    //     expect(1).toEqual(1);
+    // });
     //equal weight, unequal weight
-
 });
 
 
