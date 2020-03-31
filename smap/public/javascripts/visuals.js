@@ -5,7 +5,7 @@ const blur_elements = [
 ];
 
 $("document").ready(function () {
-    /////////////////////
+    //////////////////////
     // START ANIMATION //
     function clear_loading(loop) {
         window.setTimeout(function() {
@@ -81,6 +81,23 @@ $("document").ready(function () {
     selectionContainer = $("#statistics-selector");
     map = $("#us-map");
 
+    // Get the model
+    var model = document.getElementById("model");
+
+    // Get the image and insert it inside the model - use its "alt" text as a caption
+    var img = document.getElementById("ne-inspector");
+    img.onclick = function(){
+        model.style.display = "grid";
+    }
+
+    // Get the <span> element that closes the model
+    var span = document.getElementById("ne-magnifiyer-close");
+
+    // When the user clicks on <span> (x), close the model
+    span.onclick = function() {
+        model.style.display = "none";
+    }
+
     //Gets list of categories and creates those sliders
     $.get("/api/cats", "", function(data, status, res){
       if (status !== "success"){
@@ -112,14 +129,27 @@ $("document").ready(function () {
     // The inital top element
     // Get the svg document content
     window.setTimeout(function() {
-        var svg = document.getElementById("us-map").contentDocument;
+        var us_map = document.getElementById("us-map").contentDocument;
         // Get one of the SVG items by ID;
-        var top_element = $("#AK", svg);
+        var us_map_top_element = $("#AK", us_map);
         // When mousing over a state
-        $("path", svg).mouseenter( function() {
+        $("path", us_map).mouseenter( function() {
             // Put it on top
-            $(this).insertAfter(top_element);
-            top_element = $(this);
+            $(this).insertAfter(us_map_top_element);
+            us_map_top_element = $(this);
+            // Set styling
+            $(this).css("filter", "contrast(85%) brightness(115%)").css("stroke-width", "3");
+            // Return the styling on leaving
+        }).mouseleave( function() {
+            $(this).css("filter", "brightness(100%) contrast(100%)").css("stroke-width", "1");
+        });
+        // Done now for the NE
+        var ne_map = document.getElementById("ne-map").contentDocument;
+        var ne_map_top_element = $("#ME", ne_map);
+        $("path", ne_map).mouseenter( function() {
+            // Put it on top
+            $(this).insertAfter(ne_map_top_element);
+            ne_map_top_element = $(this);
             // Set styling
             $(this).css("filter", "contrast(85%) brightness(115%)").css("stroke-width", "3");
             // Return the styling on leaving
@@ -258,15 +288,23 @@ function mixColor(weight) {
     return ("rgba("+ result[0] +", "+ result[1] +", "+ result[2] +", 1)");
 }
 
+function colorSVG(doc, state, weight) {
+    // Get one of the SVG items by ID;
+    var svgItem = doc.getElementById(state);
+    // Set the colour to something else
+    var border = $(":root").css("--secondary-color-dark");
+    svgItem.setAttribute("style", "stroke-width: 1; stroke: "+border+"; fill: "+mixColor(weight)+";");
+}
+
 function colorState(state, weight) {
+    const ne_states = ["MA", "CT", "NH", "RI", "VT", "DE", "MD", "MJ", "NY", "PA", "ME", "NJ"];
     // Get the svg
-    var svgDoc = document.getElementById("us-map").contentDocument;
+    var us_map = document.getElementById("us-map").contentDocument;
     // If it exists
-    $(svgDoc).ready( function() {
-        // Get one of the SVG items by ID;
-        var svgItem = svgDoc.getElementById(state);
-        // Set the colour to something else
-        var border = $(":root").css("--secondary-color-dark");
-        svgItem.setAttribute("style", "stroke-width: 1; stroke: "+border+"; fill: "+mixColor(weight)+";");
-    });
+    $(us_map).ready(colorSVG(us_map, state, weight));
+    // If the state in question is also in the NE, do the same for the separate SVG
+    if(ne_states.includes(state)) {
+        var ne_map = document.getElementById("ne-map").contentDocument;
+        $(ne_map).ready(colorSVG(ne_map, state, weight));
+    }
 }
