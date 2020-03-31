@@ -22,6 +22,10 @@ $("document").ready(function () {
                 $("#loading").animate({fontSize: "100px"}, 400);
             }, 1500 );
         }, 1000);
+        // Print load
+        let load_time = (window.performance.now() / 1000);
+        console.log("Page load time: " + load_time + "s");
+        console.log("Time until page operable: "+ (load_time+2.5) +"s");
     }
     function load_themes(callback, loop) {
         const themes = [
@@ -93,16 +97,29 @@ $("document").ready(function () {
     //Gets list of categories and creates those sliders
     $.get("/api/cats", "", function(data, status, res){
       if (status !== "success"){
-        console.log("Error getting categories");
-        alert("AHHHH");
+        console.log("[!] Error getting categories");
       } else {
         for (let cat of data){
           cat.title = cat.stat_name_short;
           new Stat(cat, DEFAULT_WEIGHT);
         }
+        restoreFromStorage();
       }
     });
 
+    //Gets metadata information and populates the windows
+    // $.get("/api/meta", "", function(data, status, res){
+    //     if (status !== "success"){
+    //       console.log("Error getting metadata");
+    //       alert("AHHHH no metadata");
+    //     } else {
+    //         alert(data[1].published_by + " " + data[0].published_by);
+    //     //   for (let cat of data){
+    //     //     cat.title = cat.stat_name_short;
+    //     //     new Stat(cat, DEFAULT_WEIGHT);
+    //     //   }
+    //     }
+    //   });
 
 
     // The inital top element
@@ -169,10 +186,11 @@ $("document").ready(function () {
 
     $(window).scroll( function() {
         let scroll_val = Math.floor($(window).scrollTop());
-        if(Date.now() - lastMove > 33) {
+        if(window.performance.now() - lastMove > 33) {
             $("#settings").css("left", -1*scroll_val);
-            $("#map-container").css("filter", "opacity(" + ((500 - scroll_val) / 500) + ")");
-            lastMove = Date.now();
+            $("#map-container").css("filter", "opacity(" + ((550 - scroll_val) / 350) + ")");
+            $("#map-legend-container").css("filter", "opacity(" + ((550 - scroll_val) / 350) + ")");
+            lastMove = window.performance.now();
         }
     });
 });
