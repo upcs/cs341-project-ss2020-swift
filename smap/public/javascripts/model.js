@@ -229,12 +229,13 @@ Stat.prototype.disable = function(){
   this.slider = makeInactiveSlider(this.category.title);
 
   //Add event listeners
-  this.slider.click((event) => {this.enable()});
-
-  $(".statistic-option-metadata").click((e) => {
+  $(".statistic-option-metadata", this.slider).click((e) => {
     e.preventDefault();
+    e.stopPropagation()
     this.showMeta();
   });
+
+  this.slider.click((event) => {this.enable()});
 
   updateCategoryStorage();
   displayWeights();

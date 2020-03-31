@@ -172,14 +172,7 @@ $("document").ready(function () {
 });
 
 async function getMetadata(){
-  let metadata = await $.get("/api/meta", (data, status, xhr) => {
-    if (status !== "success"){
-      console.error("Unable to query for metadata");
-      return null;
-    } else {
-      return data;
-    }
-  });
+  let metadata = await $.get("/api/meta").catch((err) => {return null;});
   return metadata;
 }
 
