@@ -161,9 +161,9 @@ Stat.prototype.enable = function(){
         alert("<statistics.js> AHHHHHHH FAILURE!!!");
       } else {
         this.data = data[0];
-        console.log("\n<model.js> </api/data?cat=> this.data: " + this.data);
-        console.log("\n<model.js> </api/data?cat=> this.data[stat_id]: " + this.data["stat_id"]);
-        console.log("\n<model.js> </api/data?cat=> this.data[stat_name_short]: " + this.data["stat_name_short"]);
+        // console.log("\n<model.js> </api/data?cat=> this.data: " + this.data);
+        // console.log("\n<model.js> </api/data?cat=> this.data[stat_id]: " + this.data["stat_id"]);
+        // console.log("\n<model.js> </api/data?cat=> this.data[stat_name_short]: " + this.data["stat_name_short"]);
         normalizeStats(this.data);
         // console.log(this.data);
         displayWeights();
@@ -193,12 +193,4 @@ Stat.prototype.delete = function(){
   this.slider.remove();
   data.active.remove(this.category.stat_id);
   delete data.stats[category.stat_id];
-}
-
-// For testing purposes. More details later
-if(typeof module !== "undefined" && module.exports){
-  module.exports = {
-    Stat: Stat,
-    DEFAULT_WEIGHT: DEFAULT_WEIGHT
-  }
 }
