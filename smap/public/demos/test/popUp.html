@@ -96,6 +96,26 @@ body {font-family: Arial, Helvetica, sans-serif;}
     width: 100%;
   }
 }
+
+#map-container {
+    /* Positioning and Display */
+    grid-row: 1/1;
+    grid-column: 2/2;
+    display: grid;
+    align-items: center;
+    /* Coloring */
+    background-color: var(--color-light);
+}
+
+#us-map {
+    /* Positioning and Display */
+    max-width: 100%;
+}
+
+object {
+    /* Other */
+    filter: drop-shadow(0px 0px 3px var(--secondary-color-dark));
+}
 </style>
 </head>
 <body>
@@ -103,7 +123,7 @@ body {font-family: Arial, Helvetica, sans-serif;}
 <h2>Image Modal</h2>
 
 
-<img id="myImg" src="us.svg" alt="NE map" style="width:100%;max-width:300px">
+<img id="neInspector" src="ne-inspector.png" alt="NE map" style="width:100%;max-width:300px">
 
 <!-- The Modal -->
 <div id="myModal" class="modal">
@@ -118,7 +138,7 @@ body {font-family: Arial, Helvetica, sans-serif;}
 var modal = document.getElementById("myModal");
 
 // Get the image and insert it inside the modal - use its "alt" text as a caption
-var img = document.getElementById("myImg");
+var img = document.getElementById("neInspector");
 var modalImg = document.getElementById("img01");
 var captionText = document.getElementById("caption");
 img.onclick = function(){
