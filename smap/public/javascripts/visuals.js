@@ -185,7 +185,7 @@ $("document").ready(function () {
     var lastMove = 0;
     // TODO: Fix to work when about section exists.
     $("#nav-arrow").click( function() {
-        $("html, body").animate({ scrollTop: 789 }, 1000);
+        $("html, body").animate({ scrollTop: $(window).height() }, 1000);
     });
 
     $(window).scroll( function() {
