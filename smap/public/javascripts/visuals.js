@@ -225,9 +225,3 @@ function colorState(state, weight) {
         svgItem.setAttribute("style", "stroke-width: 1; stroke: "+border+"; fill: "+mixColor(weight)+";");
     });
 }
-
-if(typeof module !== "undefined" && module.exports){
-    module.exports = {
-        colorState: colorState
-    }
-}

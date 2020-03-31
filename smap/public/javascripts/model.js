@@ -86,34 +86,13 @@ function calculateWeight(value){
 function displayWeights(){
   //Sum up weights for each state
   let weights = {};
-  console.log("#####################START#######################");
   for (let state of states){
     let weight = 0;
     for (let catID of data.active){
       let localStat = data.stats[catID];
-      //what is localStat.data supposed to look like?
-    /*
-    stringified localStat:
-        {"category":
-            {"stat_id":1,"stat_name_short":"State unemployment rate","title":"State unemployment rate"},
-            "weight":3,
-            "enabled":true,
-            "slider":
-            {"0":{},"length":1,"prevObject":{"0":{},"length":1,"prevObject":{"0":{},"length":1}}},
-            "data":
-                {"AL":0.894736842105263,"AK":0,
-                "AZ":0.39473684210526316,
-                "WY":0.631578947368421,
-                "stat_id":1,
-                "invert_flag":1,
-                "stat_name_short":"State unemployment rate"}
-        }
-    */
 
       // console.log("typeof(localStat[data]): " + typeof(localStat["data"]));
       if(typeof localStat !== 'undefined' && typeof localStat["data"] !== 'undefined'){ //if localStat["data"] is defined...
-        //   console.log("stringified localStat: " + JSON.stringify(localStat));
-        // console.log("stringified localStat[data][AL]: " + JSON.stringify(localStat["data"]["AL"]));
 
         let stateData = localStat.data[state];
         if(stateData === undefined){
@@ -129,8 +108,6 @@ function displayWeights(){
   }
 
   normalizeStats(weights);
-
-  console.log("###################END#########################");
 
   for (let state of states){
     let weight = weights[state];
