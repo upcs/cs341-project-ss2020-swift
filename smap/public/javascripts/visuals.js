@@ -73,21 +73,21 @@ $("document").ready(function () {
     selectionContainer = $("#statistics-selector");
     map = $("#us-map");
 
-    // Get the modal
-    var modal = document.getElementById("modal");
-    
-    // Get the image and insert it inside the modal - use its "alt" text as a caption
+    // Get the model
+    var model = document.getElementById("model");
+
+    // Get the image and insert it inside the model - use its "alt" text as a caption
     var img = document.getElementById("ne-inspector");
     img.onclick = function(){
-        modal.style.display = "grid";
+        model.style.display = "grid";
     }
-    
-    // Get the <span> element that closes the modal
+
+    // Get the <span> element that closes the model
     var span = document.getElementById("ne-magnifiyer-close");
-    
-    // When the user clicks on <span> (x), close the modal
-    span.onclick = function() { 
-        modal.style.display = "none";
+
+    // When the user clicks on <span> (x), close the model
+    span.onclick = function() {
+        model.style.display = "none";
     }
 
     //Gets list of categories and creates those sliders
@@ -122,7 +122,7 @@ $("document").ready(function () {
         }).mouseleave( function() {
             $(this).css("filter", "brightness(100%) contrast(100%)").css("stroke-width", "1");
         });
-        // Done now for the NE 
+        // Done now for the NE
         var ne_map = document.getElementById("ne-map").contentDocument;
         var ne_map_top_element = $("#ME", ne_map);
         $("path", ne_map).mouseenter( function() {

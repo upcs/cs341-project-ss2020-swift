@@ -384,8 +384,19 @@ object {
   position: absolute;
   top: 0;
   right: 0;
-  width: 100px;
-  height: 100px;
+  padding-top: 5px;
+  width: 80px;
+  height: 80px;
+  opacity: 66.67%;
+  transition: 0.25s;
+  /* transform: rotateZ(215deg); */
+}
+
+#ne-inspector:hover {
+    opacity: 100%;
+    width: 90px;
+    height: 90px;
+    transition: 0.5s;
 }
 
 #ne-inspector-container {
@@ -394,15 +405,15 @@ object {
 }
 
 #ne-map {
-    width: 100%;
     height: 100%;
+    padding-right: 12.5%;
 }
 
-/* The Modal (background) */
-#modal {
+/* The Model (background) */
+#model {
   display: none; /* Hidden by default */
   align-items: center;
-  justify-items: center;
+  justify-items: end;
   position: absolute; /* Stay in place */
   z-index: 1; /* Sit on top */
   left: 0;
