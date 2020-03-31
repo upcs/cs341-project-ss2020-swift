@@ -164,7 +164,7 @@ function displayWeights(){
   //Normalize
   normalizeStats(weights);
   data.ranks = rankStats(weights);
-
+  drawChart(weights, data.ranks);
   //
   for (let state of states){
     let weight = weights[state];

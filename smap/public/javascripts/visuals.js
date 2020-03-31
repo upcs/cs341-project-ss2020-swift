@@ -1,5 +1,7 @@
 'use strict';
 
+var chart;
+
 $("document").ready(function () {
     /////////////////////
     // START ANIMATION //
@@ -223,5 +225,29 @@ function colorState(state, weight) {
         // Set the colour to something else
         var border = $(":root").css("--secondary-color-dark");
         svgItem.setAttribute("style", "stroke-width: 1; stroke: "+border+"; fill: "+mixColor(weight)+";");
+    });
+}
+
+function drawChart(weights, ranks){
+    var ctx = document.getElementById('myChart').getContext('2d');
+
+
+    chart = new Chart(ctx, {
+        // The type of chart we want to create
+        type: 'bar',
+
+        // The data for our dataset
+        data: {
+            labels: ranks,
+            datasets: [{
+                label: 'My First dataset',
+                backgroundColor: 'rgb(255, 99, 132)',
+                borderColor: 'rgb(255, 99, 132)',
+                data: ranks.map( x => weights[x]) //javascript is nice and has a mapping function that eliminates the need to loop
+            }]
+        },
+
+        // Configuration options go here
+        options: {}
     });
 }
