@@ -24,6 +24,7 @@ var map; //The map SVG
 //  active: a set of active category ids
 //  stats: an object mapping category ids to Stat objects
 //  restored: whether or not storage has been read to load active categories
+//  metadataFetched: whether we have read metadata from the server
 //This is the single source of truth - a change in these objects should be reflected
 //  in a change in the HTML. Usage of the functions in this module should guarantee this.
 var data = new Data();
@@ -35,10 +36,18 @@ function Data(){
   this.metadataFetched = false;
 }
 
+/*
+  Updates all the stats objects in data with their metadata.
+  Args:
+    metadata - the metadata object returned from the server
+*/
 function setMetadata(metadata){
+  if (!metadata){
+    return;
+  }
   for (let meta of metadata){
     let id = meta.stat_id;
-    if(data.stats[id]){
+    if(id in data.stats){
       data.stats[id].metadata = meta;
       /*External CITATION
       As it turns out, reading blobs is hard.
@@ -244,7 +253,6 @@ Stat.prototype.showMeta = function(){
     showMetadataAlert(this.metadata);
   } else if (!data.metadataFetched){
       let promise = getMetadata();
-      console.log(promise);
       promise.then((metadata) => {
         data.metadataFetched = true;
         if (metadata !== null){
@@ -397,6 +405,7 @@ if(typeof module !== "undefined" && module.exports){
       ACTIVE_SLIDER_PREFIX: ACTIVE_SLIDER_PREFIX
     },
     normalizeStats: normalizeStats,
-    calculateWeight: calculateWeight
+    calculateWeight: calculateWeight,
+    setMetadata: setMetadata
   }
 }
