@@ -12,6 +12,7 @@ const states = ["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI"
 "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR",
 "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"];
 
+
 //Global variables
 var sliderContainer; //Where the active sliders are stored
 var selectionContainer; //Where the inactive sliders are stored
@@ -23,6 +24,7 @@ var map; //The map SVG
 //  active: a set of active category ids
 //  stats: an object mapping category ids to Stat objects
 //  restored: whether or not storage has been read to load active categories
+//  ranks: the states in sorted order by global rank
 //This is the single source of truth - a change in these objects should be reflected
 //  in a change in the HTML. Usage of the functions in this module should guarantee this.
 var data = new Data();
@@ -31,6 +33,7 @@ function Data(){
   this.active = new Set();
   this.stats = {};
   this.restored = false;
+  this.ranks = states.slice();
 }
 
 //Converts values into a range between 0 and 1
@@ -81,10 +84,65 @@ function calculateWeight(value){
   return Math.pow(ratio, value - 1);
 }
 
+/*
+  Gets information about a state needed to display the state window.
+  Args:
+    stateAbbr - the two letter abbreviation for a state
+  Return:
+    An array of objects that contain the following:
+      id - a category id
+      rank - the state's rank in this category
+      value - the value of the data for this category and state
+      name - the name of the category corresponding with id
+    The array will be sorted by rank from best to worst. There will be an object
+    in the array for every active category.
+*/
+function getStateInfo(stateAbbr){
+  let arr = [];
+  for (let cat of data.active){
+    let stat = data.stats[cat];
+    if ("rankings" in stat){
+      let rank = stat.rankings.indexOf(stateAbbr) + 1;
+      if (rank === 0){
+        console.error("State not found in category " + cat);
+      } else {
+        arr.push({
+          id: cat,
+          rank: rank,
+          value: stat.data[stateAbbr],
+          name: stat.category.title
+        });
+      }
+    } else {
+      console.error("Rankings not found on active category " + cat);
+    }
+  }
+  arr.sort((first, second) => {
+    return first.rank - second.rank;
+  });
+  return arr;
+  //[{id:categoryID, rank:stateRank, value:stateValue, name:stat.data[id]}]
+}
+
+function rankStats(data){
+  let ranks = states.slice();
+  let error = false;
+  ranks.sort((first, second) => {
+    if (second in data && first in data){
+      return data[second] - data[first];
+    } else {
+      console.log("Data has no value for state " + first + " or " + second);
+      error = true;
+      return 0;
+    }
+  });
+  return error ? [] : ranks;
+}
+
 //Reads the weights from the global data object and uses them to display the map.
 function displayWeights(){
   //Sum up weights for each state
-  var weights = {};
+  let weights = {};
   for (let state of states){
     let weight = 0;
     for (let catID of data.active){
@@ -105,16 +163,13 @@ function displayWeights(){
 
   //Normalize
   normalizeStats(weights);
-
-  console.log("specific: " + weights["CA"]);
+  data.ranks = rankStats(weights);
 
   //
   for (let state of states){
     let weight = weights[state];
     colorState(state, weight);
   }
-
-  return weights;
 }
 
 /*Stat constructor.
@@ -159,11 +214,9 @@ Stat.prototype.updateWeight = function(weight){
 //Moves the category to the active tab and adds a slider
 Stat.prototype.enable = function(){
   this.enabled = true;
-  data.active.add(this.category.stat_id);
   this.slider.remove();
   this.slider = makeActiveSlider(this.category.title, this.weight);
   this.updateWeight(this.weight);
-  data.active.add(this.category.stat_id);
 
   //Add event listeners
   $(".statistic-slider", this.slider).change((event) => {
@@ -178,17 +231,22 @@ Stat.prototype.enable = function(){
 
   //Fetches the data if we do not have it.
   if(!this.data){
-    $.get("/api/data?cat=" + this.category.stat_id, "", (data, status, xhr) => {
+    $.get("/api/data?cat=" + this.category.stat_id, "", (cat_data, status, xhr) => {
       if (status !== "success"){
         alert("<statistics.js> AHHHHHHH FAILURE!!!");
       } else {
-        this.data = data[0];
-
+        this.data = cat_data[0];
+        this.rankings = rankStats(this.data);
+        data.active.add(this.category.stat_id);
         // this.data is an object with all of the column names ["stat_id"], ["stat_name_short"], ["AL"], ["AK"], etc.
         normalizeStats(this.data);
+        // console.log(this.data);
         displayWeights();
       }
     });
+  } else {
+    data.active.add(this.category.stat_id);
+    displayWeights();
   }
 }
 
@@ -331,30 +389,28 @@ function updateWeightStorage(cat){
   }
 }
 
-
-module.exports = {
-  displayWeights: displayWeights
-}
 //endregion
 
 
 // For testing purposes. More details later
-// if(typeof module !== "undefined" && module.exports){
-//   module.exports = {
-//     Stat: Stat,
-//     data: data,
-//     Data: Data,
-//     DEFAULT_WEIGHT: DEFAULT_WEIGHT,
-//     storage: {
-//       available: storageAvailable,
-//       updateCategory: updateCategoryStorage,
-//       updateWeight: updateWeightStorage,
-//       restore: restoreFromStorage,
-//       reset: setStorage,
-//       ACTIVE_SLIDER_KEY: ACTIVE_SLIDER_KEY,
-//       ACTIVE_SLIDER_PREFIX: ACTIVE_SLIDER_PREFIX
-//     },
-//     normalizeStats: normalizeStats,
-//     calculateWeight: calculateWeight
-//   }
-// }
+if(typeof module !== "undefined" && module.exports){
+  module.exports = {
+    Stat: Stat,
+    data: data,
+    Data: Data,
+    DEFAULT_WEIGHT: DEFAULT_WEIGHT,
+    storage: {
+      available: storageAvailable,
+      updateCategory: updateCategoryStorage,
+      updateWeight: updateWeightStorage,
+      restore: restoreFromStorage,
+      reset: setStorage,
+      ACTIVE_SLIDER_KEY: ACTIVE_SLIDER_KEY,
+      ACTIVE_SLIDER_PREFIX: ACTIVE_SLIDER_PREFIX
+    },
+    normalizeStats: normalizeStats,
+    calculateWeight: calculateWeight,
+    getStateInfo: getStateInfo,
+    rankStats: rankStats
+  }
+}
