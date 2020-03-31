@@ -77,8 +77,6 @@ $("document").ready(function () {
     selectionContainer = $("#statistics-selector");
     map = $("#us-map");
 
-
-
     //Gets list of categories and creates those sliders
     $.get("/api/cats", "", function(data, status, res){
       if (status !== "success"){
@@ -88,6 +86,7 @@ $("document").ready(function () {
           cat.title = cat.stat_name_short;
           new Stat(cat, DEFAULT_WEIGHT);
         }
+        restoreFromStorage();
       }
     });
 

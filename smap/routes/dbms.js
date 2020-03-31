@@ -40,7 +40,7 @@ exports.dbquery = function(query_str, callback) {
 
         //Step 1: Connect to the database
         function (callback) {
-            console.log("\n** creating connection.");
+            // console.log("\n** creating connection.");
             dbclient = mysql.createConnection({
                 host: host,
                 user: user,
@@ -53,13 +53,13 @@ exports.dbquery = function(query_str, callback) {
 
         //Step 2: Issue query
         function (results, callback) {
-            console.log("\n** retrieving data");
+            // console.log("\n** retrieving data");
             dbclient.query(query_str, callback);
         },
 
         //Step 3: Collect results
         function (rows, fields, callback) {
-            console.log("\n** dumping data:");
+            // console.log("\n** dumping data:");
             results = rows;
             callback(null);
         }
@@ -72,7 +72,7 @@ exports.dbquery = function(query_str, callback) {
             console.log(err);
             callback(err, null);
         } else {
-            console.log("Database query completed.");
+            // console.log("Database query completed.");
             callback(false, results);
         }
 
