@@ -66,3 +66,33 @@ test('Create a slider', (done) => {
     }
   });
 });
+
+//TODO: Reset data on merge
+describe('getStateInfo', () => {
+  test('happy path', () => {
+    let script = require("../../public/javascripts/model");
+    script.data.active.clear();
+    script.data.active.add(1);
+    script.data.stats[1] = {
+      rankings: ["AR", "AL", "OH"],
+      data: {
+        "AR": 5,
+        "AL": 3,
+        "OH": 2
+      }
+    };
+    script.data.active.add(2);
+    script.data.stats[2] = {
+      rankings: ["AL", "AR", "OH"],
+      data: {
+        "AR": 2,
+        "AL": 10,
+        "OH": 1
+      }
+    };
+    expect(script.getStateInfo("AL")).toEqual([
+      {id:2, rank:1, value:10},
+      {id:1, rank:2, value:3}
+    ]);
+  });
+});
