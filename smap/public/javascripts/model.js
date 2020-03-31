@@ -32,6 +32,17 @@ function Data(){
   this.active = new Set();
   this.stats = {};
   this.restored = false;
+  this.metadataFetched = false;
+}
+
+function setMetadata(metadata){
+  for (let meta of metadata){
+    let id = meta.stat_id;
+    if(data.stats[id]){
+      data.stats[id].metadata = meta;
+      meta.note = String.fromCharCode.apply(null, meta.note.data);
+    }
+  }
 }
 
 //Converts values into a range between 0 and 1
@@ -171,6 +182,11 @@ Stat.prototype.enable = function(){
     this.disable();
   });
 
+  $(".statistic-slider-metadata", this.slider).click((e) => {
+    e.preventDefault();
+    this.showMeta();
+  });
+
   updateCategoryStorage();
 
   //Fetches the data if we do not have it.
@@ -202,6 +218,11 @@ Stat.prototype.disable = function(){
   //Add event listeners
   this.slider.click((event) => {this.enable()});
 
+  $(".statistic-option-metadata").click((e) => {
+    e.preventDefault();
+    this.showMeta();
+  });
+
   updateCategoryStorage();
   displayWeights();
 }
@@ -212,6 +233,30 @@ Stat.prototype.delete = function(){
   data.active.remove(this.category.stat_id);
   delete data.stats[category.stat_id];
 }
+
+Stat.prototype.showMeta = function(){
+  prepareMetadataAlert();
+  if (this.metadata){
+    showMetadataAlert(this.metadata);
+  } else if (!data.metadataFetched){
+      let promise = getMetadata();
+      console.log(promise);
+      promise.then((metadata) => {
+        data.metadataFetched = true;
+        if (metadata !== null){
+          setMetadata(metadata);
+          if (this.metadata){
+            showMetadataAlert(this.metadata);
+            return;
+          }
+        }
+        closeMetadataAlert();
+      });
+  } else {
+    //TODO: Empty alert for error case?
+    closeMetadataAlert();
+  }
+};
 
 
 //region storage
