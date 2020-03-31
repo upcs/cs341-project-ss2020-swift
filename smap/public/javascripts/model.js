@@ -101,14 +101,14 @@ function getStateInfo(stateAbbr){
   for (let cat of data.active){
     let stat = data.stats[cat];
     if ("rankings" in stat){
-      let rank = data.stats[cat].rankings.indexOf(stateAbbr) + 1;
+      let rank = stat.rankings.indexOf(stateAbbr) + 1;
       if (rank === 0){
         console.error("State not found in category " + cat);
       } else {
         arr.push({
           id: cat,
           rank: rank,
-          value: data.stats[cat].data[stateAbbr]
+          value: stat.data[stateAbbr]
         });
       }
     } else {

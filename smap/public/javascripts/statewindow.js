@@ -1,5 +1,5 @@
 'use strict';
 
 $("document").ready(function () {
-    let containter = $("#statewindowcontainer");
+    let container = $("#state-window-container");
 });
