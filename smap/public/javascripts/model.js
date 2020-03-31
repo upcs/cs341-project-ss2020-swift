@@ -229,11 +229,11 @@ Stat.prototype.enable = function(){
 
   //Fetches the data if we do not have it.
   if(!this.data){
-    $.get("/api/data?cat=" + this.category.stat_id, "", (data, status, xhr) => {
+    $.get("/api/data?cat=" + this.category.stat_id, "", (cat_data, status, xhr) => {
       if (status !== "success"){
         alert("<statistics.js> AHHHHHHH FAILURE!!!");
       } else {
-        this.data = data[0];
+        this.data = cat_data[0];
         this.rankings = rankStats(this.data);
         data.active.add(this.category.stat_id);
         // this.data is an object with all of the column names ["stat_id"], ["stat_name_short"], ["AL"], ["AK"], etc.
