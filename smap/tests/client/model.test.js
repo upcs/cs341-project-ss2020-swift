@@ -405,105 +405,105 @@ describe('displayWeights', () => {
             rewire is rerun every call
     */
 
-    test('1 active statistic, stat.data==1, rewire', () => { //should work
-        let model = require("../../public/javascripts/model");
-        let visuals = require("../../public/javascripts/visuals");
-        // let states = model.__get__("states");
-        // states.splice(3,47);
+    // test('1 active statistic, stat.data==1, rewire', () => { //should work
+    //     let model = require("../../public/javascripts/model");
+    //     let visuals = require("../../public/javascripts/visuals");
+    //     // let states = model.__get__("states");
+    //     // states.splice(3,47);
 
-        let states = {
-          stat_id: 1,
-          invert_flag: 0,
-          AL: 100,
-          AK: 300,
-          AZ: 200,
-          /////////
-          AR: 100,
-          CA: 100,
-          CO: 100,
-          CT: 100,
-          DE: 100,
-          FL: 100,
-          GA: 100,
-          HI: 100,
-          ID: 100,
-          IL: 100,
-          IN: 100,
-          IA: 100,
-          KS: 100,
-          KY: 100,
-          LA: 100,
-          ME: 100,
-          MD: 100,
-          MA: 100,
-          MI: 100,
-          MN: 100,
-          MS: 100,
-          MO: 100,
-          MT: 100,
-          NE: 100,
-          NV: 100,
-          NH: 100,
-          NJ: 100,
-          NM: 100,
-          NY: 100,
-          NC: 100,
-          ND: 100,
-          OH: 100,
-          OK: 100,
-          OR: 100,
-          PA: 100,
-          RI: 100,
-          SC: 100,
-          SD: 100,
-          TN: 100,
-          TX: 100,
-          UT: 100,
-          VT: 100,
-          VA: 100,
-          WA: 100,
-          WV: 100,
-          WI: 100,
-          WY: 100
-      }
+    //     let states = {
+    //       stat_id: 1,
+    //       invert_flag: 0,
+    //       AL: 100,
+    //       AK: 300,
+    //       AZ: 200,
+    //       /////////
+    //       AR: 100,
+    //       CA: 100,
+    //       CO: 100,
+    //       CT: 100,
+    //       DE: 100,
+    //       FL: 100,
+    //       GA: 100,
+    //       HI: 100,
+    //       ID: 100,
+    //       IL: 100,
+    //       IN: 100,
+    //       IA: 100,
+    //       KS: 100,
+    //       KY: 100,
+    //       LA: 100,
+    //       ME: 100,
+    //       MD: 100,
+    //       MA: 100,
+    //       MI: 100,
+    //       MN: 100,
+    //       MS: 100,
+    //       MO: 100,
+    //       MT: 100,
+    //       NE: 100,
+    //       NV: 100,
+    //       NH: 100,
+    //       NJ: 100,
+    //       NM: 100,
+    //       NY: 100,
+    //       NC: 100,
+    //       ND: 100,
+    //       OH: 100,
+    //       OK: 100,
+    //       OR: 100,
+    //       PA: 100,
+    //       RI: 100,
+    //       SC: 100,
+    //       SD: 100,
+    //       TN: 100,
+    //       TX: 100,
+    //       UT: 100,
+    //       VT: 100,
+    //       VA: 100,
+    //       WA: 100,
+    //       WV: 100,
+    //       WI: 100,
+    //       WY: 100
+    //   }
 
-        let testWeights = {
-            AL: 99,
-            AK: 99,
-            AZ: 99
-        };
+    //     let testWeights = {
+    //         AL: 99,
+    //         AK: 99,
+    //         AZ: 99
+    //     };
 
-        let mockCatID = 1;
-        model.data.active.add(mockCatID);
+    //     let mockCatID = 1;
+    //     model.data.active.add(mockCatID);
 
-        model.data.stats[mockCatID] = {
-            "category": {
-                "title": "fake title"
-            },
-            "data": {
-                "AL": 2,
-                "AK": 4,
-                "AZ": 6
-            }
-        };
+    //     model.data.stats[mockCatID] = {
+    //         "category": {
+    //             "title": "fake title"
+    //         },
+    //         "data": {
+    //             "AL": 2,
+    //             "AK": 4,
+    //             "AZ": 6
+    //         }
+    //     };
 
-        window.colorState = jest.fn((state, weight) => {
-            testWeights[state] = weight;
-        });
+    //     window.colorState = jest.fn((state, weight) => {
+    //         testWeights[state] = weight;
+    //     });
 
-        //making sure the function is called 50 times even though it won't be
-        // expect(window.colorState.mock.calls.length).toBe(50);
+    //     //making sure the function is called 50 times even though it won't be
+    //     // expect(window.colorState.mock.calls.length).toBe(50);
 
-        expect(testWeights["AL"]).toEqual(99);
-        expect(testWeights["AK"]).toEqual(99);
-        expect(testWeights["AZ"]).toEqual(99);
+    //     expect(testWeights["AL"]).toEqual(99);
+    //     expect(testWeights["AK"]).toEqual(99);
+    //     expect(testWeights["AZ"]).toEqual(99);
 
-        model.displayWeights();
+    //     model.displayWeights();
 
-        expect(testWeights["AL"]).toEqual(0);
-        expect(testWeights["AZ"]).toEqual(1);
-        expect(testWeights["AK"]).toEqual(0.5);
-    });
+    //     expect(testWeights["AL"]).toEqual(0);
+    //     expect(testWeights["AZ"]).toEqual(1);
+    //     expect(testWeights["AK"]).toEqual(0.5);
+    // });
 });
 
 
