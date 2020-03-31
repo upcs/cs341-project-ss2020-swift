@@ -29,7 +29,7 @@ function getCats(callback){
       //telling the function to not carry oooooonnnn
       return;
     }
-  
+
     // console.log("<apiHandler.js> results[0][stat_id]: " + results[0]["stat_id"]);
     // console.log("<apiHandler.js> results[0][stat_name_short]: " + results[0]["stat_name_short"]);
 
@@ -49,18 +49,9 @@ function getMeta(callback){
       //telling the function to not carry oooooonnnn
       return;
     }
-  
-    //console.log(JSON.stringify(results));
-    //console.log("Results!!!!" + JSON.stringify(results[0]));
-    console.log("AAAAAAAAAAAAAAAA!!!!" + JSON.stringify(results[10]));
-    console.log("!!!!" + JSON.stringify(results[10].stat_id));
-
-    console.log("MEep morp " + results[10].note);
-    console.log("lack of meep morp" + results[1].note  + "!");
 
     //for future reference: text in BLOBs will look like ASCII values
     //unless it is referenced as results[x].note 
-
     callback(results);
   });
 }
@@ -104,7 +95,6 @@ function parseDataURL(query) {
 //Returns: an object of the form {category: Data}, or undefined if any category does not exist
 //Note that at this point, the data is NOT normalized
 function getData(cats, callback){
-  console.log("CATSSSSSSS: " + cats);
   let query = mysql.format(rawQuery, [states, cats]);
 
   dbms.dbquery(query, function(error, results){
