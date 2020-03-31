@@ -57,7 +57,7 @@ $("document").ready(function () {
                 dot3.animate({opacity: "1", fontSize: "80px"}, 500, "swing");
             }, 250);
         }, 250);
-    }, 1750 );
+    }, 1000 );
     load_themes(clear_loading, ellipses_loop);
 
     // END ANIMATIONS //
@@ -105,6 +105,8 @@ $("document").ready(function () {
     //   });
 
 
+
+
     // The inital top element
     // Get the svg document content
     window.setTimeout(function() {
@@ -121,8 +123,141 @@ $("document").ready(function () {
             // Return the styling on leaving
         }).mouseleave( function() {
             $(this).css("filter", "brightness(100%) contrast(100%)").css("stroke-width", "1");
+        }).click( function () {
+            // $("#state-window-container").show();
+            var state_id = $(this).attr("id");
+            var state_names = {
+                AL: "Alabama",
+                AK: "Alaska",
+                AZ: "Arizona",
+                AR: "Arkansas",
+                CA: "California",
+                CO: "Colorado",
+                CT: "Connecticut",
+                DE: "Deleware", 
+                FL: "Florida", 
+                GA: "Georgia", 
+                HI: "Hawaii", 
+                ID: "Idaho", 
+                IL: "Illinois", 
+                IN: "Indiana", 
+                IA: "Iowa", 
+                KS: "Kansas", 
+                KY: "Kentucky", 
+                LA: "Louisiana", 
+                ME: "Maine", 
+                MD: "Maryland", 
+                MA: "Massachusetts", 
+                MI: "Michigan", 
+                MN: "Minnesota",  
+                MS: "Mississippi", 
+                MO: "Missouri", 
+                MT: "Montana", 
+                NE: "Nebraska", 
+                NV: "Nevada", 
+                NH: "New Hampshire", 
+                NJ: "New Jersey", 
+                NM: "New Mexico", 
+                NY: "New York", 
+                NC: "North Carolina", 
+                ND: "North Dakota", 
+                OH: "Ohio", 
+                OK: "Oklahoma", 
+                OR: "Oregon", 
+                PA: "Pennsylvania", 
+                RI: "Rhode Island", 
+                SC: "South Carolina", 
+                SD: "South Dakota", 
+                TN: "Tennessee", 
+                TX: "Texas", 
+                UT: "Utah", 
+                VT: "Vermont", 
+                VA: "Virginia", 
+                WA: "Washington", 
+                WV: "West Virginia", 
+                WI: "Wisconson", 
+                WY: "Wyoming"
+            };
+
+            var state_name = state_names[state_id]; 
+
+            alert("this is the state_id: " + state_id + "\nthis is the state_name: " + state_name);
+            
+
+            // $("#grid-item-state-name").html(state_name); 
+
+            // $(".alert-container").show(); 
+
+
         });
     }, 250);
+
+    window.setTimeout(function () {
+        // get state name element
+        var state_name = document.getElementById("grid-item-state-name").contentDocument;
+        // When mousing over a state
+        $("#grid-item-state-name").click(function () {            
+            var state_id = $(this).attr("id");
+            state_id = "AL";  //GET RID OF THIS LATER  
+            var state_names = {
+                AL: "Alabama",
+                AK: "Alaska",
+                AZ: "Arizona",
+                AR: "Arkansas",
+                CA: "California",
+                CO: "Colorado",
+                CT: "Connecticut",
+                DE: "Deleware",
+                FL: "Florida",
+                GA: "Georgia",
+                HI: "Hawaii",
+                ID: "Idaho",
+                IL: "Illinois",
+                IN: "Indiana",
+                IA: "Iowa",
+                KS: "Kansas",
+                KY: "Kentucky",
+                LA: "Louisiana",
+                ME: "Maine",
+                MD: "Maryland",
+                MA: "Massachusetts",
+                MI: "Michigan",
+                MN: "Minnesota",
+                MS: "Mississippi",
+                MO: "Missouri",
+                MT: "Montana",
+                NE: "Nebraska",
+                NV: "Nevada",
+                NH: "New Hampshire",
+                NJ: "New Jersey",
+                NM: "New Mexico",
+                NY: "New York",
+                NC: "North Carolina",
+                ND: "North Dakota",
+                OH: "Ohio",
+                OK: "Oklahoma",
+                OR: "Oregon",
+                PA: "Pennsylvania",
+                RI: "Rhode Island",
+                SC: "South Carolina",
+                SD: "South Dakota",
+                TN: "Tennessee",
+                TX: "Texas",
+                UT: "Utah",
+                VT: "Vermont",
+                VA: "Virginia",
+                WA: "Washington",
+                WV: "West Virginia",
+                WI: "Wisconson",
+                WY: "Wyoming"
+            };
+
+            var state_name = state_names[state_id];
+
+            $("#grid-item-state-name").text(""+ state_name); 
+        });
+    }, 250);
+
 
     // On theme-circle click, change the active theme
     $(".theme-template").click( function() {
