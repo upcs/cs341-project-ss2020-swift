@@ -106,11 +106,7 @@ function displayWeights(){
   //Normalize
   normalizeStats(weights);
 
-  // console.log(states);
-  //console.log("weights after normalize: " + weights);
   console.log("specific: " + weights["CA"]);
-  //console.log("HELLOOOOOOO");
-
 
   //
   for (let state of states){
@@ -118,9 +114,7 @@ function displayWeights(){
     colorState(state, weight);
   }
 
-  //var meep = weights;
-  //console.log("MEEP" + meep);
-  //return weights["CA"];
+  return weights;
 }
 
 /*Stat constructor.
@@ -337,6 +331,10 @@ function updateWeightStorage(cat){
   }
 }
 
+
+module.exports = {
+  displayWeights: displayWeights
+}
 //endregion
 
 

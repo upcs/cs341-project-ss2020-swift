@@ -193,9 +193,8 @@
         <script>
                 var ctx = document.getElementById('myChart').getContext('2d');
 
-                displayWeights();
-                //var blah = meep;
-                //console.log("WEIGHTS! " + meep);
+                var x = displayWeights();
+                console.log("WEIGHTS! " + x["CA"]);
     
                 var chart = new Chart(ctx, {
                     // The type of chart we want to create
