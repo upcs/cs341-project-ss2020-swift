@@ -23,6 +23,11 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
         <script src="javascripts/model.js" type="text/javascript"></script>
         <script src="javascripts/visuals.js" type="text/javascript"></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+
+        
+
     </head>
     <body>
 		<div id="init">
@@ -179,6 +184,37 @@
                 <img src="images/socials/tumblr.png" alt="Share us on Tumblr!" id="site-tumblr" class="bottom-social" />
                 <br><br><br><br>
             </div>
+
+            <div>
+                <canvas id="myChart"></canvas>
+            </div>
         </div>
+
+        <script>
+                var ctx = document.getElementById('myChart').getContext('2d');
+
+                displayWeights();
+                //var blah = meep;
+                //console.log("WEIGHTS! " + meep);
+    
+                var chart = new Chart(ctx, {
+                    // The type of chart we want to create
+                    type: 'bar',
+    
+                    // The data for our dataset
+                    data: {
+                        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+                        datasets: [{
+                            label: 'My First dataset',
+                            backgroundColor: 'rgb(255, 99, 132)',
+                            borderColor: 'rgb(255, 99, 132)',
+                            data: [0, 10, 5, 2, 20, 30, 45]
+                        }]
+                    },
+    
+                    // Configuration options go here
+                    options: {}
+                });
+            </script>
     </body>
 </html>

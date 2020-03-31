@@ -12,7 +12,6 @@ const states = ["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI"
 "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR",
 "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"];
 
-
 //Global variables
 var sliderContainer; //Where the active sliders are stored
 var selectionContainer; //Where the inactive sliders are stored
@@ -85,7 +84,7 @@ function calculateWeight(value){
 //Reads the weights from the global data object and uses them to display the map.
 function displayWeights(){
   //Sum up weights for each state
-  let weights = {};
+  var weights = {};
   for (let state of states){
     let weight = 0;
     for (let catID of data.active){
@@ -107,11 +106,21 @@ function displayWeights(){
   //Normalize
   normalizeStats(weights);
 
+  // console.log(states);
+  //console.log("weights after normalize: " + weights);
+  console.log("specific: " + weights["CA"]);
+  //console.log("HELLOOOOOOO");
+
+
   //
   for (let state of states){
     let weight = weights[state];
     colorState(state, weight);
   }
+
+  //var meep = weights;
+  //console.log("MEEP" + meep);
+  //return weights["CA"];
 }
 
 /*Stat constructor.
@@ -332,22 +341,22 @@ function updateWeightStorage(cat){
 
 
 // For testing purposes. More details later
-if(typeof module !== "undefined" && module.exports){
-  module.exports = {
-    Stat: Stat,
-    data: data,
-    Data: Data,
-    DEFAULT_WEIGHT: DEFAULT_WEIGHT,
-    storage: {
-      available: storageAvailable,
-      updateCategory: updateCategoryStorage,
-      updateWeight: updateWeightStorage,
-      restore: restoreFromStorage,
-      reset: setStorage,
-      ACTIVE_SLIDER_KEY: ACTIVE_SLIDER_KEY,
-      ACTIVE_SLIDER_PREFIX: ACTIVE_SLIDER_PREFIX
-    },
-    normalizeStats: normalizeStats,
-    calculateWeight: calculateWeight
-  }
-}
+// if(typeof module !== "undefined" && module.exports){
+//   module.exports = {
+//     Stat: Stat,
+//     data: data,
+//     Data: Data,
+//     DEFAULT_WEIGHT: DEFAULT_WEIGHT,
+//     storage: {
+//       available: storageAvailable,
+//       updateCategory: updateCategoryStorage,
+//       updateWeight: updateWeightStorage,
+//       restore: restoreFromStorage,
+//       reset: setStorage,
+//       ACTIVE_SLIDER_KEY: ACTIVE_SLIDER_KEY,
+//       ACTIVE_SLIDER_PREFIX: ACTIVE_SLIDER_PREFIX
+//     },
+//     normalizeStats: normalizeStats,
+//     calculateWeight: calculateWeight
+//   }
+// }
