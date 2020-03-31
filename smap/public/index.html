@@ -26,70 +26,22 @@
         <script src="javascripts/statewindow.js" type="text/javascript"></script>
         <script src="javascripts/ne.js" type="text/javascript"></script>
     </head>
-    <body class="unscrollable">
-        <div class="alert-container">
-            <div class="alert-body-and-close">
-                <div class="alert-background">
-                    <div id=state-window-container>
-                        <div class=grid-item id=grid-item-state-name> State name</div>
-                        <div class=grid-item id=grid-item-state-rank> state rank</div>
-                        <div class=grid-item id=grid-item-state-display> picture of a state</div>
-                        <div class=grid-item id=state-window-data-container>
-                            <div class="grid-item" id=good-stats> good stats use unordered list here?</div>
-                            <div class="grid-item" id=good-stats-details> good stats details</div>
-                            <div class="grid-item" id=bad-stats> bad stats use unordered list here?</div>
-                            <div class="grid-item" id=bad-stats-details> bad stats details</div>
-                        </div>
+    
+        <div class="alert-container hidden">
+            <div class="alert-background">
+                <div id=state-window-container>
+                    <div class=grid-item id=state-name> State name</div>
+                    <div class=grid-item id=state-rank> state rank</div>
+                    <div class=grid-item id=state-display> picture of a state</div>
+                    <div class=grid-item id=state-window-data-container>
+                        <div class="grid-item" id=good-stats> good stats use unordered list here?</div>
+                        <div class="grid-item" id=good-stats-details> good stats details</div>
+                        <div class="grid-item" id=bad-stats> bad stats use unordered list here?</div>
+                        <div class="grid-item" id=bad-stats-details> bad stats details</div>
                     </div>
-                    <div class="alert-close">
-                        Close
-                    </div>
-                    <script type="text/javascript">
-                        $("document").ready(function() {
-                            const blur_elements = [
-                                $("#nav-bar"), $("#settings"), $("#map-container"), $("#about-container")
-                            ];
-
-                            function initialize_dummy() {
-                                window.setTimeout(function() {
-                                    $(".loading").toggleClass("hidden");
-                                    $(".metadata-alert-element").toggleClass("hidden");
-                                }, 2000);
-                            }
-
-                            initialize_dummy();
-
-                            $(".alert-close").click(function() {
-                                for (var element of blur_elements) {
-                                    element.removeClass("blurred");
-                                }
-                                $("body").removeClass("unscrollable");
-                                $(".alert-container").addClass("hidden");
-                                $(".metadata-alert-element").addClass("hidden");
-                                $(".loading").removeClass("hidden");
-                            });
-
-                            // THIS CODE DOES NOT WORK, EVENT LISTENER HAS TO BE ADDED WHEN THE
-                            // ELEMENT IS CREATED FROM THE TEMPLATE
-
-                            $(".statistic-option-metadata").click(function(e) {
-                                e.preventDefault();
-                                $("body").addClass("unscrollable");
-                                $(".alert-container").removeClass("hidden");
-                                for (var element of blur_elements) {
-                                    element.addClass("blurred");
-                                }
-                            });
-
-                            $(".statistic-slider-metadata").click(function(e) {
-                                $("body").addClass("unscrollable");
-                                $(".alert-container").removeClass("hidden");
-                                for (var element of blur_elements) {
-                                    element.addClass("blurred");
-                                }
-                            });
-                        });
-                    </script>
+                </div>
+                <div class="alert-close">
+                    Close
                 </div>
             </div>
         </div>
@@ -109,7 +61,7 @@
         <div id="app-container">
             <!-- The nav that holds all of the settings on the left side of the app. See the ids for
                  each of the individual settings -->
-            <div id="settings" class="blurred">
+            <div id="settings">
                 <div id="statistics-sliders-header">
                     Statistic Settings:
                 </div>
@@ -164,7 +116,7 @@
             </div>
             <!-- The nav bar that allows the users to navigate between app and about section.
                  Currently does not function -->
-            <div id="nav-bar" class="blurred">
+            <div id="nav-bar">
                 <div id="center-nav">
                     <img src="images/arrow.png" id="nav-arrow"/>
                 </div>
@@ -213,7 +165,7 @@
                 </div>
                 <!-- End theme-roller -->
             </div>
-            <div id="map-container" class="blurred">
+            <div id="map-container">
                 <object type="image/svg+xml" data="images/us.svg" id="us-map"></object>
             </div>
             <!-- Container for the whole ne magnifiyer -->
@@ -227,7 +179,7 @@
                 </div>
             </div>
         </div>
-        <div id="about-container" class="blurred">
+        <div id="about-container">
             <div id="about-header">
                 <h1>About SMAP</h1>
             </div>
@@ -259,5 +211,4 @@
                 <br><br><br><br>
             </div>
         </div>
-    </body>
 </html>

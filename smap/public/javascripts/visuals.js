@@ -121,12 +121,28 @@ $("document").ready(function () {
     //     }
     //   });
 
-
-
+    const blur_elements = [
+        $("#nav-bar"), $("#settings"), $("#map-container"), $("#about-container")
+    ];
 
     // The inital top element
     // Get the svg document content
     window.setTimeout(function() {
+        ///////NE magnifier///////
+        var ne_map = document.getElementById("ne-map").contentDocument;
+        var ne_map_top_element = $("#ME", ne_map);
+        $("path", ne_map).mouseenter(function () {
+            // Put it on top
+            $(this).insertAfter(ne_map_top_element);
+            ne_map_top_element = $(this);
+            // Set styling
+            $(this).css("filter", "contrast(85%) brightness(115%)").css("stroke-width", "3");
+            // Return the styling on leaving
+        }).mouseleave(function () {
+            $(this).css("filter", "brightness(100%) contrast(100%)").css("stroke-width", "1");
+        })
+
+        ///////STATE HOVERING AND STATE WINDOW/////////
         var us_map = document.getElementById("us-map").contentDocument;
         // Get one of the SVG items by ID;
         var us_map_top_element = $("#AK", us_map);
@@ -140,24 +156,11 @@ $("document").ready(function () {
             // Return the styling on leaving
         }).mouseleave( function() {
             $(this).css("filter", "brightness(100%) contrast(100%)").css("stroke-width", "1");
-        });
-        // Done now for the NE
-        var ne_map = document.getElementById("ne-map").contentDocument;
-        var ne_map_top_element = $("#ME", ne_map);
-        $("path", ne_map).mouseenter( function() {
-            // Put it on top
-            $(this).insertAfter(ne_map_top_element);
-            ne_map_top_element = $(this);
-            // Set styling
-            $(this).css("filter", "contrast(85%) brightness(115%)").css("stroke-width", "3");
-            // Return the styling on leaving
-        }).mouseleave( function() {
-            $(this).css("filter", "brightness(100%) contrast(100%)").css("stroke-width", "1");
         }).click( function () {
-            const blur_elements = [
-                $("#nav-bar"), $("#settings"), $("#map-container"), $("#about-container")
-            ];
-            
+            for(let element of blur_elements){
+                element.addClass("blurred"); 
+            }
+
             // $("#state-window-container").show();
             var state_id = $(this).attr("id");
             var state_names = {
@@ -213,28 +216,36 @@ $("document").ready(function () {
                 WY: "Wyoming"
             };
             var state_name = state_names[state_id]; 
-
-            // alert("this is the state_id: " + state_id + "\nthis is the state_name: " + state_name); 
-
-            $(".loading").addClass("hidden"); 
-            $(".metadata-alert-element").removeClass("hidden"); 
-            $(".alert-container").removeClass("hidden"); 
-            $("body").addClass("unscrollable"); 
-
-            $("#grid-item-state-name").text(state_name); 
             
+            // alert("this is the state_id: " + state_id + "\nthis is the state_name: " + state_name); 
+            
+            $("body").addClass("unscrollable"); 
+            $(".alert-container").removeClass("hidden"); 
+
+            $("#state-name").text(state_name);            
             
             let stateCatArr = getStateInfo(state_id); 
             // $("#grid-item-state-display").text("best category id: " + stateCatArr[1]["id"]); 
             $("#good-stats").text(stateCatArr[0]["name"]); 
             $("#bad-stats").text(stateCatArr[stateCatArr.length-1]["name"]); 
+            
 
+            
             // $("#good-stats-details").text(stateCatArr[0]["name"]);
-            // $("#bad-stats-details").text(stateCatArr[stateCatArr.length - 1]["name"]); 
-
-
+            // $("#bad-stats-details").text(stateCatArr[stateCatArr.length - 1]["name"]);     
+            
         });
+        
     }, 250);
+    
+    $(".alert-close").click(function () {
+        for (let element of blur_elements) {
+            element.removeClass("blurred");
+        }
+        $("body").removeClass("unscrollable");
+        $(".alert-container").addClass("hidden");
+        $(".loading").removeClass("hidden");
+    });
 
     // On theme-circle click, change the active theme
     $(".theme-template").click( function() {

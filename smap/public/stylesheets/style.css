@@ -800,22 +800,22 @@ object {
 .alert-background {
     width: 100%;
     border-radius: 0px 0px 10px 10px;
-    padding-bottom: 35px;
+    /* padding-bottom: 35px; */
     background-color: rgba(120, 120, 120, 1);
     box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.75);
     z-index: 11;
-}
-
-.alert-body-and-close {
     grid-area: alert;
 }
+
+/* .alert-body-and-close {
+} */
 
 .blurred {
     -webkit-filter: blur(10px);
     -moz-filter: blur(10px);
     -o-filter: blur(10px);
     -ms-filter: blur(10px);
-    filter: blur(10px);
+    filter: blur(10px) !important;
 }
 
 .hidden {
@@ -858,23 +858,22 @@ object {
 }
 
 .grid-item{
-    background-color: rgba(128,128,255,1); /* blue */
-    border: 1px solid rgba(0,0,100,0.7); /* less blue */
     /* padding: 20px; */
-    font-size: 30px;
+    font-size: 24px;
     text-align: center;
 }
 
-#grid-item-state-name{
+#state-name{
     grid-area: state-name;
 }
 
-#grid-item-state-rank{
+#state-rank{
     grid-area: state-rank;
 }
 
-#grid-item-state-display{
+#state-display{
     grid-area: state-display;
+    background-color: var(--subgroup-color-lighter);
 }
 
 #state-window-data-container{
