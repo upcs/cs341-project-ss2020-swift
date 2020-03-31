@@ -24,6 +24,7 @@ var map; //The map SVG
 //  active: a set of active category ids
 //  stats: an object mapping category ids to Stat objects
 //  restored: whether or not storage has been read to load active categories
+//  ranks: the states in sorted order by global rank
 //This is the single source of truth - a change in these objects should be reflected
 //  in a change in the HTML. Usage of the functions in this module should guarantee this.
 var data = new Data();
@@ -32,6 +33,7 @@ function Data(){
   this.active = new Set();
   this.stats = {};
   this.restored = false;
+  this.ranks = states.slice();
 }
 
 //Converts values into a range between 0 and 1
@@ -97,15 +99,20 @@ function calculateWeight(value){
 function getStateInfo(stateAbbr){
   let arr = [];
   for (let cat of data.active){
-    let rank = data.stats[cat].rankings.indexOf(stateAbbr) + 1;
-    if (rank === 0){
-      console.error("State not found in category " + cat);
+    let stat = data.stats[cat];
+    if ("rankings" in stat){
+      let rank = data.stats[cat].rankings.indexOf(stateAbbr) + 1;
+      if (rank === 0){
+        console.error("State not found in category " + cat);
+      } else {
+        arr.push({
+          id: cat,
+          rank: rank,
+          value: data.stats[cat].data[stateAbbr]
+        });
+      }
     } else {
-      arr.push({
-        id: cat,
-        rank: rank,
-        value: data.stats[cat].data[stateAbbr]
-      });
+      console.error("Rankings not found on active category " + cat);
     }
   }
   arr.sort((first, second) => {
@@ -117,9 +124,17 @@ function getStateInfo(stateAbbr){
 
 function rankStats(data){
   let ranks = states.slice();
+  let error = false;
   ranks.sort((first, second) => {
-    return data[second] - data[first];
-  })
+    if (second in data && first in data){
+      return data[second] - data[first];
+    } else {
+      console.log("Data has no value for state " + first + " or " + second);
+      error = true;
+      return 0;
+    }
+  });
+  return error ? [] : ranks;
 }
 
 //Reads the weights from the global data object and uses them to display the map.
@@ -146,6 +161,7 @@ function displayWeights(){
 
   //Normalize
   normalizeStats(weights);
+  data.ranks = rankStats(weights);
 
   //
   for (let state of states){
@@ -196,11 +212,9 @@ Stat.prototype.updateWeight = function(weight){
 //Moves the category to the active tab and adds a slider
 Stat.prototype.enable = function(){
   this.enabled = true;
-  data.active.add(this.category.stat_id);
   this.slider.remove();
   this.slider = makeActiveSlider(this.category.title, this.weight);
   this.updateWeight(this.weight);
-  data.active.add(this.category.stat_id);
 
   //Add event listeners
   $(".statistic-slider", this.slider).change((event) => {
@@ -220,10 +234,10 @@ Stat.prototype.enable = function(){
         alert("<statistics.js> AHHHHHHH FAILURE!!!");
       } else {
         this.data = data[0];
-
+        this.rankings = rankStats(this.data);
+        data.active.add(this.category.stat_id);
         // this.data is an object with all of the column names ["stat_id"], ["stat_name_short"], ["AL"], ["AK"], etc.
         normalizeStats(this.data);
-        this.rankings = rankStats(this.data);
         // console.log(this.data);
         displayWeights();
       }
@@ -391,6 +405,7 @@ if(typeof module !== "undefined" && module.exports){
     },
     normalizeStats: normalizeStats,
     calculateWeight: calculateWeight,
-    getStateInfo: getStateInfo
+    getStateInfo: getStateInfo,
+    rankStats: rankStats
   }
 }
