@@ -1,5 +1,9 @@
 'use strict';
 
+const blur_elements = [
+    $("#nav-bar"), $("#settings"), $("#map-container"), $("#about-container")
+];
+
 $("document").ready(function () {
     //////////////////////
     // START ANIMATION //
@@ -286,7 +290,55 @@ $("document").ready(function () {
             lastMove = window.performance.now();
         }
     });
+
+    $("#metadata-alert-close").click(closeMetadataAlert);
 });
+
+async function getMetadata(){
+  let metadata = await $.get("/api/meta", (data, status, xhr) => {
+    if (status !== "success"){
+      console.error("Unable to query for metadata");
+      return null;
+    } else {
+      return data;
+    }
+  });
+  return metadata;
+}
+
+function prepareMetadataAlert(){
+  $("body").addClass("unscrollable");
+  for (var element of blur_elements) {
+      element.addClass("blurred");
+  }
+  $("#metadata-alert-container").removeClass("hidden");
+}
+
+/*
+  Args:
+    metadata - the metadata object returned from the server. Must have at least
+    the following:
+        state_name_short, publication_date, note, source, original_source
+*/
+function showMetadataAlert(metadata){
+  let container = $("#metadata-alert-container");
+  $("#metadata-title").text(metadata.stat_name_short);
+  $("#metadata-date").text(metadata.publication_date);
+  $("#metadata-notes").text(metadata.note);
+  $("#metadata-publisher").text(metadata.source + ": " + metadata.original_source);
+  $(".loading").addClass("hidden");
+  $(".metadata-alert-element").removeClass("hidden");
+}
+
+function closeMetadataAlert(){
+  for (var element of blur_elements) {
+      element.removeClass("blurred");
+  }
+  $("body").removeClass("unscrollable");
+  $(".loading").removeClass("hidden");
+  $(".metadata-alert-element").addClass("hidden");
+  $("#metadata-alert-container").addClass("hidden");
+}
 
 //Creates an active slider from the template and adds it to the page
 function makeActiveSlider(title, weight){
