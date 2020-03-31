@@ -192,9 +192,15 @@ $("document").ready(function () {
             $("body").addClass("unscrollable"); 
 
             $("#grid-item-state-name").text(state_name); 
-            // stateCatArr = getStateInfo(); 
-            // $("#grid-item-state-display").text("best category id: " + stateCatArr[1]["id"]); 
             
+            
+            let stateCatArr = getStateInfo(state_id); 
+            // $("#grid-item-state-display").text("best category id: " + stateCatArr[1]["id"]); 
+            $("#good-stats").text(stateCatArr[0]["name"]); 
+            $("#bad-stats").text(stateCatArr[stateCatArr.length-1]["name"]); 
+
+            // $("#good-stats-details").text(stateCatArr[0]["name"]);
+            // $("#bad-stats-details").text(stateCatArr[stateCatArr.length - 1]["name"]); 
 
 
         });

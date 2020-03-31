@@ -93,6 +93,7 @@ function calculateWeight(value){
       id - a category id
       rank - the state's rank in this category
       value - the value of the data for this category and state
+      name - the name of the category corresponding with id
     The array will be sorted by rank from best to worst. There will be an object
     in the array for every active category.
 */
@@ -108,7 +109,8 @@ function getStateInfo(stateAbbr){
         arr.push({
           id: cat,
           rank: rank,
-          value: stat.data[stateAbbr]
+          value: stat.data[stateAbbr], 
+          name: stat.category.title
         });
       }
     } else {
@@ -119,7 +121,7 @@ function getStateInfo(stateAbbr){
     return first.rank - second.rank;
   });
   return arr;
-  //[{id:categoryID, rank:stateRank, value:stateValue}]
+  //[{id:categoryID, rank:stateRank, value:stateValue, name:stat.data[id]}]
 }
 
 function rankStats(data){
