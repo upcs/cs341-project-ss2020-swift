@@ -43,7 +43,7 @@ function setMetadata(metadata){
       /*External CITATION
       As it turns out, reading blobs is hard.
       https://stackoverflow.com/questions/3195865/converting-byte-array-to-string-in-javascript
-      /*
+      */
       meta.note = String.fromCharCode.apply(null, meta.note.data);
     }
   }
