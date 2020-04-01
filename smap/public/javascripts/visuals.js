@@ -170,7 +170,7 @@ $("document").ready(function () {
                 element.addClass("blurred");
             }
             $("body").addClass("unscrollable");
-            $(".alert-container").removeClass("hidden");
+            $("#state-window-alert-container").removeClass("hidden");
         });
     }
 
@@ -242,13 +242,26 @@ $("document").ready(function () {
             let best_stat = data.stats[stateCatArr[0]["id"]];
             let worst_stat = data.stats[stateCatArr[stateCatArr.length - 1]["id"]]; 
 
-            $("#good-stats").text("Of the statistics you selected, " + state_name + 
-                    " is ranked the best in " + best_stat.stat_name_short +".\n");
+            $("#good-stats").text("Best stat:\n " + best_stat.category.stat_name_short + "\n");
             
-            $("#bad-stats").text("Of the statistics you selected, " + state_name + 
-                    " is ranked the worst in " + worst_stat.stat_name_short + ".\n");
+            $("#bad-stats").text("Worst stat:\n " + worst_stat.category.stat_name_short + "\n");
+
                   
-            $("#good-stats-details").text("Publication Date: "); 
+            $("#good-stats-details").text("Hello darkness my old friend "); 
+
+            // for(int i=0; i<2; i++) {
+            //     var stat;
+            //     switch (i):
+            //         case 0:
+            //             stat = best_stat;
+            //             break;
+            //         case 1:
+            //             stat = worst_stat;
+            //             break; 
+            // }
+            
+            console.log("best stat: " + JSON.stringify(best_stat)); 
+            
             if(best_stat.metadata){
                 $("good-stats-details").append(best_stat.metadata.publication_date); 
             } else if(!data.metadataFetched) {
@@ -258,7 +271,22 @@ $("document").ready(function () {
                     if (metadata !== null) {
                         setMetadata(metadata);
                         if (best_stat.metadata !== undefined) {
-                            $("#good-stats-details").append(best_stat.metadata.publication_date);
+                            console.log("best stat.metadata: " + JSON.stringify(best_stat.metadata)); 
+                            let survey_period = best_stat.metadata.survey_period; 
+                            let source = best_stat.metadata.source; 
+                            let publisher = best_stat.metadata.publisher; 
+                            let units = best_stat.data.units; 
+                            let note = best_stat.metadata.note; 
+
+                            let msg = "Survey period: " + survey_period +
+                                "<br>Source: " + source + 
+                                "<br>Publisher: " + publisher + 
+                                "<br>Units: " + "..." + 
+                                "<br>Note: " + note;
+
+                            $("#good-stats-details").html(msg);
+                            // $("#good-stats-details").html("line1 <br>line2\nline3"); 
+                            
                         }
                     }
                 });
@@ -266,10 +294,6 @@ $("document").ready(function () {
                 console.error("<visuals><populateStateWindow>: Unknown error")
             }
             
-            
-           
-
-
             //TODO: handle when only 0 or 1 stat is selected 
 
         });
@@ -283,7 +307,6 @@ $("document").ready(function () {
         Survey period: *survey_period*
         Source: *source*
         Published by: *published_by*
-        Original Source: *original_source*
         Units:
 
         \nNote: *note*
@@ -303,20 +326,9 @@ $("document").ready(function () {
     // }
 
     const blur_elements = [
-        $("#nav-bar"), $("#settings"), $("#map-container"), $("#about-container")
+        $("#nav-bar"), $("#settings"), $("#map-container"), $("#about-container"), $("#ne-inspector-container")
     ];
 
-    function closeAlert() {
-        for (let element of blur_elements) {
-            element.removeClass("blurred");
-        }
-        $("body").removeClass("unscrollable");
-        $(".alert-container").addClass("hidden");
-        $(".loading").removeClass("hidden");
-    }
-
-    $(".alert-close").click(closeAlert());
-    
     // The inital top element
     // Get the svg document content
     window.setTimeout(function() {
@@ -325,9 +337,19 @@ $("document").ready(function () {
         prepareStateWindow();
         populateStateWindow(); //when a state is clicked
     }, 250);
-
     
+    $(".alert-close").click( () =>
+        closeAlert()
+    );
     
+    function closeAlert() {
+        for (let element of blur_elements) {
+            element.removeClass("blurred");
+        }
+        $("body").removeClass("unscrollable");
+        $(".alert-container").addClass("hidden");
+        $(".loading").removeClass("hidden");
+    }
 
     // On theme-circle click, change the active theme
     $(".theme-template").click( function() {
