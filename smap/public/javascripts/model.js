@@ -148,6 +148,7 @@ It is of the following form:
   enabled: Whether to use this category to calculate weights.
   slider: A JQuery object for the slider (whether active or inactive).
   data: The data for the statistic - mapping from state abbreviations to numbers. May be undefined.
+  metadata: The metadata for the statistic category - may be undefined
 }
 Constructor arguments:
  category - a category object, which must have a title
