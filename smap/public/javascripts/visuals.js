@@ -228,9 +228,15 @@ function colorState(state, weight) {
     });
 }
 
+//weights is the dictionary with keys of state abbreviations and values of the calculated weight
+//ranks is an array, with only state abbreviations, from best to worst
 function drawChart(weights, ranks){
     var ctx = document.getElementById('myChart').getContext('2d');
 
+    //this prevents the charts from stacking and interfering with eachother
+    if (chart != undefined){
+        chart.destroy();
+    }
 
     chart = new Chart(ctx, {
         // The type of chart we want to create
