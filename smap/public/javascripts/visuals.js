@@ -235,71 +235,95 @@ $("document").ready(function () {
         //when clicking on a state
         $("path", us_map).click(function () {
 
+            //get the state's id, and write the name in the window
             var state_id = $(this).attr("id");
             var state_name = state_names[state_id];
-
             $("#state-name").text(state_name);
+            
+            //make array of stats organized by state's ranking in each statistic 
             let stateCatArr = getStateInfo(state_id);
-
+            
+            //retrieve the best and worst stats from the global variable data based on id
             let best_stat = data.stats[stateCatArr[0]["id"]];
             let worst_stat = data.stats[stateCatArr[stateCatArr.length - 1]["id"]]; 
 
-            $("#good-stats").text("Best stat:\n " + best_stat.category.stat_name_short + "\n");
             
+            // if (stateCatArr.length == 0) {
+            //     //TODO: css to make just one container for this message 
+            //     let errMsgNoStats = "You haven't selected any statisics to rank this state by. Please click close and select a statisitc from the Statistic Selection category"; 
+            //     $("#good-stats").text(errMsgNoStats);
+
+            // } else if (stateCatArr.length == 1){
+            //     //TODO: css so that the height of the bottom row is 0 and the top row takes up the whole container
+
+            // } else {
+            //     //write good/bad stat names in good/bad grid items
+            //     $("#good-stats").text("Best stat:\n " + best_stat.category.stat_name_short + "\n");
+            //     $("#bad-stats").text("Worst stat:\n " + worst_stat.category.stat_name_short + "\n");
+                
+            //     //write details/metadata in good/bad stats details grid items 
+            //     populateDataDetails(best_stat, true); 
+            //     populateDataDetails(worst_stat, false); 
+            // } 
+
+            //   write good/bad stat names in good/bad grid items
+            $("#good-stats").text("Best stat:\n " + best_stat.category.stat_name_short + "\n");
             $("#bad-stats").text("Worst stat:\n " + worst_stat.category.stat_name_short + "\n");
 
-                  
-            $("#good-stats-details").text("Hello darkness my old friend "); 
-
-            // for(int i=0; i<2; i++) {
-            //     var stat;
-            //     switch (i):
-            //         case 0:
-            //             stat = best_stat;
-            //             break;
-            //         case 1:
-            //             stat = worst_stat;
-            //             break; 
-            // }
-            
-            console.log("best stat: " + JSON.stringify(best_stat)); 
-            
-            if(best_stat.metadata){
-                $("good-stats-details").append(best_stat.metadata.publication_date); 
-            } else if(!data.metadataFetched) {
-                let promise = getMetadata();
-                promise.then((metadata) => {
-                    data.metadataFetched = true;                    
-                    if (metadata !== null) {
-                        setMetadata(metadata);
-                        if (best_stat.metadata !== undefined) {
-                            console.log("best stat.metadata: " + JSON.stringify(best_stat.metadata)); 
-                            let survey_period = best_stat.metadata.survey_period; 
-                            let source = best_stat.metadata.source; 
-                            let publisher = best_stat.metadata.publisher; 
-                            let units = best_stat.data.units; 
-                            let note = best_stat.metadata.note; 
-
-                            let msg = "Survey period: " + survey_period +
-                                "<br>Source: " + source + 
-                                "<br>Publisher: " + publisher + 
-                                "<br>Units: " + "..." + 
-                                "<br>Note: " + note;
-
-                            $("#good-stats-details").html(msg);
-                            // $("#good-stats-details").html("line1 <br>line2\nline3"); 
-                            
-                        }
-                    }
-                });
-            } else {
-                console.error("<visuals><populateStateWindow>: Unknown error")
-            }
-            
-            //TODO: handle when only 0 or 1 stat is selected 
+            //write details/metadata in good/bad stats details grid items 
+            populateDataDetails(best_stat, true); 
+            populateDataDetails(worst_stat, false); 
 
         });
     }
+
+/**
+ * @param stat stat object to write details about
+ * @param best bool, whether the stat is the best or the worst
+ */
+function populateDataDetails(stat, best) {
+    let msg = "msg"; 
+    if (stat.metadata) {
+        msg = createDetailsMsg(stat); 
+        if(best) $("#good-stats-details").html(msg); 
+        else $("#bad-stats-details").html(msg)
+    } else if (!data.metadataFetched) {
+        let promise = getMetadata();
+        promise.then((metadata) => {
+            data.metadataFetched = true;
+            if (metadata !== null) {
+                setMetadata(metadata);
+                if (stat.metadata !== undefined) {
+                    msg = createDetailsMsg(stat);
+                    if (best) $("#good-stats-details").html(msg);
+                    else $("#bad-stats-details").html(msg)
+                }
+            }
+        });
+    } else {
+        console.error("<visuals><populateStateWindow>: Unknown error")
+    }
+}
+
+/**
+ * @param {Stat} stat Stat to create message about 
+ * @returns {msg} message about stat
+ */
+function createDetailsMsg(stat){
+    let survey_period = stat.metadata.survey_period;
+    let source = stat.metadata.source;
+    let units = stat.data.units;
+    let note = stat.metadata.note;
+
+    let msg = "Survey period: " + survey_period +
+        "<br>Source: " + source +
+        "<br>Units: " + "...";
+
+    if (note !== "" && note !== "n.a.") {
+        msg = msg + "<br>Note: " + note;
+    }
+    return msg; 
+}
 
     /*
         Of the statistics you selected, *state_name* is ranked the best in *title*
@@ -313,19 +337,6 @@ $("document").ready(function () {
 
         \nNote: *note*
     */ 
-        
-    /////////////////////////////////
-    /////////REFERENCE///////////////
-    /////////////////////////////////
-    // function showMetadataAlert(metadata) {
-    //     let container = $("#metadata-alert-container");
-    //     $("#metadata-title").text(metadata.stat_name_short);
-    //     $("#metadata-date").text(metadata.publication_date);
-    //     $("#metadata-notes").text(metadata.note);
-    //     $("#metadata-publisher").text(metadata.source + ": " + metadata.original_source);
-    //     $(".loading").addClass("hidden");
-    //     $(".metadata-alert-element").removeClass("hidden");
-    // }
 
     const blur_elements = [
         $("#nav-bar"), $("#settings"), $("#map-container"), $("#about-container"), $("#ne-inspector-container")
