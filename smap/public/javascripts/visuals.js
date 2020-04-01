@@ -4,6 +4,8 @@ const blur_elements = [
     $("#nav-bar"), $("#settings"), $("#map-container"), $("#about-container")
 ];
 
+var chart;
+
 $("document").ready(function () {
     //////////////////////
     // START ANIMATION //
@@ -505,4 +507,34 @@ function colorState(state, weight) {
         var ne_map = document.getElementById("ne-map").contentDocument;
         $(ne_map).ready(colorSVG(ne_map, state, weight));
     }
+}
+
+//weights is the dictionary with keys of state abbreviations and values of the calculated weight
+//ranks is an array, with only state abbreviations, from best to worst
+function drawChart(weights, ranks){
+    var ctx = document.getElementById('myChart').getContext('2d');
+
+    //this prevents the charts from stacking and interfering with eachother
+    if (chart != undefined){
+        chart.destroy();
+    }
+
+    chart = new Chart(ctx, {
+        // The type of chart we want to create
+        type: 'bar',
+
+        // The data for our dataset
+        data: {
+            labels: ranks,
+            datasets: [{
+                label: 'My First dataset',
+                backgroundColor: 'rgb(255, 99, 132)',
+                borderColor: 'rgb(255, 99, 132)',
+                data: ranks.map( x => weights[x]) //javascript is nice and has a mapping function that eliminates the need to loop
+            }]
+        },
+
+        // Configuration options go here
+        options: {}
+    });
 }

@@ -189,6 +189,8 @@ function displayWeights(){
   normalizeStats(weights);
   data.ranks = rankStats(weights);
 
+  drawChart(weights, data.ranks);
+  
   //
   for (let state of states){
     let weight = weights[state];
@@ -273,6 +275,9 @@ Stat.prototype.enable = function(){
         displayWeights();
       }
     });
+  } else {
+    data.active.add(this.category.stat_id);
+    displayWeights();
   }
 }
 
