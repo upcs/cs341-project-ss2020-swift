@@ -328,7 +328,6 @@ Stat.prototype.showMeta = function(){
   }
 };
 
-
 //region storage
 
 /*

@@ -851,7 +851,7 @@ object {
     grid-template-columns: 33% 67%;
     grid-template-rows: 20% 80%;
     grid-template-areas:
-        "state-name state-rank"
+        "state-rank state-name"
         "state-display state-window-data-container"
     ;
     /* padding: 10px; */
@@ -865,10 +865,12 @@ object {
 
 #state-name{
     grid-area: state-name;
+    color: var(--color-dark);
 }
 
 #state-rank{
     grid-area: state-rank;
+    color: var(--color-dark);
 }
 
 #state-display{

@@ -125,14 +125,9 @@ $("document").ready(function () {
     //     }
     //   });
 
-    const blur_elements = [
-        $("#nav-bar"), $("#settings"), $("#map-container"), $("#about-container")
-    ];
 
-    // The inital top element
-    // Get the svg document content
-    window.setTimeout(function() {
-        ///////NE magnifier///////
+    //all the neMagnifier js I can find 
+    function setUpNEMagnifier(){
         var ne_map = document.getElementById("ne-map").contentDocument;
         var ne_map_top_element = $("#ME", ne_map);
         $("path", ne_map).mouseenter(function () {
@@ -145,111 +140,194 @@ $("document").ready(function () {
         }).mouseleave(function () {
             $(this).css("filter", "brightness(100%) contrast(100%)").css("stroke-width", "1");
         })
+    }
 
-        ///////STATE HOVERING AND STATE WINDOW/////////
+    //sets up event listeners for state hovering 
+    function setUpStateHovering(){
         var us_map = document.getElementById("us-map").contentDocument;
         // Get one of the SVG items by ID;
         var us_map_top_element = $("#AK", us_map);
         // When mousing over a state
-        $("path", us_map).mouseenter( function() {
+        $("path", us_map).mouseenter(function () {
             // Put it on top
             $(this).insertAfter(us_map_top_element);
             us_map_top_element = $(this);
             // Set styling
             $(this).css("filter", "contrast(85%) brightness(115%)").css("stroke-width", "3");
             // Return the styling on leaving
-        }).mouseleave( function() {
+        }).mouseleave(function () {
             $(this).css("filter", "brightness(100%) contrast(100%)").css("stroke-width", "1");
-        }).click( function () {
-            for(let element of blur_elements){
-                element.addClass("blurred"); 
-            }
-
-            // $("#state-window-container").show();
-            var state_id = $(this).attr("id");
-            var state_names = {
-                AL: "Alabama",
-                AK: "Alaska",
-                AZ: "Arizona",
-                AR: "Arkansas",
-                CA: "California",
-                CO: "Colorado",
-                CT: "Connecticut",
-                DE: "Deleware", 
-                FL: "Florida", 
-                GA: "Georgia", 
-                HI: "Hawaii", 
-                ID: "Idaho", 
-                IL: "Illinois", 
-                IN: "Indiana", 
-                IA: "Iowa", 
-                KS: "Kansas", 
-                KY: "Kentucky", 
-                LA: "Louisiana", 
-                ME: "Maine", 
-                MD: "Maryland", 
-                MA: "Massachusetts", 
-                MI: "Michigan", 
-                MN: "Minnesota",  
-                MS: "Mississippi", 
-                MO: "Missouri", 
-                MT: "Montana", 
-                NE: "Nebraska", 
-                NV: "Nevada", 
-                NH: "New Hampshire", 
-                NJ: "New Jersey", 
-                NM: "New Mexico", 
-                NY: "New York", 
-                NC: "North Carolina", 
-                ND: "North Dakota", 
-                OH: "Ohio", 
-                OK: "Oklahoma", 
-                OR: "Oregon", 
-                PA: "Pennsylvania", 
-                RI: "Rhode Island", 
-                SC: "South Carolina", 
-                SD: "South Dakota", 
-                TN: "Tennessee", 
-                TX: "Texas", 
-                UT: "Utah", 
-                VT: "Vermont", 
-                VA: "Virginia", 
-                WA: "Washington", 
-                WV: "West Virginia", 
-                WI: "Wisconson", 
-                WY: "Wyoming"
-            };
-            var state_name = state_names[state_id]; 
-            
-            // alert("this is the state_id: " + state_id + "\nthis is the state_name: " + state_name); 
-            
-            $("body").addClass("unscrollable"); 
-            $(".alert-container").removeClass("hidden"); 
-
-            $("#state-name").text(state_name);            
-            
-            let stateCatArr = getStateInfo(state_id); 
-            // $("#grid-item-state-display").text("best category id: " + stateCatArr[1]["id"]); 
-            $("#good-stats").text(stateCatArr[0]["name"]); 
-            $("#bad-stats").text(stateCatArr[stateCatArr.length-1]["name"]); 
-            
-
-            
-            // $("#good-stats-details").text(stateCatArr[0]["name"]);
-            // $("#bad-stats-details").text(stateCatArr[stateCatArr.length - 1]["name"]);     
-            
         });
+    }
+
+    //blurs background and makes body unscrollable and unhides the state window
+    function prepareStateWindow() {
+        var us_map = document.getElementById("us-map").contentDocument;
+
+        //when clicking on a state
+        $("path", us_map).click(function () {
+            for (let element of blur_elements) {
+                element.addClass("blurred");
+            }
+            $("body").addClass("unscrollable");
+            $(".alert-container").removeClass("hidden");
+        });
+    }
+
+    //adds state specific 
+    function populateStateWindow(metadata){
+        var us_map = document.getElementById("us-map").contentDocument;
+        var state_names = {
+            AL: "Alabama",
+            AK: "Alaska",
+            AZ: "Arizona",
+            AR: "Arkansas",
+            CA: "California",
+            CO: "Colorado",
+            CT: "Connecticut",
+            DE: "Deleware",
+            FL: "Florida",
+            GA: "Georgia",
+            HI: "Hawaii",
+            ID: "Idaho",
+            IL: "Illinois",
+            IN: "Indiana",
+            IA: "Iowa",
+            KS: "Kansas",
+            KY: "Kentucky",
+            LA: "Louisiana",
+            ME: "Maine",
+            MD: "Maryland",
+            MA: "Massachusetts",
+            MI: "Michigan",
+            MN: "Minnesota",
+            MS: "Mississippi",
+            MO: "Missouri",
+            MT: "Montana",
+            NE: "Nebraska",
+            NV: "Nevada",
+            NH: "New Hampshire",
+            NJ: "New Jersey",
+            NM: "New Mexico",
+            NY: "New York",
+            NC: "North Carolina",
+            ND: "North Dakota",
+            OH: "Ohio",
+            OK: "Oklahoma",
+            OR: "Oregon",
+            PA: "Pennsylvania",
+            RI: "Rhode Island",
+            SC: "South Carolina",
+            SD: "South Dakota",
+            TN: "Tennessee",
+            TX: "Texas",
+            UT: "Utah",
+            VT: "Vermont",
+            VA: "Virginia",
+            WA: "Washington",
+            WV: "West Virginia",
+            WI: "Wisconson",
+            WY: "Wyoming"
+        };
+
+        //when clicking on a state
+        $("path", us_map).click(function () {
+
+            var state_id = $(this).attr("id");
+            var state_name = state_names[state_id];
+
+            $("#state-name").text(state_name);
+            let stateCatArr = getStateInfo(state_id);
+
+            let best_stat = data.stats[stateCatArr[0]["id"]];
+            let worst_stat = data.stats[stateCatArr[stateCatArr.length - 1]["id"]]; 
+
+            $("#good-stats").text("Of the statistics you selected, " + state_name + 
+                    " is ranked the best in " + best_stat.stat_name_short +".\n");
+            
+            $("#bad-stats").text("Of the statistics you selected, " + state_name + 
+                    " is ranked the worst in " + worst_stat.stat_name_short + ".\n");
+                  
+            $("#good-stats-details").text("Publication Date: "); 
+            if(best_stat.metadata){
+                $("good-stats-details").append(best_stat.metadata.publication_date); 
+            } else if(!data.metadataFetched) {
+                let promise = getMetadata();
+                promise.then((metadata) => {
+                    data.metadataFetched = true;                    
+                    if (metadata !== null) {
+                        setMetadata(metadata);
+                        if (best_stat.metadata !== undefined) {
+                            $("#good-stats-details").append(best_stat.metadata.publication_date);
+                        }
+                    }
+                });
+            } else {
+                console.error("<visuals><populateStateWindow>: Unknown error")
+            }
+            
+            
+           
+
+
+            //TODO: handle when only 0 or 1 stat is selected 
+
+        });
+    }
+
+    /*
+        Of the statistics you selected, *state_name* is ranked the best in *title*
+
+        *state_name* is ranked *rank* of all 50 states in terms of *title*.
+
+        Survey period: *survey_period*
+        Source: *source*
+        Published by: *published_by*
+        Original Source: *original_source*
+        Units:
+
+        \nNote: *note*
+    */ 
         
-    }, 250);
-    
-    $(".alert-close").click(function () {
+    /////////////////////////////////
+    /////////REFERENCE///////////////
+    /////////////////////////////////
+    // function showMetadataAlert(metadata) {
+    //     let container = $("#metadata-alert-container");
+    //     $("#metadata-title").text(metadata.stat_name_short);
+    //     $("#metadata-date").text(metadata.publication_date);
+    //     $("#metadata-notes").text(metadata.note);
+    //     $("#metadata-publisher").text(metadata.source + ": " + metadata.original_source);
+    //     $(".loading").addClass("hidden");
+    //     $(".metadata-alert-element").removeClass("hidden");
+    // }
+
+    const blur_elements = [
+        $("#nav-bar"), $("#settings"), $("#map-container"), $("#about-container")
+    ];
+
+    function closeAlert() {
         for (let element of blur_elements) {
             element.removeClass("blurred");
         }
         $("body").removeClass("unscrollable");
         $(".alert-container").addClass("hidden");
         $(".loading").removeClass("hidden");
-    });
+    }
+
+    $(".alert-close").click(closeAlert());
+    
+    // The inital top element
+    // Get the svg document content
+    window.setTimeout(function() {
+        setUpNEMagnifier();
+        setUpStateHovering();
+        prepareStateWindow();
+        populateStateWindow(); //when a state is clicked
+    }, 250);
+
+    
+    
 
     // On theme-circle click, change the active theme
     $(".theme-template").click( function() {
@@ -271,8 +349,6 @@ $("document").ready(function () {
         window.setTimeout(function() { displayWeights(); } , 50);
         // displayWeights();
     });
-
-
 
     // Scrolling effects
     var lastMove = 0;
