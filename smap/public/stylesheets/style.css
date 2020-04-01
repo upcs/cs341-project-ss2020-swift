@@ -26,7 +26,7 @@
 
 
 /************************/
-/***  Gloabl Styling  ***/
+/***  Global Styling  ***/
 /************************/
 
 
@@ -318,9 +318,14 @@ body {
 
 #map-container {
     /* Positioning and Display */
-    grid-row: 0/1;
-    grid-column: 2/4;
+    grid-row: 1/1;
+    grid-column: 2/2;
     align-self: center;
+    /* Coloring */
+    background-color: var(--color-light);
+    /*grid-row: 0/1;
+    grid-column: 2/4;
+    align-self: center;*/
 }
 
 #us-map {
@@ -372,6 +377,95 @@ body {
     display: grid;
     grid-area: center-nav;
     justify-content: center;
+}
+
+/*********************/
+/*** NE Inspecting ***/
+/*********************/
+
+
+#ne-inspector {
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding-top: 5px;
+  width: 80px;
+  height: 80px;
+  opacity: 66.67%;
+  transition: 0.25s;
+  /* transform: rotateZ(215deg); */
+}
+
+#ne-inspector:hover {
+    opacity: 100%;
+    width: 90px;
+    height: 90px;
+    transition: 0.5s;
+}
+
+#ne-inspector-container {
+    width: 100%;
+    height: 100%;
+}
+
+#ne-map {
+    height: 100%;
+    padding-right: 12.5%;
+}
+
+/* The Model (background) */
+#model {
+  display: none; /* Hidden by default */
+  align-items: center;
+  justify-items: end;
+  position: absolute; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+}
+
+/* The Close Button */
+#ne-magnifiyer-close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  color: #f1f1f1;
+  font-size: 40px;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+#ne-magnifiyer-close:hover,
+#ne-magnifiyer-close:focus {
+  color: #bbb;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+#map-container {
+    /* Positioning and Display */
+    grid-row: 1/1;
+    grid-column: 2/4;
+    align-items: center;
+    /* Coloring */
+    background-color: var(--color-light);
+}
+
+#us-map {
+    /* Positioning and Display */
+    /* max-width: 100%; */
+    width: 100%;
+    height: 100%;
+}
+
+object {
+    /* Other */
+    filter: drop-shadow(0px 0px 3px var(--secondary-color-dark));
 }
 
 #map-legend-container {
@@ -706,22 +800,22 @@ body {
 .alert-background {
     width: 100%;
     border-radius: 0px 0px 10px 10px;
-    padding-bottom: 35px;
+    /* padding-bottom: 35px; */
     background-color: rgba(120, 120, 120, 1);
     box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.75);
     z-index: 11;
-}
-
-.alert-body-and-close {
     grid-area: alert;
 }
+
+/* .alert-body-and-close {
+} */
 
 .blurred {
     -webkit-filter: blur(10px);
     -moz-filter: blur(10px);
     -o-filter: blur(10px);
     -ms-filter: blur(10px);
-    filter: blur(10px);
+    filter: blur(10px) !important;
 }
 
 .hidden {
@@ -757,33 +851,37 @@ body {
     grid-template-columns: 33% 67%;
     grid-template-rows: 20% 80%;
     grid-template-areas:
-        "state-name state-rank"
+        "state-rank state-name"
         "state-display state-window-data-container"
     ;
     /* padding: 10px; */
 }
 
 .grid-item{
-    background-color: rgba(128,128,255,1); /* blue */
-    border: 1px solid rgba(0,0,100,0.7); /* less blue */
     /* padding: 20px; */
-    font-size: 30px;
+    font-size: 16px;
     text-align: center;
+    /* TODO: get the details boxes to text-align left */
+    /* TODO: make the details boxes scrollable */
 }
 
-#grid-item-state-name{
+#state-name{
     grid-area: state-name;
+    color: var(--color-dark);
 }
 
-#grid-item-state-rank{
+#state-rank{
     grid-area: state-rank;
+    color: var(--color-dark);
 }
 
-#grid-item-state-display{
+#state-display{
     grid-area: state-display;
+    background-color: var(--subgroup-color-lighter);
 }
 
 #state-window-data-container{
+    text-align: left;
     grid-area: state-window-data-container;
     display: grid;
     background-color: var(--color-light);
@@ -800,7 +898,8 @@ body {
 }
 
 #subgrid-item2{
-    grid-area: good-stats-details
+    grid-area: good-stats-details; 
+    /* text-align: left */
 }
 
 #subgrid-item3{
@@ -808,5 +907,6 @@ body {
 }
 
 #subgrid-item4{
-    grid-area: bad-stats-details
+    grid-area: bad-stats-details; 
+    /* text-align: left */
 }

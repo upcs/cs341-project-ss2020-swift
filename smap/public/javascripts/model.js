@@ -25,6 +25,7 @@ var map; //The map SVG
 //  stats: an object mapping category ids to Stat objects
 //  restored: whether or not storage has been read to load active categories
 //  ranks: the states in sorted order by global rank
+//  metadataFetched: whether we have read metadata from the server
 //This is the single source of truth - a change in these objects should be reflected
 //  in a change in the HTML. Usage of the functions in this module should guarantee this.
 var data = new Data();
@@ -34,6 +35,29 @@ function Data(){
   this.stats = {};
   this.restored = false;
   this.ranks = states.slice();
+  this.metadataFetched = false;
+}
+
+/*
+  Updates all the stats objects in data with their metadata.
+  Args:
+    metadata - the metadata object returned from the server
+*/
+function setMetadata(metadata){
+  if (!metadata){
+    return;
+  }
+  for (let meta of metadata){
+    let id = meta.stat_id;
+    if(id in data.stats){
+      data.stats[id].metadata = meta;
+      /*External CITATION
+      As it turns out, reading blobs is hard.
+      https://stackoverflow.com/questions/3195865/converting-byte-array-to-string-in-javascript
+      */
+      meta.note = String.fromCharCode.apply(null, meta.note.data);
+    }
+  }
 }
 
 //Converts values into a range between 0 and 1
@@ -165,6 +189,8 @@ function displayWeights(){
   normalizeStats(weights);
   data.ranks = rankStats(weights);
 
+  drawChart(weights, data.ranks);
+  
   //
   for (let state of states){
     let weight = weights[state];
@@ -227,6 +253,11 @@ Stat.prototype.enable = function(){
     this.disable();
   });
 
+  $(".statistic-slider-metadata", this.slider).click((e) => {
+    e.preventDefault();
+    this.showMeta();
+  });
+
   updateCategoryStorage();
 
   //Fetches the data if we do not have it.
@@ -244,6 +275,9 @@ Stat.prototype.enable = function(){
         displayWeights();
       }
     });
+  } else {
+    data.active.add(this.category.stat_id);
+    displayWeights();
   }
 }
 
@@ -260,6 +294,11 @@ Stat.prototype.disable = function(){
   //Add event listeners
   this.slider.click((event) => {this.enable()});
 
+  $(".statistic-option-metadata").click((e) => {
+    e.preventDefault();
+    this.showMeta();
+  });
+
   updateCategoryStorage();
   displayWeights();
 }
@@ -271,6 +310,28 @@ Stat.prototype.delete = function(){
   delete data.stats[category.stat_id];
 }
 
+Stat.prototype.showMeta = function(){
+  prepareMetadataAlert();
+  if (this.metadata){
+    showMetadataAlert(this.metadata);
+  } else if (!data.metadataFetched){
+      let promise = getMetadata();
+      promise.then((metadata) => {
+        data.metadataFetched = true;
+        if (metadata !== null){
+          setMetadata(metadata);
+          if (this.metadata){
+            showMetadataAlert(this.metadata);
+            return;
+          }
+        }
+        closeMetadataAlert();
+      });
+  } else {
+    //TODO: Empty alert for error case?
+    closeMetadataAlert();
+  }
+};
 
 //region storage
 
@@ -408,6 +469,7 @@ if(typeof module !== "undefined" && module.exports){
     normalizeStats: normalizeStats,
     calculateWeight: calculateWeight,
     getStateInfo: getStateInfo,
-    rankStats: rankStats
+    rankStats: rankStats,
+    setMetadata: setMetadata
   }
 }

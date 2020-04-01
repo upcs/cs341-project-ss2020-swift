@@ -62,6 +62,7 @@ router.get('/meta', function(req, res, next){
 
     // return contents, a object (dictionary) containing the key/value pairs of requested categories
     res.json(results);
-  });});
+  });
+});
 
 module.exports = router;
