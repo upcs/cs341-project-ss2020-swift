@@ -870,11 +870,13 @@ object {
 #state-name{
     grid-area: state-name;
     color: var(--color-dark);
+    background-color: var(--subgroup-color-lighter);
 }
 
 #state-rank{
     grid-area: state-rank;
     color: var(--color-dark);
+    background-color: var(--subgroup-color-lighter);
 }
 
 #state-display{
