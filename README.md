@@ -11,6 +11,7 @@ Software Engineering, Spring 2020
 Features List: 
 
 MVP Features: 
+
     Statistic Sliders: 
         Statistics can be selected from the "Statistics Selection" bank on the bottom left. They will become "active" and appear on the top left. These are the statistics that will be used to rank the states and color the map according to the key and color palette. You may chose to weight all statistics the same (default), or give them different weights depending on your preferences. This will likely not change the relative coloring very much, but it will change the coloring slightly. 
 
@@ -20,6 +21,7 @@ MVP Features:
 
 
 Additional Features:
+
     State Window: 
         The state window displays additional ranking and statistic information. The "rank" in the top left corner is the rank of the state (corresponding with the color) compared to all the other states *overall*. The "best" and "worst" statistics are those that the state ranks the highest/lowest in compared to the other states in those individual categories. Both comparisons are made based on what the user has selected. Additionally, the best/worst statistics have some more information about where they came from and when the data was collected. 
 
