@@ -23,7 +23,6 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
         <script src="javascripts/model.js" type="text/javascript"></script>
         <script src="javascripts/visuals.js" type="text/javascript"></script>
-        <script src="javascripts/ne.js" type="text/javascript"></script>
     </head>
     <body>
 		<div id="init">
@@ -152,7 +151,6 @@
                 <!-- End theme-roller -->
             </div>
             <div id="map-container">
-                <object type="image/svg+xml" data="images/us.svg" id="us-map"></object>
             </div>
             <!-- Container for the whole ne magnifiyer -->
             <div id="ne-inspector-container">
@@ -160,7 +158,8 @@
                 <img id="ne-inspector" src="images/ne-inspector.png"/>
                 <!-- The container for the actual magnification bit -->
                 <div id="model">
-                    <object type="image/svg+xml" data="images/ne.svg" id="ne-map"></object>
+                    <div id="ne-map-container">
+                    </div>
                     <span id="ne-magnifiyer-close">&times;</span>
                 </div>
             </div>

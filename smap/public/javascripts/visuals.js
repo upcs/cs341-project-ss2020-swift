@@ -27,22 +27,18 @@ $("document").ready(function () {
         console.log("Page load time: " + load_time + "s");
         console.log("Time until page operable: "+ (load_time+2.5) +"s");
     }
-    function load_themes(callback, loop) {
-        const themes = [
-            "orange-red-theme", "green-blue-theme", "pink-purple-theme",
-            "dark-red-theme", "dark-green-theme", "dark-blue-theme"
-        ];
-        for(var i = 0; i < themes.length; i++) {
-            if(i !== themes.length - 1) {
-                $("#"+themes[i+1]).attr("rel", "stylesheet");
-                $("#"+themes[i]).attr("rel", "alternate stylesheet")
-            } else {
-                $("#"+themes[0]).attr("rel", "stylesheet");
-                $("#"+themes[i]).attr("rel", "alternate stylesheet")
-            }
+
+    function preload(callback, loop) {
+        $("#model").css("display", "none");
+        let us_map_document = $("#us-map").length;
+        let ne_map_document = $("#ne-map").length;
+        if (us_map_document === 0 || ne_map_document === 0){
+          return;
         }
+        setupHovering();
         callback(loop);
     }
+
     var ellipses_loop = setInterval(function() {
         var dot1 = $("#dot1");
         var dot2 = $("#dot2");
@@ -58,7 +54,60 @@ $("document").ready(function () {
             }, 250);
         }, 250);
     }, 1750 );
-    load_themes(clear_loading, ellipses_loop);
+
+    $.get("/images/us.svg", "", function(xhr, status, res){
+      if (status !== "success"){
+        console.error("Could not get US map");
+      }
+      let doc = xhr.documentElement;
+      doc.id = "us-map";
+      doc.style.width = "100%";
+      doc.style.height = "100%";
+      $("#map-container").append(doc);
+      preload(clear_loading, ellipses_loop);
+    });
+
+    $.get("/images/ne.svg", "", function(xhr, status, res){
+      if (status !== "success"){
+        console.error("Could not get NE map");
+      }
+      let doc = xhr.documentElement;
+      doc.id = "ne-map";
+      doc.style.width = "100%";
+      doc.style.height = "100vh";
+      $("#ne-map-container").prepend(doc);
+      preload(clear_loading, ellipses_loop);
+    });
+
+    function setupHovering() {
+        var us_map = document.getElementById("us-map");
+        // Get one of the SVG items by ID;
+        var us_map_top_element = $("#AK", us_map);
+        // When mousing over a state
+        $("path", us_map).mouseenter( function() {
+            // Put it on top
+            $(this).insertAfter(us_map_top_element);
+            us_map_top_element = $(this);
+            // Set styling
+            $(this).css("filter", "contrast(85%) brightness(115%)").css("stroke-width", "3");
+            // Return the styling on leaving
+        }).mouseleave( function() {
+            $(this).css("filter", "brightness(100%) contrast(100%)").css("stroke-width", "1");
+        });
+        // Done now for the NE
+        var ne_map = document.getElementById("ne-map");
+        var ne_map_top_element = $("#ME", ne_map);
+        $("path", ne_map).mouseenter( function() {
+            // Put it on top
+            $(this).insertAfter(ne_map_top_element);
+            ne_map_top_element = $(this);
+            // Set styling
+            $(this).css("filter", "contrast(85%) brightness(115%)").css("stroke-width", "3");
+            // Return the styling on leaving
+        }).mouseleave( function() {
+            $(this).css("filter", "brightness(100%) contrast(100%)").css("stroke-width", "1");
+        });
+    }
 
     // END ANIMATIONS //
     ////////////////////
@@ -75,7 +124,6 @@ $("document").ready(function () {
 
     sliderContainer = $("#statistics-sliders");
     selectionContainer = $("#statistics-selector");
-    map = $("#us-map");
 
     // Get the model
     var model = document.getElementById("model");
@@ -124,35 +172,7 @@ $("document").ready(function () {
 
     // The inital top element
     // Get the svg document content
-    window.setTimeout(function() {
-        var us_map = document.getElementById("us-map").contentDocument;
-        // Get one of the SVG items by ID;
-        var us_map_top_element = $("#AK", us_map);
-        // When mousing over a state
-        $("path", us_map).mouseenter( function() {
-            // Put it on top
-            $(this).insertAfter(us_map_top_element);
-            us_map_top_element = $(this);
-            // Set styling
-            $(this).css("filter", "contrast(85%) brightness(115%)").css("stroke-width", "3");
-            // Return the styling on leaving
-        }).mouseleave( function() {
-            $(this).css("filter", "brightness(100%) contrast(100%)").css("stroke-width", "1");
-        });
-        // Done now for the NE
-        var ne_map = document.getElementById("ne-map").contentDocument;
-        var ne_map_top_element = $("#ME", ne_map);
-        $("path", ne_map).mouseenter( function() {
-            // Put it on top
-            $(this).insertAfter(ne_map_top_element);
-            ne_map_top_element = $(this);
-            // Set styling
-            $(this).css("filter", "contrast(85%) brightness(115%)").css("stroke-width", "3");
-            // Return the styling on leaving
-        }).mouseleave( function() {
-            $(this).css("filter", "brightness(100%) contrast(100%)").css("stroke-width", "1");
-        });
-    }, 250);
+
 
     // On theme-circle click, change the active theme
     $(".theme-template").click( function() {
@@ -164,7 +184,6 @@ $("document").ready(function () {
         $(".theme-template-active").addClass("theme-template").removeClass("theme-template-active");
         $(this).addClass("theme-template-active").removeClass("theme-template");
         // Change the stylesheet reference
-        //$("#"+theme_id+"-theme").attr("rel", "stylesheet");
 
         /*EXTERNAL CITATION
         Disabling style sheets:
@@ -172,20 +191,14 @@ $("document").ready(function () {
         Selecting stylesheets:
           https://css-tricks.com/examples/AlternateStyleSheets/ (source code)
         */
-        $("link[rel~='stylesheet']").each(function(_, theme) {
-            theme = $(theme);
-            if(theme.hasClass("theme")){
-              if(theme.attr("title") != theme_id) {
-                theme.prop("disabled", true);
-              } else {
-                console.log("Enabling stylesheet");
-                theme.prop("disabled", false);
-              }
+        $("#"+theme_id+"-theme").prop("disabled", false);
+        for(let theme of themes) {
+            if(theme != theme_id) {
+                $("#"+theme+"-theme").prop("disabled", true);
             }
-        });
+        };
         // Recolor the map
         displayWeights();
-        // displayWeights();
     });
 
 
@@ -201,8 +214,10 @@ $("document").ready(function () {
         let scroll_val = Math.floor($(window).scrollTop());
         if(window.performance.now() - lastMove > 33) {
             $("#settings").css("left", -1*scroll_val);
-            $("#map-container").css("filter", "opacity(" + ((550 - scroll_val) / 350) + ")");
-            $("#map-legend-container").css("filter", "opacity(" + ((550 - scroll_val) / 350) + ")");
+            var height = $(window).height();
+            var map_opacity = (height - scroll_val*1.5) / height;
+            $("#map-container").css("filter", "opacity(" + map_opacity + ")");
+            $("#map-legend-container").css("filter", "opacity(" + map_opacity + ")");
             lastMove = window.performance.now();
         }
     });
@@ -259,20 +274,19 @@ function mixColor(weight) {
 function colorSVG(doc, state, weight) {
     // Get one of the SVG items by ID;
     var svgItem = doc.getElementById(state);
-    // Set the colour to something else
+    // Set the color to something else
     var border = $(":root").css("--secondary-color-dark");
     svgItem.setAttribute("style", "stroke-width: 1; stroke: "+border+"; fill: "+mixColor(weight)+";");
 }
 
 function colorState(state, weight) {
     const ne_states = ["MA", "CT", "NH", "RI", "VT", "DE", "MD", "MJ", "NY", "PA", "ME", "NJ"];
-    // Get the svg
-    var us_map = document.getElementById("us-map").contentDocument;
-    // If it exists
-    $(us_map).ready(colorSVG(us_map, state, weight));
-    // If the state in question is also in the NE, do the same for the separate SVG
+    let us_map = document.getElementById("us-map");
+    let ne_map = document.getElementById("ne-map");
+
+    colorSVG(us_map, state, weight);
     if(ne_states.includes(state)) {
-        var ne_map = document.getElementById("ne-map").contentDocument;
-        $(ne_map).ready(colorSVG(ne_map, state, weight));
+        colorSVG(ne_map, state, weight);
     }
+
 }
