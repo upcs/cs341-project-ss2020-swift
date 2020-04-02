@@ -862,7 +862,11 @@ object {
     font-size: 16px;
     text-align: center;
     /* TODO: get the details boxes to text-align left */
-    /* TODO: make the details boxes scrollable */
+}
+
+.sub-grid-item{
+    font-size: 16px;
+    text-align: left;
 }
 
 #state-name{
@@ -896,21 +900,23 @@ object {
     ;
 }
 
-#subgrid-item1{
+#good-stats{
     grid-area: good-stats
 }
 
-#subgrid-item2{
+#good-stats-details{
     grid-area: good-stats-details; 
+    overflow-y: scroll;
     /* text-align: left */
 }
 
-#subgrid-item3{
+#bad-stats{
     grid-area: bad-stats
 }
 
-#subgrid-item4{
+#bad-stats-details{
     grid-area: bad-stats-details; 
+    overflow-y: scroll;
     /* text-align: left */
 }
 
