@@ -286,7 +286,7 @@ $("document").ready(function () {
 
                 $("#state-rank").text("State Rank: *no statistics selected*");
 
-                let errMsgNoStats = "You have not selected any statisics to rank this state. <br>Please click close and select a statisitic from the Statistic Selection category";
+                let errMsgNoStats = "You have not selected any statisics to rank this state. <br><br>Please click close and select a statisitic from the Statistic Selection category";
                 $("#good-stats").html(errMsgNoStats);
                 $("#state-window-data-container").css("grid-template-rows", "100% 0%");
             } else if (stateCatArr.length == 1){
@@ -294,6 +294,7 @@ $("document").ready(function () {
 
                 $("#bad-stats").css("display","none");
                 $("#bad-stats-details").css("display", "none");
+                $("#good-stats-details").css("display", "block");
 
                 let msgOneStat = "You have only selected one statisic to rank this state by.<br>";
                 $("#good-stats").html(msgOneStat);
@@ -308,6 +309,7 @@ $("document").ready(function () {
 
                 $("#bad-stats").css("display", "block");
                 $("#bad-stats-details").css("display", "block");
+                $("#good-stats-details").css("display", "block");
 
                 //write good/bad stat names in good/bad grid items
                 $("#good-stats").text("Best statistic:\n " + best_stat.category.stat_name_short + "\n");
