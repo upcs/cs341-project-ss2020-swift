@@ -548,7 +548,8 @@ describe('getStateInfo', () => {
         "AR": 5,
         "AL": 3,
         "OH": 2
-      }
+      },
+      category: {title: "Fake Stat 1"}
     };
     script.data.active.add(2);
     script.data.stats[2] = {
@@ -557,11 +558,12 @@ describe('getStateInfo', () => {
         "AR": 2,
         "AL": 10,
         "OH": 1
-      }
+      },
+      category: {title: "Fake Stat 2"}
     };
     expect(script.getStateInfo("AL")).toEqual([
-      {id:2, rank:1, value:10},
-      {id:1, rank:2, value:3}
+      {id:2, rank:1, value:10, name:"Fake Stat 2"},
+      {id:1, rank:2, value:3, name:"Fake Stat 1"}
     ]);
   });
 
@@ -597,7 +599,8 @@ describe('getStateInfo', () => {
         "AR": 5,
         "AL": 3,
         "OH": 2
-      }
+      },
+      category: {title:"Fake Stat 1"}
     };
     script.data.active.add(2);
     script.data.stats[2] = {
@@ -605,10 +608,11 @@ describe('getStateInfo', () => {
         "AR": 2,
         "AL": 10,
         "OH": 1
-      }
+      },
+      category: {title:"Fake Stat 2"}
     };
     expect(script.getStateInfo("AL")).toEqual([
-      {id:1, rank:2, value:3}
+      {id:1, rank:2, value:3, name:"Fake Stat 1"}
     ]);
   })
 });
