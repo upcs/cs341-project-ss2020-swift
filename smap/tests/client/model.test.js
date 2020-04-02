@@ -914,23 +914,45 @@ describe('setMetadata', () => {
 });
 
 describe('Stat show metadata', () => {
+  var fetchedMetadata;
 
   beforeEach(() => {
     resetData();
     window.prepareMetadataAlert = jest.fn(() => {});
     window.showMetadataAlert = jest.fn(() => {});
     window.closeMetadataAlert = jest.fn(() => {});
-    window.getMetadata = jest.fn(() => {}); //TODO: Make a promise
+    fetchedMetadata = [];
+    window.getMetadata = jest.fn(async () => {return fetchedMetadata}); //TODO: Make a promise
   });
 
   test('happy path', () => {
     let metadata = {};
     model.data.metadataFetched = true;
-    let stat = {stat_id:3, metadata: metadata};
+    let stat = {metadata: metadata};
     model.Stat.prototype.showMeta.apply(stat);
     expect(window.prepareMetadataAlert).toHaveBeenCalled();
     expect(window.showMetadataAlert).toHaveBeenCalled();
     expect(window.closeMetadataAlert).not.toHaveBeenCalled();
     expect(window.getMetadata).not.toHaveBeenCalled();
   });
+
+  test('fetch metadata', (done) => {
+    let stat = {stat_id: 2};
+    model.data.stats[2] = stat;
+    fetchedMetadata = [{stat_id:2, note:{data:[]}}];
+    model.Stat.prototype.showMeta.apply(stat);
+    expect(window.prepareMetadataAlert).toHaveBeenCalled();
+    expect(window.getMetadata).toHaveBeenCalled();
+    expect(window.showMetadataAlert).not.toHaveBeenCalled();
+    expect(window.closeMetadataAlert).not.toHaveBeenCalled();
+    setTimeout(() => {
+      try{
+        expect(window.showMetadataAlert).toHaveBeenCalled();
+        expect(window.closeMetadataAlert).not.toHaveBeenCalled();
+        done();
+      } catch (err){
+        done(err);
+      }
+    }, 1);
+  })
 })

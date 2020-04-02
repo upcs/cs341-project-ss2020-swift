@@ -214,6 +214,7 @@ It is of the following form:
   enabled: Whether to use this category to calculate weights.
   slider: A JQuery object for the slider (whether active or inactive).
   data: The data for the statistic - mapping from state abbreviations to numbers. May be undefined.
+  metadata: The metadata for the statistic category - may be undefined
 }
 Constructor arguments:
  category - a category object, which must have a title
@@ -299,12 +300,13 @@ Stat.prototype.disable = function(){
   this.slider = makeInactiveSlider(this.category.title);
 
   //Add event listeners
-  this.slider.click((event) => {this.enable()});
-
-  $(".statistic-option-metadata").click((e) => {
+  $(".statistic-option-metadata", this.slider).click((e) => {
     e.preventDefault();
+    e.stopPropagation()
     this.showMeta();
   });
+
+  this.slider.click((event) => {this.enable()});
 
   updateCategoryStorage();
   displayWeights();

@@ -314,30 +314,6 @@ body {
     background-color: var(--secondary-color-light);
 }
 
-/**********************************/
-/***  SVG/Map Specific Styling  ***/
-/**********************************/
-
-#map-container {
-    /* Positioning and Display */
-    /* grid-row: 1/1;
-    grid-column: 2/2; */
-    align-self: center;
-    /* Coloring */
-    background-color: var(--color-light);
-    grid-row: 0/1;
-    grid-column: 2/4;
-    align-self: center;
-}
-
-#us-map {
-    /* Positioning and Display */
-    align-self: center;
-    max-width: 100%;
-    /* Other */
-    filter: drop-shadow(0px 0px 3px var(--secondary-color-dark));
-}
-
 /*************************/
 /***  Nav-bar Styling  ***/
 /*************************/
@@ -381,10 +357,51 @@ body {
     justify-content: center;
 }
 
+#map-legend-container {
+    /* Positioning and Display */
+    grid-area: legend;
+    justify-self: center;
+    align-self: middle;
+}
+
+#map-legend {
+    /* Positioning and Display */
+    display: inline-block;
+    width: 150px;
+    vertical-align: middle;
+}
+
+/*********************************/
+/***  US Map Specific Styling  ***/
+/*********************************/
+
+#map-container {
+    /* Positioning and Display */
+    display: grid;
+    grid-row: 1/1;
+    grid-column: 2/4;
+    align-items: center;
+    justify-items: center;
+    /* Coloring */
+    background-color: var(--color-light);
+    height: 100%;
+}
+
+#us-map {
+    /* Positioning and Display */
+    max-width: 100%;
+    height: 100%;
+}
+
+object {
+    /* Other */
+    filter: drop-shadow(0px 0px 3px var(--secondary-color-dark));
+}
+
+
 /*********************/
 /*** NE Inspecting ***/
 /*********************/
-
 
 #ne-inspector {
   cursor: pointer;
@@ -408,18 +425,21 @@ body {
 }
 
 #ne-inspector-container {
+    display: grid;
     width: 100%;
     height: 100%;
 }
 
-#ne-map {
-    height: 100%;
-    padding-right: 12.5%;
+#ne-map-container {
+  display: grid;
+  width: 70%;
+  height: 100%;
+  padding-left: 30%;
 }
 
 /* The Model (background) */
 #model {
-  display: none; /* Hidden by default */
+  display: grid;
   align-items: center;
   justify-items: end;
   position: absolute; /* Stay in place */
@@ -441,6 +461,7 @@ body {
   font-size: 40px;
   font-weight: bold;
   transition: 0.3s;
+  user-select: none;
 }
 
 #ne-magnifiyer-close:hover,
@@ -448,41 +469,6 @@ body {
   color: #bbb;
   text-decoration: none;
   cursor: pointer;
-}
-
-#map-container {
-    /* Positioning and Display */
-    grid-row: 1/1;
-    grid-column: 2/4;
-    align-items: center;
-    justify-items: end;
-    /* Coloring */
-    background-color: var(--color-light);
-    height: 100%;
-}
-
-#us-map {
-    /* Positioning and Display */
-    height: 100%;
-}
-
-object {
-    /* Other */
-    filter: drop-shadow(0px 0px 3px var(--secondary-color-dark));
-}
-
-#map-legend-container {
-    /* Positioning and Display */
-    grid-area: legend;
-    justify-self: center;
-    align-self: middle;
-}
-
-#map-legend {
-    /* Positioning and Display */
-    display: inline-block;
-    width: 150px;
-    vertical-align: middle;
 }
 
 /******************************/
@@ -587,7 +573,7 @@ object {
 	display: grid;
 	align-items: stretch;
     align-self: stretch;
-	z-index: 3;
+	z-index: 1;
 }
 
 #theme-selector-container:hover #theme-container {
@@ -665,7 +651,7 @@ object {
 }
 
 /***********************/
-/***  About section  ***/
+/***  About Section  ***/
 /***********************/
 
 #about-header {
@@ -942,7 +928,7 @@ object {
     max-height: 100%;
 }
 /*************************/
-/* Advertisement styling */
+/* Advertisement Styling */
 /*************************/
 
 .ad {
