@@ -869,11 +869,13 @@ object {
     /* padding: 20px; */
     font-size: 16px;
     text-align: center;
+    padding: 15px;
 }
 
 .sub-grid-item{
     font-size: 16px;
     text-align: left;
+    padding: 10px;
 }
 
 #state-name{
@@ -893,7 +895,8 @@ object {
     display: grid;
     align-items: center;
     justify-items: center;
-    background-color: var(--subgroup-color-lighter);
+    background-color: rgba(255, 255, 255, 1);
+    filter: invert(var(--inversion));
 }
 
 #state-window-data-container{
