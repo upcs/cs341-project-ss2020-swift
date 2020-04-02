@@ -244,12 +244,15 @@ $("document").ready(function () {
         $("path", us_map).click(function () {
 
             //get the state's id, and write the name in the window
-            var state_id = $(this).attr("id");
+            var state_id = $(this).attr("id")
             var state_name = state_names[state_id];
             $("#state-name").text(state_name);
 
             //make array of stats organized by state's ranking in each statistic
             let stateCatArr = getStateInfo(state_id);
+
+            let rank = getStateRank(state_id); 
+            $("#state-rank").text("State Rank: " + rank); 
 
             //retrieve the best and worst stats from the global variable data based on id
 
@@ -277,6 +280,7 @@ $("document").ready(function () {
                 $("#good-stats").append("Selected statistic:\n " + best_stat.category.stat_name_short + "\n");
                 populateDataDetails(best_stat, true);
 
+                // $("#state-window-ddata-container").css("grid-template-rows", "100% 0%");
             } else {
                 let best_stat = data.stats[stateCatArr[0]["id"]];
                 let worst_stat = data.stats[stateCatArr[stateCatArr.length - 1]["id"]];
@@ -313,7 +317,6 @@ $("document").ready(function () {
 
         //when clicking on a state
         $("path", ne_map).click(function () {
-
             //get the state's id, and write the name in the window
             var state_id = $(this).attr("id");
             var state_name = ne_state_names[state_id];
@@ -322,10 +325,11 @@ $("document").ready(function () {
             //make array of stats organized by state's ranking in each statistic
             let stateCatArr = getStateInfo(state_id);
 
-            //retrieve the best and worst stats from the global variable data based on id
+            let rank = getStateRank(state_id);
+            $("#state-rank").text("State Rank: " + rank); 
 
             $("#state-display").html("<img src=\"images/us_states/" + state_id + ".png\" alt=\"" + state_name + "\" class=\"state-window-image\" />");
-
+            
             console.log("stateCatArr.length" + stateCatArr.length);
             if (stateCatArr.length == 0) {
                 $("#bad-stats").css("display", "none");
