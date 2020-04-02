@@ -853,7 +853,7 @@ object {
     grid-template-areas:
         "state-rank state-name"
         "state-display state-window-data-container"
-        ". graph" 
+        "state-display graph"
     ;
 }
 
@@ -901,7 +901,7 @@ object {
 }
 
 #good-stats-details{
-    grid-area: good-stats-details; 
+    grid-area: good-stats-details;
     overflow-y: scroll;
     /* text-align: left */
 }
@@ -911,7 +911,7 @@ object {
 }
 
 #bad-stats-details{
-    grid-area: bad-stats-details; 
+    grid-area: bad-stats-details;
     overflow-y: scroll;
     /* text-align: left */
 }
