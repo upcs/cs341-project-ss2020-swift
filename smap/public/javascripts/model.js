@@ -171,28 +171,29 @@ function displayWeights(){
   for (let state of states){
     let weight = 0;
     for (let catID of data.active){
-      let stat = data.stats[catID];
-      if(stat.data){
-        let stateData = stat.data[state];
+      let localStat = data.stats[catID];
+
+      // console.log("typeof(localStat[data]): " + typeof(localStat["data"]));
+      if(typeof localStat !== 'undefined' && typeof localStat["data"] !== 'undefined'){ //if localStat["data"] is defined...
+
+        let stateData = localStat.data[state];
         if(stateData === undefined){
           //Data not present for this state, so bail
-          console.error("Data for state " + state + " stat " + stat.category.title + " not found");
+          console.error("Data for state " + state + " stat " + localStat.category.title + " not found");
           weight = 0;
           break;
         }
-        weight += calculateWeight(stat.weight) * stat.data[state];
+        weight += calculateWeight(localStat.weight) * stateData;
       }
     }
     weights[state] = weight;
   }
 
-  //Normalize
   normalizeStats(weights);
   data.ranks = rankStats(weights);
   
   drawChart(weights, data.ranks);
 
-  //
   for (let state of states){
     let weight = weights[state];
     colorState(state, weight);
@@ -490,6 +491,7 @@ if(typeof module !== "undefined" && module.exports){
     calculateWeight: calculateWeight,
     getStateInfo: getStateInfo,
     rankStats: rankStats,
-    setMetadata: setMetadata
+    setMetadata: setMetadata,
+    displayWeights: displayWeights
   }
 }
