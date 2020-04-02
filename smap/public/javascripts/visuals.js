@@ -247,6 +247,7 @@ $("document").ready(function () {
             let best_stat = data.stats[stateCatArr[0]["id"]];
             let worst_stat = data.stats[stateCatArr[stateCatArr.length - 1]["id"]]; 
             
+            $("#state-display").html("<img src=\"images/us_states/"+state_id+".png\" alt=\""+state_name+"\" class=\"state-window-image\" />");
 
             console.log("stateCatArr.length" + stateCatArr.length); 
             if (stateCatArr.length == 0) {
