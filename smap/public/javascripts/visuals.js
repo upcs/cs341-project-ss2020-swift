@@ -264,6 +264,8 @@ $("document").ready(function () {
                 $("#bad-stats-details").css("display", "none");
                 $("#good-stats-details").css("display", "none");
 
+                $("#state-rank").text("State Rank: *no statistics selected*");
+
                 let errMsgNoStats = "You have not selected any statisics to rank this state. <br>Please click close and select a statisitic from the Statistic Selection category";
                 $("#good-stats").html(errMsgNoStats);
 
@@ -336,9 +338,10 @@ $("document").ready(function () {
                 $("#bad-stats-details").css("display", "none");
                 $("#good-stats-details").css("display", "none");
 
+                $("#state-rank").text("State Rank: *no statistics selected*");
+                
                 let errMsgNoStats = "You have not selected any statisics to rank this state. <br>Please click close and select a statistic from the Statistic Selection category";
                 $("#good-stats").html(errMsgNoStats);
-
             } else if (stateCatArr.length == 1) {
                 let best_stat = data.stats[stateCatArr[0]["id"]];
                 let worst_stat = data.stats[stateCatArr[stateCatArr.length - 1]["id"]];
