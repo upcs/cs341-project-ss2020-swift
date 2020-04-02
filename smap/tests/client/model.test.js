@@ -7,12 +7,18 @@ const $ = require('jquery');
 const rewire = require('rewire');
 const path = '../../public/javascripts/model';
 const model = require(path);
+const states = ["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI",
+"ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS",
+"MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR",
+"PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"];
 
 function resetData(){
   model.data.active = new Set();
   model.data.stats = {};
   model.data.restored = false;
+  model.data.ranks = states.slice();
   model.data.metadataFetched = false;
+  model.data.weights = {};
 }
 
 beforeEach(resetData);
@@ -54,6 +60,8 @@ test('Create a slider', () => {
   window.colorState = jest.fn( () => {} );
   window.makeActiveSlider = jest.fn( () => { return active_slider; } );
   window.makeInactiveSlider = jest.fn( () => { return inactive_slider; } );
+  window.drawChart = jest.fn(() => {});
+
   //you can uncomment line below if you reWIRE(../../public/javascripts/model) from a few lines prior
   // script.__set__("displayWeights", () => {});
   // var spy = jest.spyOn(script, "displayWeights").mockImplementation( () => {} );
@@ -741,6 +749,112 @@ describe('calculateWeight: ', () => {
   });
 });
 
+//TODO: Reset data on merge
+describe('getStateInfo', () => {
+  beforeEach(resetData);
+
+  test('happy path', () => {
+    let script = require("../../public/javascripts/model");
+    script.data.active.add(1);
+    script.data.stats[1] = {
+      rankings: ["AR", "AL", "OH"],
+      data: {
+        "AR": 5,
+        "AL": 3,
+        "OH": 2
+      },
+      category: {title: "Fake Stat 1"}
+    };
+    script.data.active.add(2);
+    script.data.stats[2] = {
+      rankings: ["AL", "AR", "OH"],
+      data: {
+        "AR": 2,
+        "AL": 10,
+        "OH": 1
+      },
+      category: {title: "Fake Stat 2"}
+    };
+    expect(script.getStateInfo("AL")).toEqual([
+      {id:2, rank:1, value:10, name:"Fake Stat 2"},
+      {id:1, rank:2, value:3, name:"Fake Stat 1"}
+    ]);
+  });
+
+  test('bad state', () => {
+    let script = require("../../public/javascripts/model");
+    script.data.active.add(1);
+    script.data.stats[1] = {
+      rankings: ["AR", "AL", "OH"],
+      data: {
+        "AR": 5,
+        "AL": 3,
+        "OH": 2
+      }
+    };
+    script.data.active.add(2);
+    script.data.stats[2] = {
+      rankings: ["AL", "AR", "OH"],
+      data: {
+        "AR": 2,
+        "AL": 10,
+        "OH": 1
+      }
+    };
+    expect(script.getStateInfo("FK")).toEqual([]);
+  });
+
+  test('no rankings', () => {
+    let script = require("../../public/javascripts/model");
+    script.data.active.add(1);
+    script.data.stats[1] = {
+      rankings: ["AR", "AL", "OH"],
+      data: {
+        "AR": 5,
+        "AL": 3,
+        "OH": 2
+      },
+      category: {title:"Fake Stat 1"}
+    };
+    script.data.active.add(2);
+    script.data.stats[2] = {
+      data: {
+        "AR": 2,
+        "AL": 10,
+        "OH": 1
+      },
+      category: {title:"Fake Stat 2"}
+    };
+    expect(script.getStateInfo("AL")).toEqual([
+      {id:1, rank:2, value:3, name:"Fake Stat 1"}
+    ]);
+  })
+});
+
+describe("rankStates", () => {
+  test('happy path', () => {
+    let script = require("../../public/javascripts/model");
+    let data = {
+      "AR": 2,
+      "AL": 10,
+      "OH": 1
+    };
+    for (let state of states){
+      if (["AR", "AL", "OH"].indexOf(state) === -1) data[state] = 0;
+    }
+    expect(script.rankStates(data).slice(0, 3)).toEqual(["AL", "AR", "OH"]);
+  });
+
+  test('missing states', () => {
+    let script = require("../../public/javascripts/model");
+    let data = {
+      "AR": 2,
+      "AL": 10,
+      "OH": 1
+    };
+    expect(script.rankStates(data)).toEqual([]);
+  });
+});
 describe('setMetadata', () => {
   beforeEach(resetData);
 

@@ -24,7 +24,9 @@ var map; //The map SVG
 //  active: a set of active category ids
 //  stats: an object mapping category ids to Stat objects
 //  restored: whether or not storage has been read to load active categories
+//  ranks: the states in sorted order by global rank
 //  metadataFetched: whether we have read metadata from the server
+//  weights: the last computed weights for each state. Will be empty object before weights first computed.
 //This is the single source of truth - a change in these objects should be reflected
 //  in a change in the HTML. Usage of the functions in this module should guarantee this.
 var data = new Data();
@@ -33,7 +35,9 @@ function Data(){
   this.active = new Set();
   this.stats = {};
   this.restored = false;
+  this.ranks = states.slice();
   this.metadataFetched = false;
+  this.weights = {};
 }
 
 /*
@@ -106,10 +110,71 @@ function calculateWeight(value){
   return Math.pow(ratio, value - 1);
 }
 
+/*
+  Gets information about a state needed to display the state window.
+  Args:
+    stateAbbr - the two letter abbreviation for a state
+  Return:
+    An array of objects that contain the following:
+      id - a category id
+      rank - the state's rank in this category
+      value - the value of the data for this category and state
+      name - the name of the category corresponding with id
+    The array will be sorted by rank from best to worst. There will be an object
+    in the array for every active category.
+*/
+function getStateInfo(stateAbbr){
+  let arr = [];
+  for (let cat of data.active){
+    let stat = data.stats[cat];
+    if ("rankings" in stat){
+      let rank = stat.rankings.indexOf(stateAbbr) + 1;
+      if (rank === 0){
+        console.error("State not found in category " + cat);
+      } else {
+        arr.push({
+          id: cat,
+          rank: rank,
+          value: stat.data[stateAbbr],
+          name: stat.category.title
+        });
+      }
+    } else {
+      console.error("Rankings not found on active category " + cat);
+    }
+  }
+  arr.sort((first, second) => {
+    return first.rank - second.rank;
+  });
+  return arr;
+  //[{id:categoryID, rank:stateRank, value:stateValue, name:stat.data[id]}]
+}
+
+/*
+  Ranks states based on weights.
+  Args:
+    data: the weights to rank, a dictionary from states to numbers
+  Return: An array of states from highest weight to lowest. On error, an empty array is returned.
+*/
+function rankStates(data){
+  let ranks = states.slice();
+  let error = false;
+  ranks.sort((first, second) => {
+    if (second in data && first in data){
+      return data[second] - data[first];
+    } else {
+      console.log("Data has no value for state " + first + " or " + second);
+      error = true;
+      return 0;
+    }
+  });
+  return error ? [] : ranks;
+}
+
 //Reads the weights from the global data object and uses them to display the map.
 function displayWeights(){
   //Sum up weights for each state
-  let weights = {};
+  let weights = data.weights;
   for (let state of states){
     let weight = 0;
     for (let catID of data.active){
@@ -128,13 +193,14 @@ function displayWeights(){
         weight += calculateWeight(localStat.weight) * stateData;
       }
     }
-    weights[state] = weight;
+    data.weights[state] = weight;
   }
 
   normalizeStats(weights);
+  data.ranks = rankStates(weights);
 
   for (let state of states){
-    let weight = weights[state];
+    let weight = data.weights[state];
     colorState(state, weight);
   }
 }
@@ -182,11 +248,9 @@ Stat.prototype.updateWeight = function(weight){
 //Moves the category to the active tab and adds a slider
 Stat.prototype.enable = function(){
   this.enabled = true;
-  data.active.add(this.category.stat_id);
   this.slider.remove();
   this.slider = makeActiveSlider(this.category.title, this.weight);
   this.updateWeight(this.weight);
-  data.active.add(this.category.stat_id);
 
   //Add event listeners
   $(".statistic-slider", this.slider).change((event) => {
@@ -206,17 +270,22 @@ Stat.prototype.enable = function(){
 
   //Fetches the data if we do not have it.
   if(!this.data){
-    $.get("/api/data?cat=" + this.category.stat_id, "", (data, status, xhr) => {
+    $.get("/api/data?cat=" + this.category.stat_id, "", (cat_data, status, xhr) => {
       if (status !== "success"){
         alert("<statistics.js> AHHHHHHH FAILURE!!!");
       } else {
-        this.data = data[0];
-
+        this.data = cat_data[0];
+        this.rankings = rankStates(this.data);
+        data.active.add(this.category.stat_id);
         // this.data is an object with all of the column names ["stat_id"], ["stat_name_short"], ["AL"], ["AK"], etc.
         normalizeStats(this.data);
+        // console.log(this.data);
         displayWeights();
       }
     });
+  } else {
+    data.active.add(this.category.stat_id);
+    displayWeights();
   }
 }
 
@@ -250,6 +319,10 @@ Stat.prototype.delete = function(){
   delete data.stats[category.stat_id];
 }
 
+/*
+  Shows the metadata alert for this statistic.
+  If metadata has not been downloaded, do so and show loading alert instead.
+*/
 Stat.prototype.showMeta = function(){
   prepareMetadataAlert();
   if (this.metadata){
@@ -272,7 +345,6 @@ Stat.prototype.showMeta = function(){
     closeMetadataAlert();
   }
 };
-
 
 //region storage
 
@@ -409,7 +481,9 @@ if(typeof module !== "undefined" && module.exports){
     },
     normalizeStats: normalizeStats,
     calculateWeight: calculateWeight,
-    displayWeights: displayWeights,
-    setMetadata: setMetadata
+    getStateInfo: getStateInfo,
+    rankStates: rankStates,
+    setMetadata: setMetadata,
+    displayWeights: displayWeights
   }
 }
