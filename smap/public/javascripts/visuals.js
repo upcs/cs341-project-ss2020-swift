@@ -141,7 +141,13 @@ $("document").ready(function () {
             // Return the styling on leaving
         }).mouseleave(function () {
             $(this).css("filter", "brightness(100%) contrast(100%)").css("stroke-width", "1");
-        })
+        }).click(function () {
+            for (let element of blur_elements) {
+                element.addClass("blurred");
+            }
+            $("body").addClass("unscrollable");
+            $("#state-window-alert-container").removeClass("hidden");
+        });
     }
 
     //sets up event listeners for state hovering 
@@ -177,7 +183,6 @@ $("document").ready(function () {
     }
 
     //TODO: add the state overall rank to the corner 
-    //TODO: make state window details grids scrollable
 
     //adds state specific 
     function populateStateWindow(metadata){
