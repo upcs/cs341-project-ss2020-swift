@@ -361,7 +361,6 @@ body {
     /* Positioning and Display */
     grid-area: legend;
     justify-self: center;
-    align-self: middle;
 }
 
 #map-legend {
@@ -496,8 +495,8 @@ object {
 	grid-template-columns: 40% auto;
 	grid-template-rows: 75% 25%;
 	grid-template-areas:
-		"background accent"
-		"background secondary"
+		"theme-background accent"
+		"theme-background secondary"
 	;
     margin: 10px;
     /* Borders */
@@ -805,11 +804,11 @@ object {
 }
 
 .blurred {
+    filter: blur(10px) !important;
     -webkit-filter: blur(10px);
     -moz-filter: blur(10px);
     -o-filter: blur(10px);
     -ms-filter: blur(10px);
-    filter: blur(10px) !important;
 }
 
 .hidden {
