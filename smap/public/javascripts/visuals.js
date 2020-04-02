@@ -254,8 +254,8 @@ $("document").ready(function () {
             //make array of stats organized by state's ranking in each statistic
             let stateCatArr = getStateInfo(state_id);
 
-            let rank = getStateRank(state_id); 
-            $("#state-rank").text("State Rank: " + rank); 
+            let rank = getStateRank(state_id);
+            $("#state-rank").text("State Rank: " + rank);
 
             //retrieve the best and worst stats from the global variable data based on id
 
@@ -279,10 +279,10 @@ $("document").ready(function () {
                 $("#bad-stats").css("display","none");
                 $("#bad-stats-details").css("display", "none");
 
-                let msgOneStat = "You have only selected one statisic to rank this state by.<br>";
+                let msgOneStat = "<i>(You have only selected one statisic to rank this state by.)</i><br>";
                 $("#good-stats").html(msgOneStat);
 
-                $("#good-stats").append("Selected statistic:\n " + best_stat.category.stat_name_short + "\n");
+                $("#good-stats").append("<h3>Selected statistic:</h3>" + best_stat.category.stat_name_short + "\n");
                 populateDataDetails(best_stat, true);
 
                 // $("#state-window-ddata-container").css("grid-template-rows", "100% 0%");
@@ -291,12 +291,12 @@ $("document").ready(function () {
                 let worst_stat = data.stats[stateCatArr[stateCatArr.length - 1]["id"]];
 
                 //write good/bad stat names in good/bad grid items
-                $("#good-stats").text("Best statistic:\n " + best_stat.category.stat_name_short + "\n");
-                $("#bad-stats").text("Worst statistic:\n " + worst_stat.category.stat_name_short + "\n");
+                $("#good-stats").html("<h3>Best statistic:</h3>\n " + best_stat.category.stat_name_short + "\n");
+                $("#bad-stats").html("<h3>Worst statistic:</h3>\n " + worst_stat.category.stat_name_short + "\n");
 
                 //write details/metadata in good/bad stats details grid items
-                $("#good-stats-details").text("");
-                $("#bad-stats-details").text("");
+                $("#good-stats-details").html("");
+                $("#bad-stats-details").html("");
                 populateDataDetails(best_stat, true);
                 populateDataDetails(worst_stat, false);
             }
@@ -335,10 +335,10 @@ $("document").ready(function () {
             let stateCatArr = getStateInfo(state_id);
 
             let rank = getStateRank(state_id);
-            $("#state-rank").text("State Rank: " + rank); 
+            $("#state-rank").text("State Rank: " + rank);
 
             $("#state-display").html("<img src=\"images/us_states/" + state_id + ".png\" alt=\"" + state_name + "\" class=\"state-window-image\" />");
-            
+
             console.log("stateCatArr.length" + stateCatArr.length);
             if (stateCatArr.length == 0) {
                 $("#bad-stats").css("display", "none");
@@ -346,7 +346,7 @@ $("document").ready(function () {
                 $("#good-stats-details").css("display", "none");
 
                 $("#state-rank").text("State Rank: *no statistics selected*");
-                
+
                 let errMsgNoStats = "You have not selected any statisics to rank this state. <br>Please click close and select a statistic from the Statistic Selection category";
                 $("#good-stats").html(errMsgNoStats);
             } else if (stateCatArr.length == 1) {
@@ -385,12 +385,12 @@ $("document").ready(function () {
  */
 function populateDataDetails(stat, best) {
     let msg = "msg";
-    if (best) $("#good-stats-details").html("Statistic Details:<br><br>");
-    else $("#bad-stats-details").html("Statistic Details:<br><br>");
+    if (best) $("#good-stats-details").html("<h3>Statistic Details:</h3>");
+    else $("#bad-stats-details").html("<h3>Statistic Details</h3>:");
     if (stat.metadata) {
         msg = createDetailsMsg(stat);
         if(best) $("#good-stats-details").append(msg);
-        else $("#bad-stats-details").append(msg)
+        else $("#bad-stats-details").append(msg);
     } else if (!data.metadataFetched) {
         let promise = getMetadata();
         promise.then((metadata) => {
@@ -663,7 +663,6 @@ function drawChart(state_id, weights, ranks) {
     chart = new Chart(ctx, {
         // The type of chart we want to create
         type: 'bar',
-
         // The data for our dataset
         data: {
             labels: ranks,
@@ -682,9 +681,17 @@ function drawChart(state_id, weights, ranks) {
         options: {
             scales: {
                 yAxes: [{
+                    gridLines: {
+                        color: "rgba(0, 0, 0, 0)"
+                    },
                     ticks: {
                         display: false
                     }
+                }],
+                xAxes: [{
+                    gridLines: {
+                        color: "rgba(0, 0, 0, 0)"
+                    },
                 }]
             },
             legend: {
