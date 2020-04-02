@@ -159,7 +159,6 @@ body {
     /* Other */
     -webkit-appearance: none !important;
     z-index: 2;
-
 }
 
 /* TODO: This will be fixed at a later time, as it creates a weird scrollbar */
@@ -861,7 +860,6 @@ object {
     /* padding: 20px; */
     font-size: 16px;
     text-align: center;
-    /* TODO: get the details boxes to text-align left */
 }
 
 .sub-grid-item{
