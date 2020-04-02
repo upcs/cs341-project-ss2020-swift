@@ -167,34 +167,56 @@ function rankStats(data){
 //Reads the weights from the global data object and uses them to display the map.
 function displayWeights(){
   //Sum up weights for each state
-  // data.weights = {};
+  let weights = data.weights;
   for (let state of states){
     let weight = 0;
     for (let catID of data.active){
-      let stat = data.stats[catID];
-      if(stat.data){
-        let stateData = stat.data[state];
+      let localStat = data.stats[catID];
+
+      // console.log("typeof(localStat[data]): " + typeof(localStat["data"]));
+      if(typeof localStat !== 'undefined' && typeof localStat["data"] !== 'undefined'){ //if localStat["data"] is defined...
+
+        let stateData = localStat.data[state];
         if(stateData === undefined){
           //Data not present for this state, so bail
-          console.error("Data for state " + state + " stat " + stat.category.title + " not found");
+          console.error("Data for state " + state + " stat " + localStat.category.title + " not found");
           weight = 0;
           break;
         }
-        weight += calculateWeight(stat.weight) * stat.data[state];
+        weight += calculateWeight(localStat.weight) * stateData;
       }
     }
     data.weights[state] = weight;
   }
 
-  //Normalize
-  normalizeStats(data.weights);
-  data.ranks = rankStats(data.weights);
+  normalizeStats(weights);
+  data.ranks = rankStats(weights);
 
-  //
+  drawChart(weights, data.ranks);
+
   for (let state of states){
     let weight = data.weights[state];
     colorState(state, weight);
   }
+}
+
+/**
+ *
+ * @param state_id, string of 2 letter abbr
+ * @return the rank, 1 indexed
+ */
+function getStateRank(state_id){
+  //loop through the data.ranks ARRAY.
+  //The index of the state that matches will be 1 less than the rank, since it's indexed at 0
+  for (let i = 0; i<data.ranks.length; i++) {
+    console.log("data.ranks[i]" + data.ranks[i]);
+    if(data.ranks[i] == state_id){
+      console.log("found it. Rank: " + i+1);
+      return i+1;
+    }
+  }
+  console.error("invalid state id or data.ranks does not have all the state abbs");
+  return -1;
 }
 
 /*Stat constructor.
@@ -469,6 +491,7 @@ if(typeof module !== "undefined" && module.exports){
     calculateWeight: calculateWeight,
     getStateInfo: getStateInfo,
     rankStats: rankStats,
-    setMetadata: setMetadata
+    setMetadata: setMetadata,
+    displayWeights: displayWeights
   }
 }
