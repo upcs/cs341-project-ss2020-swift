@@ -254,8 +254,8 @@ $("document").ready(function () {
             //make array of stats organized by state's ranking in each statistic
             let stateCatArr = getStateInfo(state_id);
 
-            let rank = getStateRank(state_id); 
-            $("#state-rank").text("State Rank: " + rank); 
+            let rank = getStateRank(state_id);
+            $("#state-rank").text("State Rank: " + rank);
 
             //retrieve the best and worst stats from the global variable data based on id
 
@@ -335,10 +335,10 @@ $("document").ready(function () {
             let stateCatArr = getStateInfo(state_id);
 
             let rank = getStateRank(state_id);
-            $("#state-rank").text("State Rank: " + rank); 
+            $("#state-rank").text("State Rank: " + rank);
 
             $("#state-display").html("<img src=\"images/us_states/" + state_id + ".png\" alt=\"" + state_name + "\" class=\"state-window-image\" />");
-            
+
             console.log("stateCatArr.length" + stateCatArr.length);
             if (stateCatArr.length == 0) {
                 $("#bad-stats").css("display", "none");
@@ -346,7 +346,7 @@ $("document").ready(function () {
                 $("#good-stats-details").css("display", "none");
 
                 $("#state-rank").text("State Rank: *no statistics selected*");
-                
+
                 let errMsgNoStats = "You have not selected any statisics to rank this state. <br>Please click close and select a statistic from the Statistic Selection category";
                 $("#good-stats").html(errMsgNoStats);
             } else if (stateCatArr.length == 1) {
@@ -685,6 +685,11 @@ function drawChart(state_id, weights, ranks) {
                     ticks: {
                         display: false
                     }
+                }],
+                xAxes: [{
+                  ticks: {
+                    maxRotation: 80
+                  }
                 }]
             },
             legend: {
