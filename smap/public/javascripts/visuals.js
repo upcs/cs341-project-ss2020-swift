@@ -61,6 +61,8 @@ $("document").ready(function () {
       }
       let doc = xhr.documentElement;
       doc.id = "us-map";
+      doc.style.width = "100%";
+      doc.style.height = "100%";
       $("#map-container").append(doc);
       preload(clear_loading, ellipses_loop);
     });
@@ -71,7 +73,9 @@ $("document").ready(function () {
       }
       let doc = xhr.documentElement;
       doc.id = "ne-map";
-      $("#model").prepend(doc);
+      doc.style.width = "100%";
+      doc.style.height = "100%";
+      $("#ne-map-container").prepend(doc);
       preload(clear_loading, ellipses_loop);
     });
 
@@ -176,16 +180,23 @@ $("document").ready(function () {
             "orange-red", "green-blue", "pink-purple", "dark-red", "dark-green", "dark-blue"
         ];
         // Change the circle to be "active"
-        var theme_id = $(this).attr("id");
+        var theme_id = $(this).attr("id") + "-theme";
         $(".theme-template-active").addClass("theme-template").removeClass("theme-template-active");
         $(this).addClass("theme-template-active").removeClass("theme-template");
         // Change the stylesheet reference
+
+        /*EXTERNAL CITATION
+        Disabling style sheets:
+          https://developer.mozilla.org/en-US/docs/Web/API/StyleSheet/disabled
+        Selecting stylesheets:
+          https://css-tricks.com/examples/AlternateStyleSheets/ (source code)
+        */
         $("#"+theme_id+"-theme").prop("disabled", false);
         for(let theme of themes) {
             if(theme != theme_id) {
                 $("#"+theme+"-theme").prop("disabled", true);
             }
-        }
+        };
         // Recolor the map
         displayWeights();
     });

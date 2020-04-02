@@ -430,9 +430,9 @@ object {
     height: 100%;
 }
 
-#ne-map {
+#ne-map-container {
     height: 100%;
-    padding-right: 12.5%;
+    padding-left: 30%;
 }
 
 /* The Model (background) */
