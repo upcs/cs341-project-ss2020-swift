@@ -209,9 +209,7 @@ function getStateRank(state_id){
   //loop through the data.ranks ARRAY. 
   //The index of the state that matches will be 1 less than the rank, since it's indexed at 0
   for (let i = 0; i<data.ranks.length; i++) {
-    console.log("data.ranks[i]" + data.ranks[i]); 
     if(data.ranks[i] == state_id){
-      console.log("found it. Rank: " + i+1); 
       return i+1; 
     }
   }
