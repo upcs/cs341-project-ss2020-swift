@@ -514,8 +514,8 @@ object {
 	grid-template-columns: 40% auto;
 	grid-template-rows: 75% 25%;
 	grid-template-areas:
-		"background accent"
-		"background secondary"
+		"theme-background accent"
+		"theme-background secondary"
 	;
     margin: 10px;
     /* Borders */
@@ -538,7 +538,7 @@ object {
 
 .background {
     /* Positioning and Display */
-	grid-area: background;
+	grid-area: theme-background;
 	align-items: stretch;
 }
 
