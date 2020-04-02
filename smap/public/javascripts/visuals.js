@@ -310,8 +310,8 @@ $("document").ready(function () {
                 $("#good-stats-details").css("display", "block");
 
                 //write good/bad stat names in good/bad grid items
-                $("#good-stats").text("Best statistic:\n " + best_stat.category.stat_name_short + "\n");
-                $("#bad-stats").text("Worst statistic:\n " + worst_stat.category.stat_name_short + "\n");
+                $("#good-stats").html("<h3>Best statistic:</h3>\n " + best_stat.category.stat_name_short + "\n");
+                $("#bad-stats").html("<h3>Worst statistic:</h3>\n " + worst_stat.category.stat_name_short + "\n");
 
                 //write details/metadata in good/bad stats details grid items
                 $("#good-stats-details").text("");
