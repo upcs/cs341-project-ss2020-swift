@@ -203,14 +203,12 @@ function displayWeights(){
  * @param state_id, string of 2 letter abbr
  * @return the rank, 1 indexed
  */
-function getStateRank(state_id){
+function getStateRank(state_id){ //says it's not being used, bc it is only called by visuals.js
   //loop through the data.ranks ARRAY.
   //The index of the state that matches will be 1 less than the rank, since it's indexed at 0
   for (let i = 0; i<data.ranks.length; i++) {
-    console.log("data.ranks[i]" + data.ranks[i]);
     if(data.ranks[i] == state_id){
-      console.log("found it. Rank: " + i+1);
-      return i+1;
+      return i+1; 
     }
   }
   console.error("invalid state id or data.ranks does not have all the state abbs");
