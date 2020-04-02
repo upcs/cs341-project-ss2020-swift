@@ -36,6 +36,7 @@ function Data(){
   this.restored = false;
   this.ranks = states.slice();
   this.metadataFetched = false;
+  this.weights = {};
 }
 
 /*
@@ -166,7 +167,7 @@ function rankStats(data){
 //Reads the weights from the global data object and uses them to display the map.
 function displayWeights(){
   //Sum up weights for each state
-  let weights = {};
+  // data.weights = {};
   for (let state of states){
     let weight = 0;
     for (let catID of data.active){
@@ -182,18 +183,16 @@ function displayWeights(){
         weight += calculateWeight(stat.weight) * stat.data[state];
       }
     }
-    weights[state] = weight;
+    data.weights[state] = weight;
   }
 
   //Normalize
-  normalizeStats(weights);
-  data.ranks = rankStats(weights);
-
-  drawChart(weights, data.ranks);
+  normalizeStats(data.weights);
+  data.ranks = rankStats(data.weights);
 
   //
   for (let state of states){
-    let weight = weights[state];
+    let weight = data.weights[state];
     colorState(state, weight);
   }
 }

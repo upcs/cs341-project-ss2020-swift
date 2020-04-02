@@ -248,6 +248,9 @@ $("document").ready(function () {
             var state_name = state_names[state_id];
             $("#state-name").text(state_name);
 
+            // Update the chart
+            drawChart(state_id, data.weights, data.ranks);
+
             //make array of stats organized by state's ranking in each statistic
             let stateCatArr = getStateInfo(state_id);
 
@@ -318,6 +321,10 @@ $("document").ready(function () {
             var state_id = $(this).attr("id");
             var state_name = ne_state_names[state_id];
             $("#state-name").text(state_name);
+
+            // Update the chart
+            console.log(data.weights);
+            drawChart(state_id, data.weights, data.ranks);
 
             //make array of stats organized by state's ranking in each statistic
             let stateCatArr = getStateInfo(state_id);
@@ -547,10 +554,10 @@ function makeInactiveSlider(title){
 
 // Weight is a value between 0 and 1
 // 0 is low, 1 is high
-function mixColor(weight) {
+function mixColor(weight, color) {
     // Get the theme colors
     var min_string = $(":root").css("--color-light");
-    var max_string = $(":root").css("--accent-color");
+    var max_string = $(":root").css(color);
     // Get the text from the inside of the "rgba(_______);"
     var min_data = min_string.split("(")[1].split(")")[0];
     var max_data = max_string.split("(")[1].split(")")[0];
@@ -581,7 +588,7 @@ function colorSVG(doc, state, weight) {
     var svgItem = doc.getElementById(state);
     // Set the colour to something else
     var border = $(":root").css("--secondary-color-dark");
-    svgItem.setAttribute("style", "stroke-width: 1; stroke: "+border+"; fill: "+mixColor(weight)+";");
+    svgItem.setAttribute("style", "stroke-width: 1; stroke: "+border+"; fill: "+mixColor(weight, "--accent-color")+";");
 }
 
 function colorState(state, weight) {
@@ -599,7 +606,7 @@ function colorState(state, weight) {
 
 //weights is the dictionary with keys of state abbreviations and values of the calculated weight
 //ranks is an array, with only state abbreviations, from best to worst
-function drawChart(weights, ranks){
+function drawChart(state_id, weights, ranks) {
     var ctx = document.getElementById('myChart').getContext('2d');
 
     ctx.canvas.width = $("#graph").width();
@@ -610,13 +617,28 @@ function drawChart(weights, ranks){
         chart.destroy();
     }
 
-    let bar_color = getComputedStyle(document.documentElement).getPropertyValue('--accent-color');
-    let bar_hover = getComputedStyle(document.documentElement).getPropertyValue('--accent-color-light');
     let tooltip_color = getComputedStyle(document.documentElement).getPropertyValue('--color-dark');
     let tooltip_text = getComputedStyle(document.documentElement).getPropertyValue('--color-light');
     let select_color = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color-light');
+    let select_hover = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color-dark');
+    let select_border_color = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color-dark');
+    let regular_border_color = getComputedStyle(document.documentElement).getPropertyValue('--accent-color-dark');
 
-    
+    let bar_color_array = [];
+    let bar_hover_array = [];
+    let border_color_array = [];
+
+    for (var idx = 0; idx < ranks.length; idx++) {
+        if(ranks[idx] === state_id) {
+            bar_color_array.push(select_color);
+            bar_hover_array.push(select_hover);
+            border_color_array.push(select_border_color);
+        } else {
+            bar_color_array.push(mixColor(weights[ranks[idx]], "--accent-color"));
+            bar_hover_array.push(mixColor(weights[ranks[idx]], "--accent-color-light"));
+            border_color_array.push(regular_border_color);
+        }
+    }
 
     chart = new Chart(ctx, {
         // The type of chart we want to create
@@ -627,9 +649,11 @@ function drawChart(weights, ranks){
             labels: ranks,
             datasets: [{
                 label: "",
-                backgroundColor: bar_color,
-                hoverBackgroundColor: bar_hover,
-                borderColor: "rgba(0, 0, 0, 0)",
+                backgroundColor: bar_color_array,
+                borderColor: border_color_array,
+                borderWidth: 2,
+                hoverBackgroundColor: bar_hover_array,
+                hoverBorderColor: border_color_array,
                 data: ranks.map( x => (100*weights[x]).toFixed(4)) //javascript is nice and has a mapping function that eliminates the need to loop
             }]
         },
