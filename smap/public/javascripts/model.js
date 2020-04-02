@@ -36,7 +36,7 @@ function Data(){
   this.restored = false;
   this.ranks = states.slice();
   this.metadataFetched = false;
-  this.weights = {}; 
+  this.weights = {};
 }
 
 /*
@@ -186,34 +186,34 @@ function displayWeights(){
         weight += calculateWeight(localStat.weight) * stateData;
       }
     }
-    weights[state] = weight;
+    data.weights[state] = weight;
   }
 
   normalizeStats(weights);
   data.ranks = rankStats(weights);
-  
+
   drawChart(weights, data.ranks);
 
   for (let state of states){
-    let weight = weights[state];
+    let weight = data.weights[state];
     colorState(state, weight);
   }
 }
 
 /**
- * 
+ *
  * @param state_id, string of 2 letter abbr
- * @return the rank, 1 indexed 
+ * @return the rank, 1 indexed
  */
-function getStateRank(state_id){
-  //loop through the data.ranks ARRAY. 
+function getStateRank(state_id){ //says it's not being used, bc it is only called by visuals.js
+  //loop through the data.ranks ARRAY.
   //The index of the state that matches will be 1 less than the rank, since it's indexed at 0
   for (let i = 0; i<data.ranks.length; i++) {
     if(data.ranks[i] == state_id){
       return i+1; 
     }
   }
-  console.error("invalid state id or data.ranks does not have all the state abbs"); 
+  console.error("invalid state id or data.ranks does not have all the state abbs");
   return -1;
 }
 
