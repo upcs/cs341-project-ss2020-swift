@@ -847,14 +847,14 @@ object {
 #state-window-container{
     display: grid;
     background-color: rgba(255,255,255,1); /* full white */
-    height: 500px;
+    height: 600px;
     grid-template-columns: 33% 67%;
-    grid-template-rows: 20% 80%;
+    grid-template-rows: 20% 50% 30%;
     grid-template-areas:
         "state-rank state-name"
         "state-display state-window-data-container"
+        ". graph" 
     ;
-    /* padding: 10px; */
 }
 
 .grid-item{
@@ -909,4 +909,9 @@ object {
 #subgrid-item4{
     grid-area: bad-stats-details; 
     /* text-align: left */
+}
+
+#graph{
+    grid-area: graph;
+    background-color: var(--subgroup-color-lighter);
 }
