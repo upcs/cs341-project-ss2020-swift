@@ -437,7 +437,7 @@ object {
 
 /* The Model (background) */
 #model {
-  display: none; /* Hidden by default */
+  display: grid;
   align-items: center;
   justify-items: end;
   position: absolute; /* Stay in place */
@@ -459,6 +459,7 @@ object {
   font-size: 40px;
   font-weight: bold;
   transition: 0.3s;
+  user-select: none;
 }
 
 #ne-magnifiyer-close:hover,
@@ -570,7 +571,7 @@ object {
 	display: grid;
 	align-items: stretch;
     align-self: stretch;
-	z-index: 3;
+	z-index: 1;
 }
 
 #theme-selector-container:hover #theme-container {

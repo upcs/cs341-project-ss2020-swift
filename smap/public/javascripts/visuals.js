@@ -27,22 +27,12 @@ $("document").ready(function () {
         console.log("Page load time: " + load_time + "s");
         console.log("Time until page operable: "+ (load_time+2.5) +"s");
     }
-    function load_themes(callback, loop) {
-        const themes = [
-            "orange-red-theme", "green-blue-theme", "pink-purple-theme",
-            "dark-red-theme", "dark-green-theme", "dark-blue-theme"
-        ];
-        for(var i = 0; i < themes.length; i++) {
-            if(i !== themes.length - 1) {
-                $("#"+themes[i+1]).attr("rel", "stylesheet");
-                $("#"+themes[i]).attr("rel", "alternate stylesheet")
-            } else {
-                $("#"+themes[0]).attr("rel", "stylesheet");
-                $("#"+themes[i]).attr("rel", "alternate stylesheet")
-            }
-        }
+
+    function preload(callback, loop) {
+        $("#model").css("display", "none");
         callback(loop);
     }
+
     var ellipses_loop = setInterval(function() {
         var dot1 = $("#dot1");
         var dot2 = $("#dot2");
@@ -58,7 +48,17 @@ $("document").ready(function () {
             }, 250);
         }, 250);
     }, 1750 );
-    load_themes(clear_loading, ellipses_loop);
+
+    let ne_map = $("#ne-map");
+    let ne_map_document = document.getElementById("ne-map").contentDocument;
+
+    if(ne_map_document === null) {
+        ne_map.on("load", () => {
+            preload(clear_loading, ellipses_loop)
+        });
+    } else {
+        preload(clear_loading, ellipses_loop);
+    }
 
     // END ANIMATIONS //
     ////////////////////
@@ -75,7 +75,7 @@ $("document").ready(function () {
 
     sliderContainer = $("#statistics-sliders");
     selectionContainer = $("#statistics-selector");
-    map = $("#us-map");
+    let us_map = $("#us-map");
 
     // Get the model
     var model = document.getElementById("model");
@@ -164,15 +164,14 @@ $("document").ready(function () {
         $(".theme-template-active").addClass("theme-template").removeClass("theme-template-active");
         $(this).addClass("theme-template-active").removeClass("theme-template");
         // Change the stylesheet reference
-        $("#"+theme_id+"-theme").attr("rel", "stylesheet");
+        $("#"+theme_id+"-theme").prop("disabled", false);
         for(let theme of themes) {
             if(theme != theme_id) {
-                $("#"+theme+"-theme").attr("rel", "alternate stylesheet");
+                $("#"+theme+"-theme").prop("disabled", true);
             }
         }
         // Recolor the map
-        window.setTimeout(function() { displayWeights(); } , 50);
-        // displayWeights();
+        displayWeights();
     });
 
 
@@ -248,7 +247,7 @@ function mixColor(weight) {
 function colorSVG(doc, state, weight) {
     // Get one of the SVG items by ID;
     var svgItem = doc.getElementById(state);
-    // Set the colour to something else
+    // Set the color to something else
     var border = $(":root").css("--secondary-color-dark");
     svgItem.setAttribute("style", "stroke-width: 1; stroke: "+border+"; fill: "+mixColor(weight)+";");
 }
@@ -256,12 +255,14 @@ function colorSVG(doc, state, weight) {
 function colorState(state, weight) {
     const ne_states = ["MA", "CT", "NH", "RI", "VT", "DE", "MD", "MJ", "NY", "PA", "ME", "NJ"];
     // Get the svg
-    var us_map = document.getElementById("us-map").contentDocument;
+    let us_map = document.getElementById("us-map").contentDocument;
+    let ne_map = document.getElementById("ne-map").contentDocument;
     // If it exists
     $(us_map).ready(colorSVG(us_map, state, weight));
     // If the state in question is also in the NE, do the same for the separate SVG
-    if(ne_states.includes(state)) {
-        var ne_map = document.getElementById("ne-map").contentDocument;
-        $(ne_map).ready(colorSVG(ne_map, state, weight));
-    }
+    $(ne_map).ready( function() {
+        if(ne_states.includes(state)) {
+            colorSVG(ne_map, state, weight);
+        }
+    });
 }
