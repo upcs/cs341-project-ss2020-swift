@@ -59,6 +59,8 @@ test('Create a slider', () => {
   window.colorState = jest.fn( () => {} );
   window.makeActiveSlider = jest.fn( () => { return active_slider; } );
   window.makeInactiveSlider = jest.fn( () => { return inactive_slider; } );
+  window.drawChart = jest.fn(() => {});
+
   //you can uncomment line below if you reWIRE(../../public/javascripts/model) from a few lines prior
   // script.__set__("displayWeights", () => {});
   // var spy = jest.spyOn(script, "displayWeights").mockImplementation( () => {} );
