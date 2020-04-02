@@ -9,9 +9,9 @@
     --group-color:              rgba(210, 210, 210, 1);     /* Medium Grey */
     --subgroup-color:           rgba(225, 225, 225, 1);     /* Light Grey */
     --subgroup-color-lighter:   rgba(230, 235, 230, 1);     /* Lighter Grey */
-    --accent-color-light:       rgba(220, 70,  230, 1);     /* Light Accent */
-    --accent-color:             rgba(210, 60,  220, 1);     /* Medium Accent */
-    --accent-color-dark:        rgba(180, 60,  200, 1);     /* Darker Accent */
+    --accent-color-light:       rgba(250, 120, 220, 1);     /* Light Accent */
+    --accent-color:             rgba(230, 90,  200, 1);     /* Medium Accent */
+    --accent-color-dark:        rgba(200, 60,  170, 1);     /* Darker Accent */
     --secondary-color-light:    rgba(140, 50,  210, 1);     /* Brighter Secondary */
     --secondary-color-dark:     rgba(70,  10,  130, 1);     /* Darker Secondary */
     --font-sans:                'Quicksand', sans-serif;
