@@ -246,34 +246,42 @@ $("document").ready(function () {
             //retrieve the best and worst stats from the global variable data based on id
             let best_stat = data.stats[stateCatArr[0]["id"]];
             let worst_stat = data.stats[stateCatArr[stateCatArr.length - 1]["id"]]; 
-
             
-            // if (stateCatArr.length == 0) {
-            //     //TODO: css to make just one container for this message 
-            //     let errMsgNoStats = "You haven't selected any statisics to rank this state by. Please click close and select a statisitc from the Statistic Selection category"; 
-            //     $("#good-stats").text(errMsgNoStats);
 
-            // } else if (stateCatArr.length == 1){
-            //     //TODO: css so that the height of the bottom row is 0 and the top row takes up the whole container
+            console.log("stateCatArr.length" + stateCatArr.length); 
+            if (stateCatArr.length == 0) {
+                //TODO: css to make just one container for this message 
 
-            // } else {
-            //     //write good/bad stat names in good/bad grid items
-            //     $("#good-stats").text("Best stat:\n " + best_stat.category.stat_name_short + "\n");
-            //     $("#bad-stats").text("Worst stat:\n " + worst_stat.category.stat_name_short + "\n");
+                let errMsgNoStats = "You haven't selected any statisics to rank this state by. Please click close and select a statisitc from the Statistic Selection category"; 
+                $("#good-stats").text(errMsgNoStats);
+
+            } else if (stateCatArr.length == 1){
+                //TODO: css so that the height of the bottom row is 0 and the top row takes up the whole container
+                let msgOneStat = "You have only selected one statisic to rank this state by.<br>";
+                $("#good-stats").html(msgOneStat);
+
+                $("#good-stats").append("Selected statistic:\n " + best_stat.category.stat_name_short + "\n");
+                populateDataDetails(best_stat, true); 
+
+                $("#bad-stats").css("display","none"); 
+                $("#bad-stats-details").css("display", "none"); 
+            } else {
+                //write good/bad stat names in good/bad grid items
+                $("#good-stats").text("Best statistic:\n " + best_stat.category.stat_name_short + "\n");
+                $("#bad-stats").text("Worst statistic:\n " + worst_stat.category.stat_name_short + "\n");
                 
-            //     //write details/metadata in good/bad stats details grid items 
-            //     populateDataDetails(best_stat, true); 
-            //     populateDataDetails(worst_stat, false); 
-            // } 
+                //write details/metadata in good/bad stats details grid items 
+                populateDataDetails(best_stat, true); 
+                populateDataDetails(worst_stat, false); 
+            } 
 
-            //   write good/bad stat names in good/bad grid items
-            $("#good-stats").text("Best stat:\n " + best_stat.category.stat_name_short + "\n");
-            $("#bad-stats").text("Worst stat:\n " + worst_stat.category.stat_name_short + "\n");
+            // //   write good/bad stat names in good/bad grid items
+            // $("#good-stats").text("Best stat:\n " + best_stat.category.stat_name_short + "\n");
+            // $("#bad-stats").text("Worst stat:\n " + worst_stat.category.stat_name_short + "\n");
 
-            //write details/metadata in good/bad stats details grid items 
-            populateDataDetails(best_stat, true); 
-            populateDataDetails(worst_stat, false); 
-
+            // //write details/metadata in good/bad stats details grid items 
+            // populateDataDetails(best_stat, true); 
+            // populateDataDetails(worst_stat, false); 
         });
     }
 
@@ -283,10 +291,12 @@ $("document").ready(function () {
  */
 function populateDataDetails(stat, best) {
     let msg = "msg"; 
+    if (best) $("#good-stats-details").html("Statistic Details:<br><br>");
+    else $("#bad-stats-details").html("Statistic Details:<br><br>");
     if (stat.metadata) {
         msg = createDetailsMsg(stat); 
-        if(best) $("#good-stats-details").html(msg); 
-        else $("#bad-stats-details").html(msg)
+        if(best) $("#good-stats-details").append(msg); 
+        else $("#bad-stats-details").append(msg)
     } else if (!data.metadataFetched) {
         let promise = getMetadata();
         promise.then((metadata) => {
@@ -295,8 +305,8 @@ function populateDataDetails(stat, best) {
                 setMetadata(metadata);
                 if (stat.metadata !== undefined) {
                     msg = createDetailsMsg(stat);
-                    if (best) $("#good-stats-details").html(msg);
-                    else $("#bad-stats-details").html(msg)
+                    if (best) $("#good-stats-details").append(msg);
+                    else $("#bad-stats-details").append(msg)
                 }
             }
         });
