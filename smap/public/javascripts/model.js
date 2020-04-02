@@ -24,6 +24,7 @@ var map; //The map SVG
 //  active: a set of active category ids
 //  stats: an object mapping category ids to Stat objects
 //  restored: whether or not storage has been read to load active categories
+//  metadataFetched: whether we have read metadata from the server
 //This is the single source of truth - a change in these objects should be reflected
 //  in a change in the HTML. Usage of the functions in this module should guarantee this.
 var data = new Data();
@@ -32,6 +33,29 @@ function Data(){
   this.active = new Set();
   this.stats = {};
   this.restored = false;
+  this.metadataFetched = false;
+}
+
+/*
+  Updates all the stats objects in data with their metadata.
+  Args:
+    metadata - the metadata object returned from the server
+*/
+function setMetadata(metadata){
+  if (!metadata){
+    return;
+  }
+  for (let meta of metadata){
+    let id = meta.stat_id;
+    if(id in data.stats){
+      data.stats[id].metadata = meta;
+      /*External CITATION
+      As it turns out, reading blobs is hard.
+      https://stackoverflow.com/questions/3195865/converting-byte-array-to-string-in-javascript
+      */
+      meta.note = String.fromCharCode.apply(null, meta.note.data);
+    }
+  }
 }
 
 //Converts values into a range between 0 and 1
@@ -124,6 +148,7 @@ It is of the following form:
   enabled: Whether to use this category to calculate weights.
   slider: A JQuery object for the slider (whether active or inactive).
   data: The data for the statistic - mapping from state abbreviations to numbers. May be undefined.
+  metadata: The metadata for the statistic category - may be undefined
 }
 Constructor arguments:
  category - a category object, which must have a title
@@ -172,6 +197,11 @@ Stat.prototype.enable = function(){
     this.disable();
   });
 
+  $(".statistic-slider-metadata", this.slider).click((e) => {
+    e.preventDefault();
+    this.showMeta();
+  });
+
   updateCategoryStorage();
 
   //Fetches the data if we do not have it.
@@ -201,6 +231,12 @@ Stat.prototype.disable = function(){
   this.slider = makeInactiveSlider(this.category.title);
 
   //Add event listeners
+  $(".statistic-option-metadata", this.slider).click((e) => {
+    e.preventDefault();
+    e.stopPropagation()
+    this.showMeta();
+  });
+
   this.slider.click((event) => {this.enable()});
 
   updateCategoryStorage();
@@ -213,6 +249,29 @@ Stat.prototype.delete = function(){
   data.active.remove(this.category.stat_id);
   delete data.stats[category.stat_id];
 }
+
+Stat.prototype.showMeta = function(){
+  prepareMetadataAlert();
+  if (this.metadata){
+    showMetadataAlert(this.metadata);
+  } else if (!data.metadataFetched){
+      let promise = getMetadata();
+      promise.then((metadata) => {
+        data.metadataFetched = true;
+        if (metadata !== null){
+          setMetadata(metadata);
+          if (this.metadata){
+            showMetadataAlert(this.metadata);
+            return;
+          }
+        }
+        closeMetadataAlert();
+      });
+  } else {
+    //TODO: Empty alert for error case?
+    closeMetadataAlert();
+  }
+};
 
 
 //region storage
@@ -350,6 +409,7 @@ if(typeof module !== "undefined" && module.exports){
     },
     normalizeStats: normalizeStats,
     calculateWeight: calculateWeight,
-    displayWeights: displayWeights
+    displayWeights: displayWeights,
+    setMetadata: setMetadata
   }
 }

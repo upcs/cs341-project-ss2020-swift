@@ -12,6 +12,7 @@ function resetData(){
   model.data.active = new Set();
   model.data.stats = {};
   model.data.restored = false;
+  model.data.metadataFetched = false;
 }
 
 beforeEach(resetData);
@@ -739,3 +740,105 @@ describe('calculateWeight: ', () => {
     expect(script.calculateWeight(1.5)).toEqual(0);
   });
 });
+
+describe('setMetadata', () => {
+  beforeEach(resetData);
+
+  test('happy path', () => {
+    let metadata = [{
+      stat_id:1,
+      note:{
+        type:"Buffer",
+        data:[104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100]
+      },
+      stat_name_short:"Fake stat",
+      publication_date: "Just now",
+      source: "Ryan Regier",
+      oroginal_source: "pilots.up.edu"
+    }];
+    let stat = {};
+    model.data.stats[1] = stat;
+    model.setMetadata(metadata);
+    expect(stat).toHaveProperty("metadata");
+    expect(stat.metadata.note).toEqual("hello world");
+    expect(stat.metadata).toBe(metadata[0]);
+  });
+
+  test('bad metadata', () => {
+    let stat = {};
+    model.data.stats[1] = stat;
+    model.setMetadata(null);
+    expect(model.data.stats[1]).toEqual({});
+    model.setMetadata(undefined);
+    expect(model.data.stats[1]).toEqual({});
+    model.setMetadata([]);
+    expect(model.data.stats[1]).toEqual({});
+  });
+
+  test('multiple stats', () => {
+    let metadata = [{
+      stat_id: 3,
+      note: {data: []},
+    },
+    {
+      stat_id: 1,
+      note: {data: []},
+    },
+    {
+      stat_id: 2,
+      note: {data: []}
+    }];
+
+    let stat2 = {};
+    let stat3 = {};
+    model.data.stats[2] = stat2;
+    model.data.stats[3] = stat3;
+    model.setMetadata(metadata);
+    expect(stat2.metadata).toBe(metadata[2]);
+    expect(stat3.metadata).toBe(metadata[0]);
+  });
+});
+
+describe('Stat show metadata', () => {
+  var fetchedMetadata;
+
+  beforeEach(() => {
+    resetData();
+    window.prepareMetadataAlert = jest.fn(() => {});
+    window.showMetadataAlert = jest.fn(() => {});
+    window.closeMetadataAlert = jest.fn(() => {});
+    fetchedMetadata = [];
+    window.getMetadata = jest.fn(async () => {return fetchedMetadata}); //TODO: Make a promise
+  });
+
+  test('happy path', () => {
+    let metadata = {};
+    model.data.metadataFetched = true;
+    let stat = {metadata: metadata};
+    model.Stat.prototype.showMeta.apply(stat);
+    expect(window.prepareMetadataAlert).toHaveBeenCalled();
+    expect(window.showMetadataAlert).toHaveBeenCalled();
+    expect(window.closeMetadataAlert).not.toHaveBeenCalled();
+    expect(window.getMetadata).not.toHaveBeenCalled();
+  });
+
+  test('fetch metadata', (done) => {
+    let stat = {stat_id: 2};
+    model.data.stats[2] = stat;
+    fetchedMetadata = [{stat_id:2, note:{data:[]}}];
+    model.Stat.prototype.showMeta.apply(stat);
+    expect(window.prepareMetadataAlert).toHaveBeenCalled();
+    expect(window.getMetadata).toHaveBeenCalled();
+    expect(window.showMetadataAlert).not.toHaveBeenCalled();
+    expect(window.closeMetadataAlert).not.toHaveBeenCalled();
+    setTimeout(() => {
+      try{
+        expect(window.showMetadataAlert).toHaveBeenCalled();
+        expect(window.closeMetadataAlert).not.toHaveBeenCalled();
+        done();
+      } catch (err){
+        done(err);
+      }
+    }, 1);
+  })
+})
