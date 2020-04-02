@@ -862,7 +862,11 @@ object {
     font-size: 16px;
     text-align: center;
     /* TODO: get the details boxes to text-align left */
-    /* TODO: make the details boxes scrollable */
+}
+
+.sub-grid-item{
+    font-size: 16px;
+    text-align: left;
 }
 
 #state-name{
