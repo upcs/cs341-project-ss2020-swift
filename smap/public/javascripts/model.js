@@ -192,8 +192,6 @@ function displayWeights(){
   normalizeStats(weights);
   data.ranks = rankStats(weights);
 
-  drawChart(weights, data.ranks);
-
   for (let state of states){
     let weight = data.weights[state];
     colorState(state, weight);
