@@ -159,7 +159,6 @@ body {
     /* Other */
     -webkit-appearance: none !important;
     z-index: 2;
-
 }
 
 /* TODO: This will be fixed at a later time, as it creates a weird scrollbar */

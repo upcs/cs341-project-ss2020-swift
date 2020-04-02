@@ -184,7 +184,7 @@ $("document").ready(function () {
 
     //TODO: add the state overall rank to the corner 
 
-    //adds state specific 
+    //adds state specific details
     function populateStateWindow(metadata){
         var us_map = document.getElementById("us-map").contentDocument;
         var state_names = {
@@ -294,6 +294,77 @@ $("document").ready(function () {
         });
     }
 
+    //adds state specific details
+    function populateStateWindowNE(metadata) {
+        var ne_map = document.getElementById("ne-map").contentDocument;
+        var ne_state_names = {
+            CT: "Connecticut",
+            DE: "Deleware",
+            ME: "Maine",
+            MD: "Maryland",
+            MA: "Massachusetts",
+            NH: "New Hampshire",
+            NJ: "New Jersey",
+            NY: "New York",
+            PA: "Pennsylvania",
+            RI: "Rhode Island",
+            VT: "Vermont"  
+        };
+
+        //when clicking on a state
+        $("path", ne_map).click(function () {
+
+            //get the state's id, and write the name in the window
+            var state_id = $(this).attr("id");
+            var state_name = ne_state_names[state_id];
+            $("#state-name").text(state_name);
+
+            //make array of stats organized by state's ranking in each statistic 
+            let stateCatArr = getStateInfo(state_id);
+
+            //retrieve the best and worst stats from the global variable data based on id
+
+            $("#state-display").html("<img src=\"images/us_states/" + state_id + ".png\" alt=\"" + state_name + "\" class=\"state-window-image\" />");
+
+            console.log("stateCatArr.length" + stateCatArr.length);
+            if (stateCatArr.length == 0) {
+                $("#bad-stats").css("display", "none");
+                $("#bad-stats-details").css("display", "none");
+                $("#good-stats-details").css("display", "none");
+
+                let errMsgNoStats = "You have not selected any statisics to rank this state. <br>Please click close and select a statisitc from the Statistic Selection category";
+                $("#good-stats").html(errMsgNoStats);
+
+            } else if (stateCatArr.length == 1) {
+                let best_stat = data.stats[stateCatArr[0]["id"]];
+                let worst_stat = data.stats[stateCatArr[stateCatArr.length - 1]["id"]];
+
+                $("#bad-stats").css("display", "none");
+                $("#bad-stats-details").css("display", "none");
+
+                let msgOneStat = "You have only selected one statisic to rank this state by.<br>";
+                $("#good-stats").html(msgOneStat);
+
+                $("#good-stats").append("Selected statistic:\n " + best_stat.category.stat_name_short + "\n");
+                populateDataDetails(best_stat, true);
+
+            } else {
+                let best_stat = data.stats[stateCatArr[0]["id"]];
+                let worst_stat = data.stats[stateCatArr[stateCatArr.length - 1]["id"]];
+
+                //write good/bad stat names in good/bad grid items
+                $("#good-stats").text("Best statistic:\n " + best_stat.category.stat_name_short + "\n");
+                $("#bad-stats").text("Worst statistic:\n " + worst_stat.category.stat_name_short + "\n");
+
+                //write details/metadata in good/bad stats details grid items 
+                $("#good-stats-details").text("");
+                $("#bad-stats-details").text("");
+                populateDataDetails(best_stat, true);
+                populateDataDetails(worst_stat, false);
+            }
+        });
+    }
+
 /**
  * @param stat stat object to write details about
  * @param best bool, whether the stat is the best or the worst
@@ -354,6 +425,7 @@ function createDetailsMsg(stat){
         setUpStateHovering();
         prepareStateWindow();
         populateStateWindow(); //when a state is clicked
+        populateStateWindowNE();
     }, 250);
     
     $(".alert-close").click( () =>
