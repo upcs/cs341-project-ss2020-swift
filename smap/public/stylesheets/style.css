@@ -924,6 +924,7 @@ object {
     grid-area: graph;
     background-color: var(--subgroup-color-lighter);
 }
+
 .state-window-image {
     max-width: 100%;
     max-height: 100%;
