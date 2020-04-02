@@ -133,7 +133,7 @@ function getStateInfo(stateAbbr){
         arr.push({
           id: cat,
           rank: rank,
-          value: stat.data[stateAbbr], 
+          value: stat.data[stateAbbr],
           name: stat.category.title
         });
       }
@@ -190,7 +190,7 @@ function displayWeights(){
   data.ranks = rankStats(weights);
 
   drawChart(weights, data.ranks);
-  
+
   //
   for (let state of states){
     let weight = weights[state];

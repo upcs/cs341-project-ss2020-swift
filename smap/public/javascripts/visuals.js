@@ -610,6 +610,14 @@ function drawChart(weights, ranks){
         chart.destroy();
     }
 
+    let bar_color = getComputedStyle(document.documentElement).getPropertyValue('--accent-color');
+    let bar_hover = getComputedStyle(document.documentElement).getPropertyValue('--accent-color-light');
+    let tooltip_color = getComputedStyle(document.documentElement).getPropertyValue('--color-dark');
+    let tooltip_text = getComputedStyle(document.documentElement).getPropertyValue('--color-light');
+    let select_color = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color-light');
+
+    
+
     chart = new Chart(ctx, {
         // The type of chart we want to create
         type: 'bar',
@@ -618,16 +626,39 @@ function drawChart(weights, ranks){
         data: {
             labels: ranks,
             datasets: [{
-                label: 'My First dataset',
-                backgroundColor: 'rgb(255, 99, 132)',
-                borderColor: 'rgb(255, 99, 132)',
-                data: ranks.map( x => weights[x]) //javascript is nice and has a mapping function that eliminates the need to loop
+                label: "",
+                backgroundColor: bar_color,
+                hoverBackgroundColor: bar_hover,
+                borderColor: "rgba(0, 0, 0, 0)",
+                data: ranks.map( x => (100*weights[x]).toFixed(4)) //javascript is nice and has a mapping function that eliminates the need to loop
             }]
         },
 
         // Configuration options go here
         options: {
-
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        display: false
+                    }
+                }]
+            },
+            legend: {
+                display: false
+            },
+            tooltips: {
+                titleFontSize: 16,
+                caretSize: 8,
+                displayColors: false,
+                footerFontSize: 14,
+                titleAlign: "center",
+                backgroundColor: tooltip_color,
+                bodyFontColor: tooltip_text,
+                titleFontColor: tooltip_text
+            },
+            animation: {
+                duration: 100
+            }
         }
     });
 }
