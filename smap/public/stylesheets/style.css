@@ -877,6 +877,9 @@ object {
 
 #state-display{
     grid-area: state-display;
+    display: grid;
+    align-items: center;
+    justify-items: center;
     background-color: var(--subgroup-color-lighter);
 }
 
@@ -914,4 +917,8 @@ object {
 #graph{
     grid-area: graph;
     background-color: var(--subgroup-color-lighter);
+}
+.state-window-image {
+    max-width: 100%;
+    max-height: 100%;
 }
