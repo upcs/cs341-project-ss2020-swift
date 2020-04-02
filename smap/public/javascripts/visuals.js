@@ -330,27 +330,13 @@ function createDetailsMsg(stat){
     let note = stat.metadata.note;
 
     let msg = "Survey period: " + survey_period +
-        "<br>Source: " + source +
-        "<br>Units: " + "...";
+        "<br>Source: " + source;
 
     if (note !== "" && note !== "n.a.") {
         msg = msg + "<br>Note: " + note;
     }
     return msg; 
 }
-
-    /*
-        Of the statistics you selected, *state_name* is ranked the best in *title*
-
-        *state_name* is ranked *rank* of all 50 states in terms of *title*.
-
-        Survey period: *survey_period*
-        Source: *source*
-        Published by: *published_by*
-        Units:
-
-        \nNote: *note*
-    */ 
 
     const blur_elements = [
         $("#nav-bar"), $("#settings"), $("#map-container"), $("#about-container"), $("#ne-inspector-container")

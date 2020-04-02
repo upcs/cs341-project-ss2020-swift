@@ -896,21 +896,23 @@ object {
     ;
 }
 
-#subgrid-item1{
+#good-stats{
     grid-area: good-stats
 }
 
-#subgrid-item2{
+#good-stats-details{
     grid-area: good-stats-details; 
+    overflow-y: scroll;
     /* text-align: left */
 }
 
-#subgrid-item3{
+#bad-stats{
     grid-area: bad-stats
 }
 
-#subgrid-item4{
+#bad-stats-details{
     grid-area: bad-stats-details; 
+    overflow-y: scroll;
     /* text-align: left */
 }
 
