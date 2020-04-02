@@ -869,12 +869,12 @@ object {
 
 #state-name{
     grid-area: state-name;
-    color: var(--color-dark);
+    color: var(--secondary-color-dark);
 }
 
 #state-rank{
     grid-area: state-rank;
-    color: var(--color-dark);
+    color: var(--secondary-color-dark);
 }
 
 #state-display{
