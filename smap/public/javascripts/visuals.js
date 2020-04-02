@@ -264,7 +264,7 @@ $("document").ready(function () {
                 $("#bad-stats-details").css("display", "none");
                 $("#good-stats-details").css("display", "none");
 
-                let errMsgNoStats = "You have not selected any statisics to rank this state. <br>Please click close and select a statisitc from the Statistic Selection category";
+                let errMsgNoStats = "You have not selected any statisics to rank this state. <br>Please click close and select a statisitic from the Statistic Selection category";
                 $("#good-stats").html(errMsgNoStats);
 
             } else if (stateCatArr.length == 1){
@@ -336,7 +336,7 @@ $("document").ready(function () {
                 $("#bad-stats-details").css("display", "none");
                 $("#good-stats-details").css("display", "none");
 
-                let errMsgNoStats = "You have not selected any statisics to rank this state. <br>Please click close and select a statisitc from the Statistic Selection category";
+                let errMsgNoStats = "You have not selected any statisics to rank this state. <br>Please click close and select a statistic from the Statistic Selection category";
                 $("#good-stats").html(errMsgNoStats);
 
             } else if (stateCatArr.length == 1) {
