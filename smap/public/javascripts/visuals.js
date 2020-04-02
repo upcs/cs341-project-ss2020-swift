@@ -185,63 +185,81 @@ $("document").ready(function () {
     //TODO: add the state overall rank to the corner
 
     //adds state specific details
-    function populateStateWindow(metadata){
-        var us_map = document.getElementById("us-map").contentDocument;
-        var state_names = {
-            AL: "Alabama",
-            AK: "Alaska",
-            AZ: "Arizona",
-            AR: "Arkansas",
-            CA: "California",
-            CO: "Colorado",
-            CT: "Connecticut",
-            DE: "Deleware",
-            FL: "Florida",
-            GA: "Georgia",
-            HI: "Hawaii",
-            ID: "Idaho",
-            IL: "Illinois",
-            IN: "Indiana",
-            IA: "Iowa",
-            KS: "Kansas",
-            KY: "Kentucky",
-            LA: "Louisiana",
-            ME: "Maine",
-            MD: "Maryland",
-            MA: "Massachusetts",
-            MI: "Michigan",
-            MN: "Minnesota",
-            MS: "Mississippi",
-            MO: "Missouri",
-            MT: "Montana",
-            NE: "Nebraska",
-            NV: "Nevada",
-            NH: "New Hampshire",
-            NJ: "New Jersey",
-            NM: "New Mexico",
-            NY: "New York",
-            NC: "North Carolina",
-            ND: "North Dakota",
-            OH: "Ohio",
-            OK: "Oklahoma",
-            OR: "Oregon",
-            PA: "Pennsylvania",
-            RI: "Rhode Island",
-            SC: "South Carolina",
-            SD: "South Dakota",
-            TN: "Tennessee",
-            TX: "Texas",
-            UT: "Utah",
-            VT: "Vermont",
-            VA: "Virginia",
-            WA: "Washington",
-            WV: "West Virginia",
-            WI: "Wisconson",
-            WY: "Wyoming"
-        };
+    function populateStateWindow(NE){
+        if(NE){
+            var map = document.getElementById("ne-map").contentDocument;
+            var state_names = {
+                CT: "Connecticut",
+                DE: "Deleware",
+                ME: "Maine",
+                MD: "Maryland",
+                MA: "Massachusetts",
+                NH: "New Hampshire",
+                NJ: "New Jersey",
+                NY: "New York",
+                PA: "Pennsylvania",
+                RI: "Rhode Island",
+                VT: "Vermont"
+            }
+        }
+        else {
+            var map = document.getElementById("us-map").contentDocument;
+            var state_names = {
+                AL: "Alabama",
+                AK: "Alaska",
+                AZ: "Arizona",
+                AR: "Arkansas",
+                CA: "California",
+                CO: "Colorado",
+                CT: "Connecticut",
+                DE: "Deleware",
+                FL: "Florida",
+                GA: "Georgia",
+                HI: "Hawaii",
+                ID: "Idaho",
+                IL: "Illinois",
+                IN: "Indiana",
+                IA: "Iowa",
+                KS: "Kansas",
+                KY: "Kentucky",
+                LA: "Louisiana",
+                ME: "Maine",
+                MD: "Maryland",
+                MA: "Massachusetts",
+                MI: "Michigan",
+                MN: "Minnesota",
+                MS: "Mississippi",
+                MO: "Missouri",
+                MT: "Montana",
+                NE: "Nebraska",
+                NV: "Nevada",
+                NH: "New Hampshire",
+                NJ: "New Jersey",
+                NM: "New Mexico",
+                NY: "New York",
+                NC: "North Carolina",
+                ND: "North Dakota",
+                OH: "Ohio",
+                OK: "Oklahoma",
+                OR: "Oregon",
+                PA: "Pennsylvania",
+                RI: "Rhode Island",
+                SC: "South Carolina",
+                SD: "South Dakota",
+                TN: "Tennessee",
+                TX: "Texas",
+                UT: "Utah",
+                VT: "Vermont",
+                VA: "Virginia",
+                WA: "Washington",
+                WV: "West Virginia",
+                WI: "Wisconson",
+                WY: "Wyoming"
+            };
+        }
 
         //when clicking on a state
-        $("path", us_map).click(function () {
+        $("path", map).click(function () {
 
             //get the state's id, and write the name in the window
             var state_id = $(this).attr("id")
@@ -261,7 +279,6 @@ $("document").ready(function () {
 
             $("#state-display").html("<img src=\"images/us_states/"+state_id+".png\" alt=\""+state_name+"\" class=\"state-window-image\" />");
 
-            console.log("stateCatArr.length" + stateCatArr.length);
             if (stateCatArr.length == 0) {
                 $("#bad-stats").css("display", "none");
                 $("#bad-stats-details").css("display", "none");
@@ -269,15 +286,15 @@ $("document").ready(function () {
 
                 $("#state-rank").text("State Rank: *no statistics selected*");
 
-                let errMsgNoStats = "You have not selected any statisics to rank this state. <br>Please click close and select a statisitic from the Statistic Selection category";
+                let errMsgNoStats = "You have not selected any statisics to rank this state. <br><br>Please click close and select a statisitic from the Statistic Selection category";
                 $("#good-stats").html(errMsgNoStats);
-
+                $("#state-window-data-container").css("grid-template-rows", "100% 0%");
             } else if (stateCatArr.length == 1){
                 let best_stat = data.stats[stateCatArr[0]["id"]];
-                let worst_stat = data.stats[stateCatArr[stateCatArr.length - 1]["id"]];
 
                 $("#bad-stats").css("display","none");
                 $("#bad-stats-details").css("display", "none");
+                $("#good-stats-details").css("display", "block");
 
                 let msgOneStat = "<i>(You have only selected one statisic to rank this state by.)</i><br>";
                 $("#good-stats").html(msgOneStat);
@@ -285,86 +302,14 @@ $("document").ready(function () {
                 $("#good-stats").append("<h3>Selected statistic:</h3>" + best_stat.category.stat_name_short + "\n");
                 populateDataDetails(best_stat, true);
 
-                // $("#state-window-ddata-container").css("grid-template-rows", "100% 0%");
+                $("#state-window-data-container").css("grid-template-rows", "100% 0%");
             } else {
                 let best_stat = data.stats[stateCatArr[0]["id"]];
                 let worst_stat = data.stats[stateCatArr[stateCatArr.length - 1]["id"]];
 
-                //write good/bad stat names in good/bad grid items
-                $("#good-stats").html("<h3>Best statistic:</h3>\n " + best_stat.category.stat_name_short + "\n");
-                $("#bad-stats").html("<h3>Worst statistic:</h3>\n " + worst_stat.category.stat_name_short + "\n");
-
-                //write details/metadata in good/bad stats details grid items
-                $("#good-stats-details").html("");
-                $("#bad-stats-details").html("");
-                populateDataDetails(best_stat, true);
-                populateDataDetails(worst_stat, false);
-            }
-        });
-    }
-
-    //adds state specific details
-    function populateStateWindowNE(metadata) {
-        var ne_map = document.getElementById("ne-map").contentDocument;
-        var ne_state_names = {
-            CT: "Connecticut",
-            DE: "Deleware",
-            ME: "Maine",
-            MD: "Maryland",
-            MA: "Massachusetts",
-            NH: "New Hampshire",
-            NJ: "New Jersey",
-            NY: "New York",
-            PA: "Pennsylvania",
-            RI: "Rhode Island",
-            VT: "Vermont"
-        };
-
-        //when clicking on a state
-        $("path", ne_map).click(function () {
-            //get the state's id, and write the name in the window
-            var state_id = $(this).attr("id");
-            var state_name = ne_state_names[state_id];
-            $("#state-name").text(state_name);
-
-            // Update the chart
-            console.log(data.weights);
-            drawChart(state_id, data.weights, data.ranks);
-
-            //make array of stats organized by state's ranking in each statistic
-            let stateCatArr = getStateInfo(state_id);
-
-            let rank = getStateRank(state_id);
-            $("#state-rank").text("State Rank: " + rank);
-
-            $("#state-display").html("<img src=\"images/us_states/" + state_id + ".png\" alt=\"" + state_name + "\" class=\"state-window-image\" />");
-
-            console.log("stateCatArr.length" + stateCatArr.length);
-            if (stateCatArr.length == 0) {
-                $("#bad-stats").css("display", "none");
-                $("#bad-stats-details").css("display", "none");
-                $("#good-stats-details").css("display", "none");
-
-                $("#state-rank").text("State Rank: *no statistics selected*");
-
-                let errMsgNoStats = "You have not selected any statisics to rank this state. <br>Please click close and select a statistic from the Statistic Selection category";
-                $("#good-stats").html(errMsgNoStats);
-            } else if (stateCatArr.length == 1) {
-                let best_stat = data.stats[stateCatArr[0]["id"]];
-                let worst_stat = data.stats[stateCatArr[stateCatArr.length - 1]["id"]];
-
-                $("#bad-stats").css("display", "none");
-                $("#bad-stats-details").css("display", "none");
-
-                let msgOneStat = "You have only selected one statisic to rank this state by.<br>";
-                $("#good-stats").html(msgOneStat);
-
-                $("#good-stats").append("Selected statistic:\n " + best_stat.category.stat_name_short + "\n");
-                populateDataDetails(best_stat, true);
-
-            } else {
-                let best_stat = data.stats[stateCatArr[0]["id"]];
-                let worst_stat = data.stats[stateCatArr[stateCatArr.length - 1]["id"]];
+                $("#bad-stats").css("display", "block");
+                $("#bad-stats-details").css("display", "block");
+                $("#good-stats-details").css("display", "block");
 
                 //write good/bad stat names in good/bad grid items
                 $("#good-stats").text("Best statistic:\n " + best_stat.category.stat_name_short + "\n");
@@ -375,6 +320,7 @@ $("document").ready(function () {
                 $("#bad-stats-details").text("");
                 populateDataDetails(best_stat, true);
                 populateDataDetails(worst_stat, false);
+                $("#state-window-data-container").css("grid-template-rows", "50% 50%");
             }
         });
     }
@@ -438,8 +384,8 @@ function createDetailsMsg(stat){
         setUpNEMagnifier();
         setUpStateHovering();
         prepareStateWindow();
-        populateStateWindow(); //when a state is clicked
-        populateStateWindowNE();
+        populateStateWindow(true); //NE is true
+        populateStateWindow(false); //NE is false
     }, 250);
 
     $(".alert-close").click( () =>
