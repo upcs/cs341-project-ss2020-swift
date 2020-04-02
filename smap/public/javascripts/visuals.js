@@ -176,6 +176,9 @@ $("document").ready(function () {
         });
     }
 
+    //TODO: add the state overall rank to the corner 
+    //TODO: make state window details grids scrollable
+
     //adds state specific 
     function populateStateWindow(metadata){
         var us_map = document.getElementById("us-map").contentDocument;
@@ -244,45 +247,45 @@ $("document").ready(function () {
             let stateCatArr = getStateInfo(state_id);
             
             //retrieve the best and worst stats from the global variable data based on id
-            let best_stat = data.stats[stateCatArr[0]["id"]];
-            let worst_stat = data.stats[stateCatArr[stateCatArr.length - 1]["id"]]; 
             
             $("#state-display").html("<img src=\"images/us_states/"+state_id+".png\" alt=\""+state_name+"\" class=\"state-window-image\" />");
 
             console.log("stateCatArr.length" + stateCatArr.length); 
             if (stateCatArr.length == 0) {
-                //TODO: css to make just one container for this message 
+                $("#bad-stats").css("display", "none");
+                $("#bad-stats-details").css("display", "none"); 
+                $("#good-stats-details").css("display", "none"); 
 
-                let errMsgNoStats = "You haven't selected any statisics to rank this state by. Please click close and select a statisitc from the Statistic Selection category"; 
-                $("#good-stats").text(errMsgNoStats);
+                let errMsgNoStats = "You have not selected any statisics to rank this state. <br>Please click close and select a statisitc from the Statistic Selection category"; 
+                $("#good-stats").html(errMsgNoStats);
 
             } else if (stateCatArr.length == 1){
-                //TODO: css so that the height of the bottom row is 0 and the top row takes up the whole container
+                let best_stat = data.stats[stateCatArr[0]["id"]];
+                let worst_stat = data.stats[stateCatArr[stateCatArr.length - 1]["id"]]; 
+
+                $("#bad-stats").css("display","none"); 
+                $("#bad-stats-details").css("display", "none"); 
+
                 let msgOneStat = "You have only selected one statisic to rank this state by.<br>";
                 $("#good-stats").html(msgOneStat);
 
                 $("#good-stats").append("Selected statistic:\n " + best_stat.category.stat_name_short + "\n");
                 populateDataDetails(best_stat, true); 
 
-                $("#bad-stats").css("display","none"); 
-                $("#bad-stats-details").css("display", "none"); 
             } else {
+                let best_stat = data.stats[stateCatArr[0]["id"]];
+                let worst_stat = data.stats[stateCatArr[stateCatArr.length - 1]["id"]]; 
+
                 //write good/bad stat names in good/bad grid items
                 $("#good-stats").text("Best statistic:\n " + best_stat.category.stat_name_short + "\n");
                 $("#bad-stats").text("Worst statistic:\n " + worst_stat.category.stat_name_short + "\n");
                 
                 //write details/metadata in good/bad stats details grid items 
+                $("#good-stats-details").text("");
+                $("#bad-stats-details").text("");
                 populateDataDetails(best_stat, true); 
                 populateDataDetails(worst_stat, false); 
             } 
-
-            // //   write good/bad stat names in good/bad grid items
-            // $("#good-stats").text("Best stat:\n " + best_stat.category.stat_name_short + "\n");
-            // $("#bad-stats").text("Worst stat:\n " + worst_stat.category.stat_name_short + "\n");
-
-            // //write details/metadata in good/bad stats details grid items 
-            // populateDataDetails(best_stat, true); 
-            // populateDataDetails(worst_stat, false); 
         });
     }
 
