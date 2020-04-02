@@ -719,7 +719,7 @@ object {
 .alert-container {
     /* display: none; */
     display: grid;
-    grid-template-columns: auto 65%;
+    grid-template-columns: auto 70%;
     grid-template-areas: ". alert .";
     align-items: center;
     justify-content: center;
@@ -824,6 +824,10 @@ object {
 /***  State Window Section  ***/
 /******************************/
 
+i {
+    color: var(--color-grey);
+}
+
 #state-window-background {
     position: fixed;
     display: block;
@@ -852,7 +856,6 @@ object {
 }
 
 .grid-item{
-    /* padding: 20px; */
     font-size: 16px;
     text-align: center;
     padding: 15px;
@@ -861,18 +864,43 @@ object {
 .sub-grid-item{
     font-size: 16px;
     text-align: left;
-    padding: 10px;
+    padding: 20px;
+    padding-top: 0px;
+    border: 2px solid var(--subgroup-color);
+    box-shadow: 0px 0px 10px inset var(--subgroup-color);
+    scrollbar-width: thin;
+    scrollbar-color: var(--secondary-color-light) var(--group-color);
+}::-webkit-scrollbar {
+    width: 8px;
+}::-webkit-scrollbar-track {
+    width: 8px;
+    background-color: var(--group-color);
+}::-webkit-scrollbar-thumb {
+    border: 1px solid var(--group-color);
+    border-top-width: 0px;
+    border-bottom-width: 0px;
+    background-color: var(--secondary-color-light);
 }
 
 #state-name{
+    display: grid;
+    align-content: center;
+    font-size: 48px;
+    text-shadow: 0px 0px 4px rgba(0, 0, 0, 0.75);
+    font-weight: bold;
     grid-area: state-name;
     color: var(--color-dark);
     background-color: var(--subgroup-color-lighter);
 }
 
 #state-rank{
+    display: grid;
+    align-content: center;
+    font-size: 32px;
+    font-weight: bold;
+    font-style: italic;
     grid-area: state-rank;
-    color: var(--color-dark);
+    color: var(--accent-color-dark);
     background-color: var(--subgroup-color-lighter);
 }
 
@@ -889,6 +917,7 @@ object {
     text-align: left;
     grid-area: state-window-data-container;
     display: grid;
+    padding: 0px;
     background-color: var(--color-light);
     grid-template-columns: 50% 50%;
     grid-template-rows: 50% 50%;
@@ -899,21 +928,25 @@ object {
 }
 
 #good-stats{
-    grid-area: good-stats
+    grid-area: good-stats;
+    border-right-width: 0px;
 }
 
 #good-stats-details{
     grid-area: good-stats-details;
+    border-left-width: 0px;
     overflow-y: scroll;
     /* text-align: left */
 }
 
 #bad-stats{
-    grid-area: bad-stats
+    grid-area: bad-stats;
+    border-right-width: 0px;
 }
 
 #bad-stats-details{
     grid-area: bad-stats-details;
+    border-left-width: 0px;
     overflow-y: scroll;
     /* text-align: left */
 }
