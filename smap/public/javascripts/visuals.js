@@ -256,7 +256,7 @@ $("document").ready(function () {
                 WI: "Wisconson",
                 WY: "Wyoming"
             };
-        }    
+        }
 
         //when clicking on a state
         $("path", map).click(function () {
@@ -272,8 +272,8 @@ $("document").ready(function () {
             //make array of stats organized by state's ranking in each statistic
             let stateCatArr = getStateInfo(state_id);
 
-            let rank = getStateRank(state_id); 
-            $("#state-rank").text("State Rank: " + rank); 
+            let rank = getStateRank(state_id);
+            $("#state-rank").text("State Rank: " + rank);
 
             //retrieve the best and worst stats from the global variable data based on id
 
@@ -631,6 +631,11 @@ function drawChart(state_id, weights, ranks) {
                     ticks: {
                         display: false
                     }
+                }],
+                xAxes: [{
+                  ticks: {
+                    maxRotation: 80
+                  }
                 }]
             },
             legend: {
