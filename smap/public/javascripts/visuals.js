@@ -416,12 +416,22 @@ function createDetailsMsg(stat){
         Selecting stylesheets:
           https://css-tricks.com/examples/AlternateStyleSheets/ (source code)
         */
-        $("#"+theme_id+"-theme").prop("disabled", false);
-        for(let theme of themes) {
-            if(theme != theme_id) {
-                $("#"+theme+"-theme").prop("disabled", true);
+
+        $("link[rel~='stylesheet']").each(function(_, theme) {
+            theme = $(theme);
+            if(theme.hasClass("theme")){
+              console.log(theme.attr("title"));
+              console.log(theme_id);
+              if(theme.attr("title") != theme_id) {
+                  //$("#"+theme+"-theme").attr("rel", "alternate stylesheet");
+                theme.prop("disabled", true);
+              } else {
+                console.log("Enabling stylesheet");
+                theme.prop("disabled", false);
+              }
             }
-        };
+        });
+
         // Recolor the map
         displayWeights();
     });
