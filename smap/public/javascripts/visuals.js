@@ -74,7 +74,7 @@ $("document").ready(function () {
       let doc = xhr.documentElement;
       doc.id = "ne-map";
       doc.style.width = "100%";
-      doc.style.height = "100%";
+      doc.style.height = "100vh";
       $("#ne-map-container").prepend(doc);
       preload(clear_loading, ellipses_loop);
     });
