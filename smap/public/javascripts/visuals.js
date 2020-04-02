@@ -182,8 +182,6 @@ $("document").ready(function () {
         });
     }
 
-    //TODO: add the state overall rank to the corner
-
     //adds state specific details
     function populateStateWindow(NE){
         if(NE){
@@ -272,7 +270,7 @@ $("document").ready(function () {
             //make array of stats organized by state's ranking in each statistic
             let stateCatArr = getStateInfo(state_id);
 
-            let rank = getStateRank(state_id);
+            let rank = data.ranks.indexOf(state_id) + 1;
             $("#state-rank").text("State Rank: " + rank);
 
             //retrieve the best and worst stats from the global variable data based on id

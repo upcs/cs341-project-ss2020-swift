@@ -26,6 +26,7 @@ var map; //The map SVG
 //  restored: whether or not storage has been read to load active categories
 //  ranks: the states in sorted order by global rank
 //  metadataFetched: whether we have read metadata from the server
+//  weights: the last computed weights for each state. Will be empty object before weights first computed.
 //This is the single source of truth - a change in these objects should be reflected
 //  in a change in the HTML. Usage of the functions in this module should guarantee this.
 var data = new Data();
@@ -149,7 +150,13 @@ function getStateInfo(stateAbbr){
   //[{id:categoryID, rank:stateRank, value:stateValue, name:stat.data[id]}]
 }
 
-function rankStats(data){
+/*
+  Ranks states based on weights.
+  Args:
+    data: the weights to rank, a dictionary from states to numbers
+  Return: An array of states from highest weight to lowest. On error, an empty array is returned.
+*/
+function rankStates(data){
   let ranks = states.slice();
   let error = false;
   ranks.sort((first, second) => {
@@ -190,29 +197,12 @@ function displayWeights(){
   }
 
   normalizeStats(weights);
-  data.ranks = rankStats(weights);
+  data.ranks = rankStates(weights);
 
   for (let state of states){
     let weight = data.weights[state];
     colorState(state, weight);
   }
-}
-
-/**
- *
- * @param state_id, string of 2 letter abbr
- * @return the rank, 1 indexed
- */
-function getStateRank(state_id){ //says it's not being used, bc it is only called by visuals.js
-  //loop through the data.ranks ARRAY.
-  //The index of the state that matches will be 1 less than the rank, since it's indexed at 0
-  for (let i = 0; i<data.ranks.length; i++) {
-    if(data.ranks[i] == state_id){
-      return i+1; 
-    }
-  }
-  console.error("invalid state id or data.ranks does not have all the state abbs");
-  return -1;
 }
 
 /*Stat constructor.
@@ -284,7 +274,7 @@ Stat.prototype.enable = function(){
         alert("<statistics.js> AHHHHHHH FAILURE!!!");
       } else {
         this.data = cat_data[0];
-        this.rankings = rankStats(this.data);
+        this.rankings = rankStates(this.data);
         data.active.add(this.category.stat_id);
         // this.data is an object with all of the column names ["stat_id"], ["stat_name_short"], ["AL"], ["AK"], etc.
         normalizeStats(this.data);
@@ -327,6 +317,10 @@ Stat.prototype.delete = function(){
   delete data.stats[category.stat_id];
 }
 
+/*
+  Shows the metadata alert for this statistic.
+  If metadata has not been downloaded, do so and show loading alert instead.
+*/
 Stat.prototype.showMeta = function(){
   prepareMetadataAlert();
   if (this.metadata){
@@ -486,7 +480,7 @@ if(typeof module !== "undefined" && module.exports){
     normalizeStats: normalizeStats,
     calculateWeight: calculateWeight,
     getStateInfo: getStateInfo,
-    rankStats: rankStats,
+    rankStates: rankStates,
     setMetadata: setMetadata,
     displayWeights: displayWeights
   }

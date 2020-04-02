@@ -18,6 +18,7 @@ function resetData(){
   model.data.restored = false;
   model.data.ranks = states.slice();
   model.data.metadataFetched = false;
+  model.data.weights = {};
 }
 
 beforeEach(resetData);
@@ -830,7 +831,7 @@ describe('getStateInfo', () => {
   })
 });
 
-describe("rankStats", () => {
+describe("rankStates", () => {
   test('happy path', () => {
     let script = require("../../public/javascripts/model");
     let data = {
@@ -841,7 +842,7 @@ describe("rankStats", () => {
     for (let state of states){
       if (["AR", "AL", "OH"].indexOf(state) === -1) data[state] = 0;
     }
-    expect(script.rankStats(data).slice(0, 3)).toEqual(["AL", "AR", "OH"]);
+    expect(script.rankStates(data).slice(0, 3)).toEqual(["AL", "AR", "OH"]);
   });
 
   test('missing states', () => {
@@ -851,7 +852,7 @@ describe("rankStats", () => {
       "AL": 10,
       "OH": 1
     };
-    expect(script.rankStats(data)).toEqual([]);
+    expect(script.rankStates(data)).toEqual([]);
   });
 });
 describe('setMetadata', () => {
