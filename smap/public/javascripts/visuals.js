@@ -193,6 +193,11 @@ $("document").ready(function () {
     }
 
     //adds state specific details
+    /**
+     * 
+     * @param {bool} NE true if using NE magnifier, false for mainland US 
+     */
+
     function populateStateWindow(NE){
         if(NE){
             var map = document.getElementById("ne-map").contentDocument;
@@ -269,7 +274,7 @@ $("document").ready(function () {
         //when clicking on a state
         $("path", map).click(function () {
 
-            //get the state's id, and write the name in the window
+            // Get the state's id, and write the name in the window
             var state_id = $(this).attr("id")
             var state_name = state_names[state_id];
             $("#state-name").text(state_name);
@@ -277,66 +282,92 @@ $("document").ready(function () {
             // Update the chart
             drawChart(state_id, data.weights, data.ranks);
 
-            //make array of stats organized by state's ranking in each statistic
+            // Make array of stats organized by state's ranking in each statistic
             let stateCatArr = getStateInfo(state_id);
 
+            // rank is the overall rank of the state based on selected stats
             let rank = data.ranks.indexOf(state_id) + 1;
+            // Write the rank to the DOM
             $("#state-rank").text("State Rank: " + rank);
 
-            //retrieve the best and worst stats from the global variable data based on id
-
+            // Get and display the appropriate state png
             $("#state-display").html("<img src=\"images/us_states/"+state_id+".png\" alt=\""+state_name+"\" class=\"state-window-image\" />");
 
+            // If no stats are selected
             if (stateCatArr.length == 0) {
+                // Hide the bottom row and right column
                 $("#bad-stats").css("display", "none");
                 $("#bad-stats-details").css("display", "none");
-                $("#good-stats-details").css("display", "block");
-                
-                //Doing this to get these areas properly styled without adding any text
-                $("#good-stats-details").html("");
-                $("#myChart").css("visibility", "hidden");
-                // $("#graph").html("blah");
+                $("#good-stats-details").css("display", "none");
 
+                // Make the good_stats area the size of the whole container
+                $("#state-window-data-container").css("grid-template-rows", "100% 0%");
+                $("#state-window-data-container").css("grid-template-columns", "100% 0%");
+                
+                // Write message to state_rank area
                 $("#state-rank").text("State Rank: N/A");
 
+                // Clear good-stats-details
+                $("#good-stats-details").html("");
+
+                // Display error message about not selecting any stats 
                 let errMsgNoStats = "You have not selected any statisics to rank this state. <br><br>Please click close and select a statisitic from the Statistic Selection category";
                 $("#good-stats").html("<b>" + errMsgNoStats + "</b>");
-                $("#state-window-data-container").css("grid-template-rows", "100% 0%");
 
-            } else if (stateCatArr.length == 1){
+                // Hide the chart 
+                $("#myChart").css("visibility", "hidden");
+
+            } else if (stateCatArr.length == 1){ //if only one stat is selected 
+                // The best stat for the selected state is the first one in the stateCatArr
+                    // Get the stat from global var data by "id"
                 let best_stat = data.stats[stateCatArr[0]["id"]];
-                
-                $("#myChart").css("visibility", "visible");
+               
+                // Hide bottom row 
                 $("#bad-stats").css("display","none");
                 $("#bad-stats-details").css("display", "none");
-                $("#good-stats-details").css("display", "block");
 
+                $("#good-stats-details").css("display", "block");
+                
+                // Set first row to take up whole grid area, show both columns 
+                $("#state-window-data-container").css("grid-template-rows", "100% 0%");
+                $("#state-window-data-container").css("grid-template-columns", "50% 50%");
+                
+                // Write message about having only 1 stat selected, so there is no worst stat
                 let msgOneStat = "<i>(You have only selected one statisic to rank this state by.)</i><br>";
                 $("#good-stats").html(msgOneStat);
-
+                
+                // Write the best_stat name to the DOM
                 $("#good-stats").append("<h3>Selected statistic:</h3>" + best_stat.category.stat_name_short + "\n");
                 populateDataDetails(best_stat, true);
 
-                $("#state-window-data-container").css("grid-template-rows", "100% 0%");
+                // Show chart 
+                $("#myChart").css("visibility", "visible");
             } else {
+                // Retrieve the best and worst stats from the global variable data based on id
                 let best_stat = data.stats[stateCatArr[0]["id"]];
                 let worst_stat = data.stats[stateCatArr[stateCatArr.length - 1]["id"]];
                 
-                $("#graph").css("display", "block");
+                // Show all 4 grid areas 
                 $("#bad-stats").css("display", "block");
                 $("#bad-stats-details").css("display", "block");
                 $("#good-stats-details").css("display", "block");
-
-                //write good/bad stat names in good/bad grid items
+                
+                // Show both rows and both columns 
+                $("#state-window-data-container").css("grid-template-rows", "50% 50%");
+                $("#state-window-data-container").css("grid-template-columns", "50% 50%");
+                
+                // Write good/bad stat names in good/bad grid items
                 $("#good-stats").html("<h3>Best statistic:</h3>\n " + best_stat.category.stat_name_short + "\n");
                 $("#bad-stats").html("<h3>Worst statistic:</h3>\n " + worst_stat.category.stat_name_short + "\n");
 
-                //write details/metadata in good/bad stats details grid items
+                // Write details/metadata in good/bad stats details grid items
                 $("#good-stats-details").text("");
                 $("#bad-stats-details").text("");
                 populateDataDetails(best_stat, true);
                 populateDataDetails(worst_stat, false);
-                $("#state-window-data-container").css("grid-template-rows", "50% 50%");
+                
+                // Show the graph
+                $("#graph").css("display", "block");
             }
         });
     }
@@ -467,6 +498,7 @@ async function getMetadata(){
   return metadata;
 }
 
+// Make body unscrollable, blur background and show metadata alert
 function prepareMetadataAlert(){
   $("body").addClass("unscrollable");
   for (var element of blur_elements) {
@@ -491,7 +523,8 @@ function showMetadataAlert(metadata){
   $(".metadata-alert-element").removeClass("hidden");
 }
 
-function closeMetadataAlert(){
+// Unblurs the background, makes background scrollable, shows loading, hides metadata alert
+function closeMetadataAlert() {
   for (var element of blur_elements) {
       element.removeClass("blurred");
   }
@@ -501,7 +534,7 @@ function closeMetadataAlert(){
   $("#metadata-alert-container").addClass("hidden");
 }
 
-//Creates an active slider from the template and adds it to the page
+// Creates an active slider from the template and adds it to the page
 function makeActiveSlider(title, weight){
   let slider = activeSliderTemplate.clone();
   $(".statistic-slider", slider).attr("value", weight);
@@ -510,7 +543,7 @@ function makeActiveSlider(title, weight){
   return slider;
 }
 
-//Creates an inactive slider from the template and adds it to the page
+// Creates an inactive slider from the template and adds it to the page
 function makeInactiveSlider(title){
   let slider = inactiveSliderTemplate.clone();
   $(".statistic-option-title", slider).html(title);
@@ -518,8 +551,11 @@ function makeInactiveSlider(title){
   return slider;
 }
 
-// Weight is a value between 0 and 1
-// 0 is low, 1 is high
+/**
+ * @param weight number between 0 and 1 representing how "colored" the color should be
+        //0 is low, 1 is high
+ * @param color is the color to be mixed with the light color
+ */
 function mixColor(weight, color) {
     // Get the theme colors
     var min_string = $(":root").css("--color-light");
@@ -566,7 +602,6 @@ function colorState(state, weight) {
     if(ne_states.includes(state)) {
         colorSVG(ne_map, state, weight);
     }
-
 }
 
 //weights is the dictionary with keys of state abbreviations and values of the calculated weight
