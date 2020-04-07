@@ -290,16 +290,23 @@ $("document").ready(function () {
             if (stateCatArr.length == 0) {
                 $("#bad-stats").css("display", "none");
                 $("#bad-stats-details").css("display", "none");
-                $("#good-stats-details").css("display", "none");
+                $("#good-stats-details").css("display", "block");
+                
+                //Doing this to get these areas properly styled without adding any text
+                $("#good-stats-details").html("");
+                $("#myChart").css("visibility", "hidden");
+                // $("#graph").html("blah");
 
-                $("#state-rank").text("State Rank: *no statistics selected*");
+                $("#state-rank").text("State Rank: N/A");
 
                 let errMsgNoStats = "You have not selected any statisics to rank this state. <br><br>Please click close and select a statisitic from the Statistic Selection category";
-                $("#good-stats").html(errMsgNoStats);
+                $("#good-stats").html("<b>" + errMsgNoStats + "</b>");
                 $("#state-window-data-container").css("grid-template-rows", "100% 0%");
+
             } else if (stateCatArr.length == 1){
                 let best_stat = data.stats[stateCatArr[0]["id"]];
-
+                
+                $("#myChart").css("visibility", "visible");
                 $("#bad-stats").css("display","none");
                 $("#bad-stats-details").css("display", "none");
                 $("#good-stats-details").css("display", "block");
@@ -314,7 +321,8 @@ $("document").ready(function () {
             } else {
                 let best_stat = data.stats[stateCatArr[0]["id"]];
                 let worst_stat = data.stats[stateCatArr[stateCatArr.length - 1]["id"]];
-
+                
+                $("#graph").css("display", "block");
                 $("#bad-stats").css("display", "block");
                 $("#bad-stats-details").css("display", "block");
                 $("#good-stats-details").css("display", "block");
