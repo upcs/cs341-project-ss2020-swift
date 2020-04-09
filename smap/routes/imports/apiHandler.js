@@ -51,7 +51,7 @@ function getMeta(callback){
     }
 
     //for future reference: text in BLOBs will look like ASCII values
-    //unless it is referenced as results[x].note 
+    //unless it is referenced as results[x].note
     callback(results);
   });
 }
@@ -63,11 +63,6 @@ function parseDataURL(query) {
 
   //remember, queries will be the stat_id, aka a number
   let cat = query.cat;
-
-  // console.log("apiHandler.js[parseDataURL]: query:" + query);
-  // console.log("apiHandler.js[parseDataURL]: query as a string:" + JSON.stringify(query));
-  // console.log("apiHandler.js[parseDataURL]: query.cat:" + query.cat);
-  // console.log("apiHandler.js[parseDataURL]: query.stat_id:" + query.stat_id);
 
   if (cat === undefined){
     return undefined;
@@ -81,7 +76,7 @@ function parseDataURL(query) {
 
   for(let i = 0; i < cat.length; i++){
     cat[i] = parseInt(cat[i], 10);
-    if(!cat[i]){
+    if(!cat[i] || !isFinite(cat[i])){
       return undefined;
     }
   }
