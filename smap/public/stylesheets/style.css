@@ -326,14 +326,15 @@ body {
 #map-legend-container {
     /* Positioning and Display */
     grid-area: legend;
-    justify-self: center;
+    display: grid;
+    align-items: center;
+    justify-items: center;
 }
 
 #map-legend {
     /* Positioning and Display */
     display: inline-block;
     width: 150px;
-    vertical-align: middle;
 }
 
 /*********************************/
@@ -388,7 +389,7 @@ object {
   align-items: center;
   justify-items: end;
   position: absolute; /* Stay in place */
-  z-index: 1; /* Sit on top */
+  z-index: 2; /* Sit on top */
   left: 0;
   top: 0;
   width: 100%; /* Full width */
@@ -429,6 +430,7 @@ object {
     /* Positioning and Display */
     height: 8vh;
     height: 8vh;
+    float: right;
 }
 
 #theme-roller:hover {
@@ -921,6 +923,7 @@ i {
     box-shadow: 0px 0px 20px inset rgba(0, 0, 0, 0.75);
     text-align: center;
     font-size: 20px;
+    max-width: 45%;
 }
 
 #loading-ad-right, #loading-ad-left {
