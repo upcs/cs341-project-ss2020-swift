@@ -1,2 +1,12 @@
 This will cover all attempts we have made to break the security of the site.
 
+- Users do not set up accounts of any sort, so that is not a security concern for SMAP
+- api/cats and api/meta don't have any parameters to exploit, so we will only examine api/data
+- We tried querying with -1, and got a server error, as expected; we have written code to cover this sort of incorrect input
+- Using excessively large numbers in query (e.g. 1.1111111e150), we will properly return 400 error and not query database; this also applies to negative infinty 
+- Using "/data?cat=1 OR 0=0" returns only the data for cat=1
+- "/data?cat=0&cat=a%3da" returns an error 400
+- "/data?cat=2%3d2" returns only the data for cat=2, because we use parseInt() in the parseURL() function, and parseInt() stops upon reaching a non-int character
+- Sensitive info, like password files (for our database), is not part of what is hosted on our site, so this is not a concern
+- Google has some built in protections for trying to access certain files, like package.json, in the production version of our site to not print stack traces for errors
+- Even if a request like "0=0" did make it through the parsing, we have parameterized the query (see constants.js)
