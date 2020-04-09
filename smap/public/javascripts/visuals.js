@@ -194,8 +194,8 @@ $("document").ready(function () {
 
     //adds state specific details
     /**
-     * 
-     * @param {bool} NE true if using NE magnifier, false for mainland US 
+     *
+     * @param {bool} NE true if using NE magnifier, false for mainland US
      */
 
     function populateStateWindow(NE){
@@ -303,59 +303,59 @@ $("document").ready(function () {
                 // Make the good_stats area the size of the whole container
                 $("#state-window-data-container").css("grid-template-rows", "100% 0%");
                 $("#state-window-data-container").css("grid-template-columns", "100% 0%");
-                
+
                 // Write message to state_rank area
                 $("#state-rank").text("State Rank: N/A");
 
                 // Clear good-stats-details
                 $("#good-stats-details").html("");
 
-                // Display error message about not selecting any stats 
+                // Display error message about not selecting any stats
                 let errMsgNoStats = "You have not selected any statisics to rank this state. <br><br>Please click close and select a statisitic from the Statistic Selection category";
                 $("#good-stats").html("<b>" + errMsgNoStats + "</b>");
 
-                // Hide the chart 
+                // Hide the chart
                 $("#myChart").css("visibility", "hidden");
 
-            } else if (stateCatArr.length == 1){ //if only one stat is selected 
+            } else if (stateCatArr.length == 1){ //if only one stat is selected
                 // The best stat for the selected state is the first one in the stateCatArr
                     // Get the stat from global var data by "id"
                 let best_stat = data.stats[stateCatArr[0]["id"]];
-               
-                // Hide bottom row 
+
+                // Hide bottom row
                 $("#bad-stats").css("display","none");
                 $("#bad-stats-details").css("display", "none");
 
                 $("#good-stats-details").css("display", "block");
-                
-                // Set first row to take up whole grid area, show both columns 
+
+                // Set first row to take up whole grid area, show both columns
                 $("#state-window-data-container").css("grid-template-rows", "100% 0%");
                 $("#state-window-data-container").css("grid-template-columns", "50% 50%");
-                
+
                 // Write message about having only 1 stat selected, so there is no worst stat
                 let msgOneStat = "<i>(You have only selected one statisic to rank this state by.)</i><br>";
                 $("#good-stats").html(msgOneStat);
-                
+
                 // Write the best_stat name to the DOM
                 $("#good-stats").append("<h3>Selected statistic:</h3>" + best_stat.category.stat_name_short + "\n");
                 populateDataDetails(best_stat, true);
 
-                // Show chart 
+                // Show chart
                 $("#myChart").css("visibility", "visible");
             } else {
                 // Retrieve the best and worst stats from the global variable data based on id
                 let best_stat = data.stats[stateCatArr[0]["id"]];
                 let worst_stat = data.stats[stateCatArr[stateCatArr.length - 1]["id"]];
-                
-                // Show all 4 grid areas 
+
+                // Show all 4 grid areas
                 $("#bad-stats").css("display", "block");
                 $("#bad-stats-details").css("display", "block");
                 $("#good-stats-details").css("display", "block");
-                
-                // Show both rows and both columns 
+
+                // Show both rows and both columns
                 $("#state-window-data-container").css("grid-template-rows", "50% 50%");
                 $("#state-window-data-container").css("grid-template-columns", "50% 50%");
-                
+
                 // Write good/bad stat names in good/bad grid items
                 $("#good-stats").html("<h3>Best statistic:</h3>\n " + best_stat.category.stat_name_short + "\n");
                 $("#bad-stats").html("<h3>Worst statistic:</h3>\n " + worst_stat.category.stat_name_short + "\n");
@@ -365,61 +365,12 @@ $("document").ready(function () {
                 $("#bad-stats-details").text("");
                 populateDataDetails(best_stat, true);
                 populateDataDetails(worst_stat, false);
-                
+
                 // Show the graph
                 $("#graph").css("display", "block");
             }
         });
     }
-
-/**
- * @param stat stat object to write details about
- * @param best bool, whether the stat is the best or the worst
- */
-function populateDataDetails(stat, best) {
-    let msg = "msg";
-    if (best) $("#good-stats-details").html("<h3>Statistic Details:</h3>");
-    else $("#bad-stats-details").html("<h3>Statistic Details</h3>:");
-    if (stat.metadata) {
-        msg = createDetailsMsg(stat);
-        if(best) $("#good-stats-details").append(msg);
-        else $("#bad-stats-details").append(msg);
-    } else if (!data.metadataFetched) {
-        let promise = getMetadata();
-        promise.then((metadata) => {
-            data.metadataFetched = true;
-            if (metadata !== null) {
-                setMetadata(metadata);
-                if (stat.metadata !== undefined) {
-                    msg = createDetailsMsg(stat);
-                    if (best) $("#good-stats-details").append(msg);
-                    else $("#bad-stats-details").append(msg)
-                }
-            }
-        });
-    } else {
-        console.error("<visuals><populateStateWindow>: Unknown error")
-    }
-}
-
-/**
- * @param {Stat} stat Stat to create message about
- * @returns {msg} message about stat
- */
-function createDetailsMsg(stat){
-    let survey_period = stat.metadata.survey_period;
-    let source = stat.metadata.source;
-    let units = stat.data.units;
-    let note = stat.metadata.note;
-
-    let msg = "Survey period: " + survey_period +
-        "<br>Source: " + source;
-
-    if (note !== "" && note !== "n.a.") {
-        msg = msg + "<br>Note: " + note;
-    }
-    return msg;
-}
 
     const blur_elements = [
         $("#nav-bar"), $("#settings"), $("#map-container"), $("#about-container"), $("#ne-inspector-container")
@@ -493,6 +444,55 @@ function createDetailsMsg(stat){
     $("#metadata-alert-close").click(closeMetadataAlert);
 });
 
+/**
+* @param stat stat object to write details about
+* @param best bool, whether the stat is the best or the worst
+*/
+function populateDataDetails(stat, best) {
+    let msg = "msg";
+    if (best) $("#good-stats-details").html("<h3>Statistic Details:</h3>");
+    else $("#bad-stats-details").html("<h3>Statistic Details</h3>:");
+    if (stat.metadata) {
+        msg = createDetailsMsg(stat);
+        if(best) $("#good-stats-details").append(msg);
+        else $("#bad-stats-details").append(msg);
+    } else if (!data.metadataFetched) {
+        let promise = getMetadata();
+        promise.then((metadata) => {
+            data.metadataFetched = true;
+            if (metadata !== null) {
+                setMetadata(metadata);
+                if (stat.metadata !== undefined) {
+                    msg = createDetailsMsg(stat);
+                    if (best) $("#good-stats-details").append(msg);
+                    else $("#bad-stats-details").append(msg)
+                }
+            }
+        });
+    } else {
+        console.error("<visuals><populateStateWindow>: Unknown error")
+    }
+}
+
+/**
+* @param {Stat} stat Stat to create message about
+* @returns {msg} message about stat
+*/
+function createDetailsMsg(stat){
+    let survey_period = stat.metadata.survey_period;
+    let source = stat.metadata.source;
+    let units = stat.data.units;
+    let note = stat.metadata.note;
+
+    let msg = "Survey period: " + survey_period +
+    "<br>Source: " + source;
+
+    if (note !== "" && note !== "n.a.") {
+        msg = msg + "<br>Note: " + note;
+    }
+    return msg;
+}
+
 async function getMetadata(){
   let metadata = await $.get("/api/meta").catch((err) => {return null;});
   return metadata;
@@ -555,6 +555,7 @@ function makeInactiveSlider(title){
  * @param weight number between 0 and 1 representing how "colored" the color should be
         //0 is low, 1 is high
  * @param color is the color to be mixed with the light color
+ * @return is the resulting rgba string that can be used in the website
  */
 function mixColor(weight, color) {
     // Get the theme colors
