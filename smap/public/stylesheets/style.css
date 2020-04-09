@@ -168,7 +168,8 @@ body {
     /* Positioning and Display */
 	display: flex;
 	justify-content: space-between;
-	grid-area: ticks;
+    grid-area: ticks;
+    grid: auto / auto / span3 / auto;
     /* width: 103.6%; */
     width: 100%;
 	/* margin-left: 18px; */
@@ -223,6 +224,7 @@ body {
     align-content: start;
     /* Other */
     overflow-y: auto;
+    overflow-x: none;
     /* Note: The following two settings are specific to Firefox */
     scrollbar-width: thin;
     scrollbar-color: var(--secondary-color-light) var(--color-light);
