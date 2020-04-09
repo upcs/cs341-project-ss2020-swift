@@ -180,7 +180,6 @@ function displayWeights(){
     for (let catID of data.active){
       let localStat = data.stats[catID];
 
-      // console.log("typeof(localStat[data]): " + typeof(localStat["data"]));
       if(typeof localStat !== 'undefined' && typeof localStat["data"] !== 'undefined'){ //if localStat["data"] is defined...
 
         let stateData = localStat.data[state];
@@ -191,6 +190,8 @@ function displayWeights(){
           break;
         }
         weight += calculateWeight(localStat.weight) * stateData;
+      } else {
+        console.error("Bad stat. ID: " + catID);
       }
     }
     data.weights[state] = weight;
@@ -209,7 +210,7 @@ function displayWeights(){
 A Stat object is used to model both the HTML and the underlying data.
 It is of the following form:
 {
-  category: A category object as returned from the server. It must have id and title attributes.
+  category: A category object as returned from the server. It must have stat_id and title attributes.
   weight: How much to weight this category when enabled.
   enabled: Whether to use this category to calculate weights.
   slider: A JQuery object for the slider (whether active or inactive).
@@ -217,15 +218,22 @@ It is of the following form:
   metadata: The metadata for the statistic category - may be undefined
 }
 Constructor arguments:
- category - a category object, which must have a title
+ category - a category object, which must have a title and stat_id
  weight - The weight the stat has in calcuations if it is active*/
 function Stat(category, weight){
+  if (weight < MIN_WEIGHT || weight > MAX_WEIGHT){
+    throw "Bad weight";
+  }
+  if (!("stat_id" in category && "title" in category)){
+    throw "Bad inputs";
+  }
+
   if (data.stats[category.stat_id]){
     delete data.stats[category.stat_id];
     data.active.delete(category.stat_id);
   }
-  data.stats[category.stat_id] = this;
 
+  data.stats[category.stat_id] = this;
   this.category = category;
   this.weight = weight;
   this.enabled = false;

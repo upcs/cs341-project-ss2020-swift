@@ -37,6 +37,7 @@ window.$ = $;
 
 //Sample test for now
 //add a done here for async tests
+/*
 test('Create a slider', () => {
   //Creates mock document
   document.body.innerHTML = `
@@ -66,7 +67,7 @@ test('Create a slider', () => {
   // script.__set__("displayWeights", () => {});
   // var spy = jest.spyOn(script, "displayWeights").mockImplementation( () => {} );
 
-  let stat = new script.Stat({title:"test stat", id:0}, script.DEFAULT_WEIGHT);
+  let stat = new script.Stat({title:"test stat", stat_id:0}, script.DEFAULT_WEIGHT);
   expect($(".statistic-option").length).toEqual(1);
   expect(window.makeActiveSlider.mock.calls.length).toBe(0);
   // expect($(".statistic-slider-container").length).toEqual(0);
@@ -83,9 +84,66 @@ test('Create a slider', () => {
       //some test code in here
     // });
 });
+*/
 
+describe('setMetadata', () => {
+  beforeEach(resetData);
 
-//describe appends the message in the first param before each test in the block
+  test('happy path', () => {
+    let metadata = [{
+      stat_id:1,
+      note:{
+        type:"Buffer",
+        data:[104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100]
+      },
+      stat_name_short:"Fake stat",
+      publication_date: "Just now",
+      source: "Ryan Regier",
+      oroginal_source: "pilots.up.edu"
+    }];
+    let stat = {};
+    model.data.stats[1] = stat;
+    model.setMetadata(metadata);
+    expect(stat).toHaveProperty("metadata");
+    expect(stat.metadata.note).toEqual("hello world");
+    expect(stat.metadata).toBe(metadata[0]);
+  });
+
+  test('bad metadata', () => {
+    let stat = {};
+    model.data.stats[1] = stat;
+    model.setMetadata(null);
+    expect(model.data.stats[1]).toEqual({});
+    model.setMetadata(undefined);
+    expect(model.data.stats[1]).toEqual({});
+    model.setMetadata([]);
+    expect(model.data.stats[1]).toEqual({});
+  });
+
+  test('multiple stats', () => {
+    let metadata = [{
+      stat_id: 3,
+      note: {data: []},
+    },
+    {
+      stat_id: 1,
+      note: {data: []},
+    },
+    {
+      stat_id: 2,
+      note: {data: []}
+    }];
+
+    let stat2 = {};
+    let stat3 = {};
+    model.data.stats[2] = stat2;
+    model.data.stats[3] = stat3;
+    model.setMetadata(metadata);
+    expect(stat2.metadata).toBe(metadata[2]);
+    expect(stat3.metadata).toBe(metadata[0]);
+  });
+});
+
 describe('normalizeStats: ', () => {
   test("50 good states, no inversion, using require NOT rewire", () => {
     //require runs the script
@@ -305,216 +363,324 @@ describe('normalizeStats: ', () => {
   });
 });
 
+describe('calculateWeight: ', () => {
+  test("calculate", () => {
+    let script = require("../../public/javascripts/model");
+
+    let ans = script.calculateWeight(0);
+
+    expect(ans).toEqual(0);
+    expect(script.calculateWeight(1)).toEqual(1);
+    expect(script.calculateWeight(2)).toEqual(1.8);
+    expect(script.calculateWeight(3)).toEqual(3.24);
+    expect(script.calculateWeight(-1)).toEqual(0);
+    expect(script.calculateWeight(1.5)).toEqual(0);
+  });
+});
+
+describe('getStateInfo', () => {
+  beforeEach(resetData);
+
+  test('happy path', () => {
+    model.data.active.add(1);
+    model.data.stats[1] = {
+      rankings: ["AR", "AL", "OH"],
+      data: {
+        "AR": 5,
+        "AL": 3,
+        "OH": 2
+      },
+      category: {title: "Fake Stat 1"}
+    };
+    model.data.active.add(2);
+    model.data.stats[2] = {
+      rankings: ["AL", "AR", "OH"],
+      data: {
+        "AR": 2,
+        "AL": 10,
+        "OH": 1
+      },
+      category: {title: "Fake Stat 2"}
+    };
+    expect(model.getStateInfo("AL")).toEqual([
+      {id:2, rank:1, value:10, name:"Fake Stat 2"},
+      {id:1, rank:2, value:3, name:"Fake Stat 1"}
+    ]);
+    expect(model.getStateInfo("AR")).toEqual([
+      {id:1, rank:1, value:5, name:"Fake Stat 1"},
+      {id:2, rank:2, value:2, name:"Fake Stat 2"}
+    ]);
+  });
+
+  test('bad state', () => {
+    model.data.active.add(1);
+    model.data.stats[1] = {
+      rankings: ["AR", "AL", "OH"],
+      data: {
+        "AR": 5,
+        "AL": 3,
+        "OH": 2
+      }
+    };
+    model.data.active.add(2);
+    model.data.stats[2] = {
+      rankings: ["AL", "AR", "OH"],
+      data: {
+        "AR": 2,
+        "AL": 10,
+        "OH": 1
+      }
+    };
+    expect(model.getStateInfo("FK")).toEqual([]);
+  });
+
+  test('no rankings', () => {
+    model.data.active.add(1);
+    model.data.stats[1] = {
+      rankings: ["AR", "AL", "OH"],
+      data: {
+        "AR": 5,
+        "AL": 3,
+        "OH": 2
+      },
+      category: {title:"Fake Stat 1"}
+    };
+    model.data.active.add(2);
+    model.data.stats[2] = {
+      data: {
+        "AR": 2,
+        "AL": 10,
+        "OH": 1
+      },
+      category: {title:"Fake Stat 2"}
+    };
+    expect(model.getStateInfo("AL")).toEqual([
+      {id:1, rank:2, value:3, name:"Fake Stat 1"}
+    ]);
+  });
+});
+
 describe('displayWeights', () => {
     beforeEach(resetData);
 
-    test('test1: no states, require', () => {
-        let script = require("../../public/javascripts/model");
-        let states = {
-          stat_id: 1,
-          invert_flag: 0,
-          AL: 100,
-          AK: 300,
-          AZ: 200,
-          /////////
-          AR: 100,
-          CA: 100,
-          CO: 100,
-          CT: 100,
-          DE: 100,
-          FL: 100,
-          GA: 100,
-          HI: 100,
-          ID: 100,
-          IL: 100,
-          IN: 100,
-          IA: 100,
-          KS: 100,
-          KY: 100,
-          LA: 100,
-          ME: 100,
-          MD: 100,
-          MA: 100,
-          MI: 100,
-          MN: 100,
-          MS: 100,
-          MO: 100,
-          MT: 100,
-          NE: 100,
-          NV: 100,
-          NH: 100,
-          NJ: 100,
-          NM: 100,
-          NY: 100,
-          NC: 100,
-          ND: 100,
-          OH: 100,
-          OK: 100,
-          OR: 100,
-          PA: 100,
-          RI: 100,
-          SC: 100,
-          SD: 100,
-          TN: 100,
-          TX: 100,
-          UT: 100,
-          VT: 100,
-          VA: 100,
-          WA: 100,
-          WV: 100,
-          WI: 100,
-          WY: 100
-      }
+    function makeFakeStat(id, invert_flag){
+      let data = {
+        stat_id: id,
+        invert_flag: invert_flag
+      };
+      states.forEach((state, i) => {
+        data[state] = 0.5
+      });
+      return {
+        category: {title: "Fake", stat_id: id},
+        data: data,
+        weight: 1
+      };
+    }
 
-        /*
-        let row = {
-        stat_id: 1,
-        invert_flag: 0,
-        AL: 100,
-        AK: 200,
-        AZ: 300
-        }
-        */
+    test('one stat', () => {
+        model.data.active.add(1);
+        let stat = makeFakeStat(1, 0);
+        stat.data.AK = 0;
+        model.data.stats[1] = stat;
 
-        let testWeights = {
-            AL: 99,
-            AK: 99,
-            AZ: 99
-        };
+        window.colorState = jest.fn(() => {});
+        let mockCalls = window.colorState.mock.calls;
 
-        window.colorState = jest.fn((state, weight) => {
-            testWeights[state] = weight;
-        });
-
-        //making sure the function is called 50 times even though it won't be
-        // expect(window.colorState.mock.calls.length).toBe(50);
-
-        expect(testWeights["AL"]).toEqual(99);
-        expect(testWeights["AK"]).toEqual(99);
-        expect(testWeights["AZ"]).toEqual(99);
+        expect(mockCalls.length).toEqual(0);
+        expect(model.data.weights).toEqual({});
+        expect(model.data.ranks).toEqual(states);
 
         model.displayWeights();
 
-        expect(testWeights["AL"]).toEqual(0);
-        expect(testWeights["AK"]).toEqual(0);
-        expect(testWeights["AZ"]).toEqual(0);
+        expect(mockCalls.length).toEqual(50);
+        expect(mockCalls[0]).toEqual(["AL", 1]);
+        expect(mockCalls[1]).toEqual(["AK", 0]);
+        expect(Object.keys(model.data.weights)).toEqual(states);
+        expect(model.data.weights.AL).toEqual(1);
+        expect(model.data.weights.AK).toEqual(0);
+        expect(model.data.ranks[49]).toEqual("AK");
     });
 
-    /*
-        notes:
-            "window."" overrides colorState because it's defined in a different file from model.js
-            you can override it with jest.fn lambda or not.
-            If you use the jest.fn stuff,
-                then you're mocking the function. When you mock the function,
-                you can do things like test how many times the mock function is called in the test.
-            if not,
-                you can still compare to a list of outputs and expected outputs
+    test('multiple stats', () => {
+        model.data.active.add(1);
+        let stat1 = makeFakeStat(1, 0);
+        stat1.data.AL = 0;
+        stat1.data.AK = 1;
+        model.data.stats[1] = stat1;
 
-            require is once per file
-            rewire is rerun every call
-    */
+        model.data.active.add(2);
+        let stat2 = makeFakeStat(2, 0);
+        stat2.data.AL = 0.2;
+        stat2.data.AK = 0.8;
+        model.data.stats[2] = stat2;
 
-    // test('1 active statistic, stat.data==1, rewire', () => { //should work
-    //     let model = require("../../public/javascripts/model");
-    //     let visuals = require("../../public/javascripts/visuals");
-    //     // let states = model.__get__("states");
-    //     // states.splice(3,47);
+        window.colorState = jest.fn(() => {});
+        let mockCalls = window.colorState.mock.calls;
 
-    //     let states = {
-    //       stat_id: 1,
-    //       invert_flag: 0,
-    //       AL: 100,
-    //       AK: 300,
-    //       AZ: 200,
-    //       /////////
-    //       AR: 100,
-    //       CA: 100,
-    //       CO: 100,
-    //       CT: 100,
-    //       DE: 100,
-    //       FL: 100,
-    //       GA: 100,
-    //       HI: 100,
-    //       ID: 100,
-    //       IL: 100,
-    //       IN: 100,
-    //       IA: 100,
-    //       KS: 100,
-    //       KY: 100,
-    //       LA: 100,
-    //       ME: 100,
-    //       MD: 100,
-    //       MA: 100,
-    //       MI: 100,
-    //       MN: 100,
-    //       MS: 100,
-    //       MO: 100,
-    //       MT: 100,
-    //       NE: 100,
-    //       NV: 100,
-    //       NH: 100,
-    //       NJ: 100,
-    //       NM: 100,
-    //       NY: 100,
-    //       NC: 100,
-    //       ND: 100,
-    //       OH: 100,
-    //       OK: 100,
-    //       OR: 100,
-    //       PA: 100,
-    //       RI: 100,
-    //       SC: 100,
-    //       SD: 100,
-    //       TN: 100,
-    //       TX: 100,
-    //       UT: 100,
-    //       VT: 100,
-    //       VA: 100,
-    //       WA: 100,
-    //       WV: 100,
-    //       WI: 100,
-    //       WY: 100
-    //   }
+        expect(mockCalls.length).toEqual(0);
+        expect(model.data.weights).toEqual({});
+        expect(model.data.ranks).toEqual(states);
 
-    //     let testWeights = {
-    //         AL: 99,
-    //         AK: 99,
-    //         AZ: 99
-    //     };
+        model.displayWeights();
 
-    //     let mockCatID = 1;
-    //     model.data.active.add(mockCatID);
+        expect(mockCalls.length).toEqual(50);
+        expect(mockCalls[0]).toEqual(["AL", 0]);
+        expect(mockCalls[1]).toEqual(["AK", 1]);
+        expect(mockCalls[2]).toEqual(["AZ", 0.5]);
+        expect(Object.keys(model.data.weights)).toEqual(states);
+        expect(model.data.ranks[0]).toEqual("AK");
+        expect(model.data.ranks[49]).toEqual("AL");
+    });
 
-    //     model.data.stats[mockCatID] = {
-    //         "category": {
-    //             "title": "fake title"
-    //         },
-    //         "data": {
-    //             "AL": 2,
-    //             "AK": 4,
-    //             "AZ": 6
-    //         }
-    //     };
+    test('inactive stat', () => {
+        let stat2 = makeFakeStat(2, 0);
+        stat2.data.AL = 0.2;
+        stat2.data.AK = 0.8;
+        model.data.stats[2] = stat2;
 
-    //     window.colorState = jest.fn((state, weight) => {
-    //         testWeights[state] = weight;
-    //     });
+        window.colorState = jest.fn(() => {});
+        let mockCalls = window.colorState.mock.calls;
 
-    //     //making sure the function is called 50 times even though it won't be
-    //     // expect(window.colorState.mock.calls.length).toBe(50);
+        expect(mockCalls.length).toEqual(0);
+        expect(model.data.weights).toEqual({});
+        expect(model.data.ranks).toEqual(states);
 
-    //     expect(testWeights["AL"]).toEqual(99);
-    //     expect(testWeights["AK"]).toEqual(99);
-    //     expect(testWeights["AZ"]).toEqual(99);
+        model.displayWeights();
 
-    //     model.displayWeights();
+        expect(mockCalls.length).toEqual(50);
+        expect(mockCalls[0]).toEqual(["AL", 0]);
+        expect(model.data.weights.AL).toEqual(0);
+        expect(model.data.ranks).toEqual(states);
+    });
 
-    //     expect(testWeights["AL"]).toEqual(0);
-    //     expect(testWeights["AZ"]).toEqual(1);
-    //     expect(testWeights["AK"]).toEqual(0.5);
-    // });
+    test('unloaded stat', () => {
+      model.data.active.add(2);
+      let stat2 = makeFakeStat(2, 0);
+      delete stat2.data;
+      model.data.stats[2] = stat2;
+
+      window.colorState = jest.fn(() => {});
+      let mockCalls = window.colorState.mock.calls;
+
+      expect(mockCalls.length).toEqual(0);
+      expect(model.data.weights).toEqual({});
+      expect(model.data.ranks).toEqual(states);
+
+      model.displayWeights();
+
+      expect(mockCalls.length).toEqual(50);
+      expect(mockCalls[0]).toEqual(["AL", 0]);
+      expect(model.data.weights.AL).toEqual(0);
+      expect(model.data.ranks).toEqual(states);
+    });
+
+    test('stat missing state', () => {
+      model.data.active.add(2);
+      let stat2 = makeFakeStat(2, 0);
+      delete stat2.data.AK;
+      model.data.stats[2] = stat2;
+
+      window.colorState = jest.fn(() => {});
+      let mockCalls = window.colorState.mock.calls;
+
+      expect(mockCalls.length).toEqual(0);
+      expect(model.data.weights).toEqual({});
+      expect(model.data.ranks).toEqual(states);
+
+      model.displayWeights();
+
+      expect(mockCalls.length).toEqual(50);
+      expect(mockCalls[0]).toEqual(["AL", 1]);
+      expect(mockCalls[1]).toEqual(["AK", 0]);
+      expect(mockCalls[2]).toEqual(["AZ", 1]);
+      expect(model.data.weights.AL).toEqual(1);
+      expect(model.data.weights.AK).toEqual(0);
+      expect(model.data.ranks[49]).toEqual("AK");
+    });
+
 });
 
+describe('Stat', () => {
+  let spy;
+
+  beforeEach(() => {
+    resetData();
+    spy = jest.spyOn(model.Stat.prototype, "disable").mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    spy.mockRestore();
+  });
+
+  test('missing category.stat_id', () => {
+    let cat = {title: "Fake Cat"};
+    expect(() => new model.Stat(cat, 2)).toThrow();
+    expect(spy).not.toHaveBeenCalled();
+  });
+
+  test('missing category.title', () => {
+    let cat = {stat_id: 2};
+    expect(() => new model.Stat(cat, 2)).toThrow();
+    expect(spy).not.toHaveBeenCalled();
+    expect(model.data.stats[2]).toBeUndefined();
+  });
+
+  test('null or empty category', () => {
+    expect(() => new model.stat(null, 2)).toThrow();
+    expect(() => new model.stat({}, 2)).toThrow();
+    expect(spy).not.toHaveBeenCalled();
+  });
+
+  test('in data.stats', () => {
+    let cat = {stat_id: 1, title: "Fake Stat"};
+    let oldStat = {};
+    model.data.stats[1] = oldStat;
+    model.data.active.add(1);
+
+    expect(spy).not.toHaveBeenCalled();
+
+    let stat = new model.Stat(cat, 3);
+
+    expect(stat.category.stat_id).toEqual(1);
+    expect(stat.category.title).toEqual("Fake Stat");
+    expect(stat.weight).toEqual(3);
+    expect(stat.enabled).toEqual(false);
+    expect(stat.slider).toBeNull();
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(model.data.stats[1]).toBe(stat);
+    expect(model.data.active.has(1)).toBeFalsy();
+  });
+
+  test('bad weight', () => {
+    let cat = {stat_id: 1, title: "Fake Stat"};
+    let oldStat = {};
+    model.data.stats[1] = oldStat;
+    model.data.active.add(1);
+
+    expect(() => {new model.Stat(cat, -1)}).toThrow();
+    expect(model.data.stats[1]).toBe(oldStat);
+    expect(model.data.active.has(1)).toBeTruthy()
+    expect(spy).not.toHaveBeenCalled();
+  });
+
+  test('new stat', () => {
+    let cat = {stat_id: 1, title: "Fake Stat"};
+
+    expect(spy).not.toHaveBeenCalled();
+    expect(model.data.stats[1]).toBeUndefined();
+
+    let stat = new model.Stat(cat, 3);
+
+    expect(stat.category.stat_id).toEqual(1);
+    expect(stat.category.title).toEqual("Fake Stat");
+    expect(stat.weight).toEqual(3);
+    expect(stat.enabled).toEqual(false);
+    expect(stat.slider).toBeNull();
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(model.data.stats[1]).toBe(stat);
+  });
+})
 
 describe('restoreFromStorage', () => {
   function FakeStat(id){
@@ -734,103 +900,6 @@ describe('updateWeightStorage', () => {
   });
 });
 
-describe('calculateWeight: ', () => {
-  test("1.8^0", () => {
-    let script = require("../../public/javascripts/model");
-
-    let ans = script.calculateWeight(0);
-
-    expect(ans).toEqual(0);
-    expect(script.calculateWeight(1)).toEqual(1);
-    expect(script.calculateWeight(2)).toEqual(1.8);
-    expect(script.calculateWeight(3)).toEqual(3.24);
-    expect(script.calculateWeight(-1)).toEqual(0);
-    expect(script.calculateWeight(1.5)).toEqual(0);
-  });
-});
-
-//TODO: Reset data on merge
-describe('getStateInfo', () => {
-  beforeEach(resetData);
-
-  test('happy path', () => {
-    let script = require("../../public/javascripts/model");
-    script.data.active.add(1);
-    script.data.stats[1] = {
-      rankings: ["AR", "AL", "OH"],
-      data: {
-        "AR": 5,
-        "AL": 3,
-        "OH": 2
-      },
-      category: {title: "Fake Stat 1"}
-    };
-    script.data.active.add(2);
-    script.data.stats[2] = {
-      rankings: ["AL", "AR", "OH"],
-      data: {
-        "AR": 2,
-        "AL": 10,
-        "OH": 1
-      },
-      category: {title: "Fake Stat 2"}
-    };
-    expect(script.getStateInfo("AL")).toEqual([
-      {id:2, rank:1, value:10, name:"Fake Stat 2"},
-      {id:1, rank:2, value:3, name:"Fake Stat 1"}
-    ]);
-  });
-
-  test('bad state', () => {
-    let script = require("../../public/javascripts/model");
-    script.data.active.add(1);
-    script.data.stats[1] = {
-      rankings: ["AR", "AL", "OH"],
-      data: {
-        "AR": 5,
-        "AL": 3,
-        "OH": 2
-      }
-    };
-    script.data.active.add(2);
-    script.data.stats[2] = {
-      rankings: ["AL", "AR", "OH"],
-      data: {
-        "AR": 2,
-        "AL": 10,
-        "OH": 1
-      }
-    };
-    expect(script.getStateInfo("FK")).toEqual([]);
-  });
-
-  test('no rankings', () => {
-    let script = require("../../public/javascripts/model");
-    script.data.active.add(1);
-    script.data.stats[1] = {
-      rankings: ["AR", "AL", "OH"],
-      data: {
-        "AR": 5,
-        "AL": 3,
-        "OH": 2
-      },
-      category: {title:"Fake Stat 1"}
-    };
-    script.data.active.add(2);
-    script.data.stats[2] = {
-      data: {
-        "AR": 2,
-        "AL": 10,
-        "OH": 1
-      },
-      category: {title:"Fake Stat 2"}
-    };
-    expect(script.getStateInfo("AL")).toEqual([
-      {id:1, rank:2, value:3, name:"Fake Stat 1"}
-    ]);
-  })
-});
-
 describe("rankStates", () => {
   test('happy path', () => {
     let script = require("../../public/javascripts/model");
@@ -855,63 +924,7 @@ describe("rankStates", () => {
     expect(script.rankStates(data)).toEqual([]);
   });
 });
-describe('setMetadata', () => {
-  beforeEach(resetData);
 
-  test('happy path', () => {
-    let metadata = [{
-      stat_id:1,
-      note:{
-        type:"Buffer",
-        data:[104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100]
-      },
-      stat_name_short:"Fake stat",
-      publication_date: "Just now",
-      source: "Ryan Regier",
-      oroginal_source: "pilots.up.edu"
-    }];
-    let stat = {};
-    model.data.stats[1] = stat;
-    model.setMetadata(metadata);
-    expect(stat).toHaveProperty("metadata");
-    expect(stat.metadata.note).toEqual("hello world");
-    expect(stat.metadata).toBe(metadata[0]);
-  });
-
-  test('bad metadata', () => {
-    let stat = {};
-    model.data.stats[1] = stat;
-    model.setMetadata(null);
-    expect(model.data.stats[1]).toEqual({});
-    model.setMetadata(undefined);
-    expect(model.data.stats[1]).toEqual({});
-    model.setMetadata([]);
-    expect(model.data.stats[1]).toEqual({});
-  });
-
-  test('multiple stats', () => {
-    let metadata = [{
-      stat_id: 3,
-      note: {data: []},
-    },
-    {
-      stat_id: 1,
-      note: {data: []},
-    },
-    {
-      stat_id: 2,
-      note: {data: []}
-    }];
-
-    let stat2 = {};
-    let stat3 = {};
-    model.data.stats[2] = stat2;
-    model.data.stats[3] = stat3;
-    model.setMetadata(metadata);
-    expect(stat2.metadata).toBe(metadata[2]);
-    expect(stat3.metadata).toBe(metadata[0]);
-  });
-});
 
 describe('Stat show metadata', () => {
   var fetchedMetadata;
