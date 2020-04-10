@@ -163,26 +163,16 @@ body {
     z-index: 2;
 }
 
+
+
 /* TODO: This will be fixed at a later time, as it creates a weird scrollbar */
 .statistic-slider-tick-container {
     /* Positioning and Display */
 	display: flex;
-	justify-content: space-between;
+	justify-content: space-evenly;
     grid-area: ticks;
-    grid: auto / auto / span3 / auto;
-    /* width: 103.6%; */
     width: 100%;
-	/* margin-left: 18px; */
     margin-top: -20px;
-}
-
-.single-ticks {
-    order: 1;
-}
-
-.last-tick{
-    order: 2;
-    align-content: end;
 }
 
 .statistic-slider-tick-container p {
@@ -200,6 +190,31 @@ body {
     /* Fonts and Text */
 	font-size: 12px;
     line-height: 35px;
+}
+
+.single-ticks-1 {
+    order: 1;
+    /* margin-left: 8px; */
+}
+
+.single-ticks-2 {
+    order: 1;
+    left: 2%;
+}
+
+.single-ticks-3 {
+    order: 1;
+    left: 5%;
+}
+
+.single-ticks-4 {
+    order: 1;
+    left: 8%;
+}
+
+.single-ticks-5 {
+    order: 1;
+    left: 11%;
 }
 
 #statistics-sliders-header {
