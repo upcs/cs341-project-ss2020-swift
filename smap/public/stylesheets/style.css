@@ -91,8 +91,8 @@ body {
 .statistic-slider-container {
     /* Positioning and Display */
     display: grid;
-    grid-template-columns: [remove-statistic-guide]7% [stat-option-title]auto 7%;
-	grid-template-rows: [slider-title]36% auto [slider-ticks]30%;
+    grid-template-columns: [remove-statistic-guide]7% [stat-option-title]86% [metadata]7%;
+	grid-template-rows: [slider-title]auto [slider-slider]34% [slider-ticks]30%;
     grid-template-areas:
         "slider-remover slider-title slider-metadata"
         "slider-remover slider slider"
@@ -112,9 +112,7 @@ body {
 
 .statistic-slider-remover {
     /* Positioning and Display */
-    display: grid;
     grid-area: slider-remover;
-    
     align-items: center;
     /* Fonts and Text */
     font-size: 32px;
@@ -125,17 +123,16 @@ body {
 
 .statistic-slider-title {
     /* Positioning and Display */
-    display: grid;
     grid-area: slider-title;
     justify-content: center;
     padding-left: 10px;
     padding-top: 5px;
     padding-bottom: 5px;
+    overflow-wrap: break-word;
 }
 
 .statistic-slider-metadata {
     /* Positioning and Display */
-    display: grid;
     grid-area: slider-metadata;
     align-items: center;
     padding-right: 4px;
@@ -160,61 +157,55 @@ body {
     box-shadow: 0px 0px 2px inset var(--secondary-color-light);
     /* Other */
     -webkit-appearance: none !important;
-    z-index: 2;
 }
 
-
-
-/* TODO: This will be fixed at a later time, as it creates a weird scrollbar */
 .statistic-slider-tick-container {
     /* Positioning and Display */
-	display: flex;
-	justify-content: space-evenly;
     grid-area: ticks;
+	justify-content: space-evenly;
     width: 100%;
-    margin-top: -20px;
+    margin-top: -5px;
+    display: grid;
+    grid-template-columns: [beginning]4% [tick-1]1% [between-tick]23% [tick-2]1% [between-tick]21% [tick-3]1% [between-tick]23% [tick-4]1% [between-tick]22% [tick-5]1% [end]3%;
+    grid-template-rows: auto;
+    grid-template-areas:
+        "before-tick tick-1 between-1 tick-2 between-2 tick-3 between-3 tick-4 between-4 tick-5 end"
+    ;
 }
 
 .statistic-slider-tick-container p {
     /* Positioning and Display */
-	position: relative;
-	display: flex;
 	justify-content: center;
     text-align: center;
 	height: 8px;
-    margin-right: 50px;
-    margin-left: 15px;
+    margin-top: 0px;
     width: 1.66px;
     /* Coloring */
     background: var(--color-dark);
     /* Fonts and Text */
 	font-size: 12px;
     line-height: 35px;
+    display: grid;
 }
 
 .single-ticks-1 {
-    order: 1;
-    /* margin-left: 8px; */
+    grid-area: tick-1;
 }
 
 .single-ticks-2 {
-    order: 1;
-    left: 2%;
+    grid-area: tick-2;
 }
 
 .single-ticks-3 {
-    order: 1;
-    left: 5%;
+    grid-area: tick-3;
 }
 
 .single-ticks-4 {
-    order: 1;
-    left: 8%;
+    grid-area: tick-4;
 }
 
 .single-ticks-5 {
-    order: 1;
-    left: 11%;
+    grid-area: tick-5;
 }
 
 #statistics-sliders-header {
@@ -234,12 +225,10 @@ body {
 #statistics-sliders {
     /* Positioning and Display */
     grid-area: sliders;
-    display: grid;
     padding: 4px;
-    align-content: start;
+    min-height: 100px;
     /* Other */
     overflow-y: auto;
-    overflow-x: none;
     /* Note: The following two settings are specific to Firefox */
     scrollbar-width: thin;
     scrollbar-color: var(--secondary-color-light) var(--color-light);
