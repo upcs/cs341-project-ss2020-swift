@@ -164,20 +164,6 @@ $("document").ready(function () {
       }
     });
 
-    //Gets metadata information and populates the windows
-    // $.get("/api/meta", "", function(data, status, res){
-    //     if (status !== "success"){
-    //       console.log("Error getting metadata");
-    //       alert("AHHHH no metadata");
-    //     } else {
-    //         alert(data[1].published_by + " " + data[0].published_by);
-    //     //   for (let cat of data){
-    //     //     cat.title = cat.stat_name_short;
-    //     //     new Stat(cat, DEFAULT_WEIGHT);
-    //     //   }
-    //     }
-    //   });
-
     //blurs background and makes body unscrollable and unhides the state window
     function prepareStateWindow() {
         var us_map = document.getElementById("us-map").contentDocument;
