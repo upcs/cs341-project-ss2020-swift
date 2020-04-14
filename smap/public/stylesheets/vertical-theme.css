@@ -20,6 +20,7 @@
         "sliders-header selector-header"
         "sliders selector"
     ;
+    box-shadow: 0px -4px 8px rgba(0, 0, 0, 0.25);
 }
 
 #nav-bar {
@@ -31,6 +32,7 @@
         [right-nav-padding]5.5% [spacing]29.5% [arrow]30% [legend]29.5% [theme-selector]5.5%
     ;
     grid-template-areas: "legend legend center-nav theme-selector theme-selector" ;
+    box-shadow: 0px -4px 8px rgba(0, 0, 0, 0.25);
 }
 
 #map-container {
