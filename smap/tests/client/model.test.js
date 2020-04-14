@@ -21,7 +21,7 @@ function resetData(){
   model.data.weights = {};
 }
 
-beforeEach(resetData);
+afterEach(resetData);
 
 /*
   I tried so many ways to get external scripts to load correctly.
@@ -87,7 +87,7 @@ test('Create a slider', () => {
 */
 
 describe('setMetadata', () => {
-  beforeEach(resetData);
+  afterEach(resetData);
 
   test('happy path', () => {
     let metadata = [{
@@ -379,7 +379,7 @@ describe('calculateWeight: ', () => {
 });
 
 describe('getStateInfo', () => {
-  beforeEach(resetData);
+  afterEach(resetData);
 
   test('happy path', () => {
     model.data.active.add(1);
@@ -461,7 +461,7 @@ describe('getStateInfo', () => {
 });
 
 describe('displayWeights', () => {
-    beforeEach(resetData);
+    afterEach(resetData);
 
     function makeFakeStat(id, invert_flag){
       let data = {
@@ -605,11 +605,11 @@ describe('Stat', () => {
   let spy;
 
   beforeEach(() => {
-    resetData();
     spy = jest.spyOn(model.Stat.prototype, "disable").mockImplementation(() => {});
   });
 
   afterEach(() => {
+    resetData();
     spy.mockRestore();
   });
 
@@ -680,7 +680,85 @@ describe('Stat', () => {
     expect(spy).toHaveBeenCalledTimes(1);
     expect(model.data.stats[1]).toBe(stat);
   });
-})
+});
+
+describe("Stat.updateWeight", () => {
+  beforeEach(() => {
+    window.colorState = jest.fn(() => {});
+    model.storage.reset();
+    model.data.restored = true;
+  });
+
+  afterEach(() => {
+    resetData();
+    window.localStorage.clear();
+    window.colorState.mockRestore();
+  });
+
+  //Note: all other tests mock other called functions
+  test("enabled", () => {
+    document.body.innerHTML = "<div id='slider'><input type='range' class='statistic-slider' value=2></input></div>";
+
+    let slider = $("#slider");
+    let input = $('.statistic-slider');
+    let stat = {
+      slider: slider,
+      enabled: true,
+      weight: 2,
+      category: {
+        stat_id: 4
+      }
+    };
+    model.data.stats[4] = stat;
+
+    expect(window.colorState).not.toHaveBeenCalled();
+    expect(window.localStorage.getItem(model.storage.ACTIVE_SLIDER_PREFIX+4)).toBeNull();
+
+    model.Stat.prototype.updateWeight.apply(stat, [3]);
+
+    expect(window.colorState.mock.calls.length).toEqual(50);
+    expect(window.localStorage.getItem(model.storage.ACTIVE_SLIDER_PREFIX+4)).toEqual("3");
+    expect(input.attr("value")).toEqual("3");
+  });
+
+  test("disabled", ()=> {
+    document.body.innerHTML = "<div id='slider'><input type='range' class='statistic-slider' value=2></input></div>";
+
+    let slider = $("#slider");
+    let input = $('.statistic-slider');
+    let stat = {
+      slider: slider,
+      enabled: false,
+      weight: 2,
+      category: {
+        stat_id: 4
+      }
+    };
+    model.data.stats[4] = stat;
+
+    expect(window.localStorage.getItem(model.storage.ACTIVE_SLIDER_PREFIX+4)).toBeNull();
+
+    model.Stat.prototype.updateWeight.apply(stat, [3]);
+
+    expect(window.colorState).not.toHaveBeenCalled();
+    expect(window.localStorage.getItem(model.storage.ACTIVE_SLIDER_PREFIX+4)).toEqual("3");
+    expect(input.attr("value")).toEqual("2");
+  });
+
+});
+
+
+describe("Stat.enable", () => {
+  let fakeSlider = {}
+  beforeEach(() => {
+    window.makeActiveSlider = jest.fn(() => fakeSlider);
+  });
+
+  afterEach(() => {
+    resetData();
+    window.makeActiveSlider.mockRestore();
+  });
+});
 
 describe('restoreFromStorage', () => {
   function FakeStat(id){
