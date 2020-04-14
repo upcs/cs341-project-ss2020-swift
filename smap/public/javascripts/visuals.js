@@ -28,11 +28,20 @@ const THEMES = [
 const LIGHT_THEMES = ["orange-red", "green-blue", "pink-purple" ];
 const DARK_THEMES = ["dark-red", "dark-green", "dark-blue"];
 const NE_STATES = ["MA", "CT", "NH", "RI", "VT", "DE", "MD", "MJ", "NY", "PA", "ME", "NJ"];
-const MIN_WIDTH = 500;
-const MIN_HEIGHT = 500;
-const MIN_HORIZONTAL_WIDTH = 1000;
+// Tuneable values
+const MIN_WIDTH = 500; // in px
+const MIN_HEIGHT = 500; // in px
+const MIN_HORIZONTAL_WIDTH = 1000;  // in px
 const CRITICAL_ASPECT_RATIO = 1.125;
+// Specific animation times in ms
 const LAYOUT_CHANGE_TIME = 250;
+const GRAPH_ANIMATION_TIME = 1000;
+const SCROLL_ANIMATION_TIME = 1000;
+// All small intermediate animations are likely based off this time
+const ANIMATION_TIME_SHORT = 400;
+// All larger scale animations are based off of these times
+const ANIMATION_TIME_MED = 800;
+const ANIMATION_TIME_LONG = 1200;
 
 // Window variables
 
@@ -60,17 +69,17 @@ $("document").ready(function () {
     var ellipses_loop = setInterval(function() {
         // Simply fade in and grow / fade out and shrink dots for a loading effect to watch while
         // the page is preloading elements
-        $("#dot1").animate({opacity: "0", fontSize: "60px"}, 500, "swing");
-        $("#dot1").animate({opacity: "1", fontSize: "80px"}, 500, "swing");
+        $("#dot1").animate({opacity: "0", fontSize: "60px"}, ANIMATION_TIME_SHORT);
+        $("#dot1").animate({opacity: "1", fontSize: "80px"}, ANIMATION_TIME_SHORT);
         window.setTimeout(function() {
-            $("#dot2").animate({opacity: "0", fontSize: "60px"}, 500, "swing");
-            $("#dot2").animate({opacity: "1", fontSize: "80px"}, 500, "swing");
+            $("#dot2").animate({opacity: "0", fontSize: "60px"}, ANIMATION_TIME_SHORT);
+            $("#dot2").animate({opacity: "1", fontSize: "80px"}, ANIMATION_TIME_SHORT);
             window.setTimeout(function() {
-                $("#dot3").animate({opacity: "0", fontSize: "60px"}, 500, "swing");
-                $("#dot3").animate({opacity: "1", fontSize: "80px"}, 500, "swing");
-            }, 250);
-        }, 250);
-    }, 1000 );
+                $("#dot3").animate({opacity: "0", fontSize: "60px"}, ANIMATION_TIME_SHORT);
+                $("#dot3").animate({opacity: "1", fontSize: "80px"}, ANIMATION_TIME_SHORT);
+            }, ANIMATION_TIME_SHORT / 2);
+        }, ANIMATION_TIME_SHORT / 2);
+    }, ANIMATION_TIME_MED );
 
     // Map Preloading Functions: If the map wasn't loaded by the browser, preload it anyway for
     // other functions to use to do the prep work
@@ -141,30 +150,31 @@ function clear_loading(loop) {
         clearInterval(loop);
     }, 500);
     // Make the dots disappear
-    $("#dot1").animate({opacity: "0"}, 500, "swing");
-    $("#dot2").animate({opacity: "0"}, 500, "swing");
-    $("#dot3").animate({opacity: "0"}, 500, "swing");
+    $("#dot1").animate({opacity: "0"}, ANIMATION_TIME_SHORT, "swing");
+    $("#dot2").animate({opacity: "0"}, ANIMATION_TIME_SHORT, "swing");
+    $("#dot3").animate({opacity: "0"}, ANIMATION_TIME_SHORT, "swing");
     window.setTimeout(function() {
         // Click the default orange-red theme
         $("#orange-red").click();
         // Remove the ellipses container
-        $("#ellipses").slideUp(1000);
+        $("#ellipses").slideUp(ANIMATION_TIME_MED);
         // Fade out the loading animation
-        $("#loading").animate({opacity: "0"}, 500);
+        $("#loading").animate({opacity: "0"}, ANIMATION_TIME_SHORT);
         // Change the "loading assets" to say we're ready and fly it in
-        window.setTimeout(function() { $("#loading").html("Ready!"); }, 500 );
-        $("#loading").animate({opacity: "1", fontSize: "50px"}, 500);
+        window.setTimeout(function() { $("#loading").html("Ready!"); }, ANIMATION_TIME_SHORT );
+        $("#loading").animate({opacity: "1", fontSize: "50px"}, ANIMATION_TIME_SHORT);
         // Fade out the loading window now that we're done with it
         window.setTimeout(function() {
             $("#init").css("pointer-events","none");
-            $("#init").animate({opacity: "0"}, 500);
+            $("#init").animate({opacity: "0"}, ANIMATION_TIME_SHORT);
             $("#loading").animate({fontSize: "100px"}, 400);
-        }, 1500 );
-    }, 1000);
-    // Print load time
-    let load_time = (window.performance.now() / 1000);
+        }, ANIMATION_TIME_LONG );
+    }, ANIMATION_TIME_MED);
+    // Print load time in seconds
+    let load_time = window.performance.now() / 1000;
+    let animation_time = (ANIMATION_TIME_LONG+ANIMATION_TIME_MED) / 1000;
     console.log("Page load time: " + load_time + "s");
-    console.log("Time until page operable: "+ (load_time+2.5) +"s");
+    console.log("Time until page operable: "+ (load_time+animation_time) +"s");
 }
 
 
@@ -461,16 +471,6 @@ function populateStateWindow(is_ne){
 
 
 /**
- * @param {WebGL Context} ctx this is the graph WebGL context
- */
-function resizeChart() {
-    let ctx = document.getElementById('myChart').getContext('2d');
-    // Set the width and height of the container
-    ctx.canvas.width = $("#graph").width();
-    ctx.canvas.height = $("#graph").height();
-}
-
-/**
  * @param {String} state_id is the state that was clicked from the state window. It will be highlighted
  * @param {Number Array} weights the weights of the states that will be the y-axis data
  * @param {String Array} ranks the ordered list of the states that will be the x-axis data
@@ -478,7 +478,8 @@ function resizeChart() {
 function drawChart(state_id, weights, ranks) {
     let ctx = document.getElementById('myChart').getContext('2d');
     // Resize the chart according to the window size.
-    resizeChart();
+    ctx.canvas.width = $("#graph").width();
+    ctx.canvas.height = $("#graph").height();
     // This prevents the charts from stacking and interfering with eachother
     if (chart != undefined){
         chart.destroy();
@@ -503,13 +504,13 @@ function drawChart(state_id, weights, ranks) {
             getComputedStyle(document.documentElement).getPropertyValue('--accent-color-dark');
     } else {
         select_color =
-            getComputedStyle(document.documentElement).getPropertyValue('--accent-color');
-        select_hover =
             getComputedStyle(document.documentElement).getPropertyValue('--accent-color-dark');
-        select_border_color =
+        select_hover =
             getComputedStyle(document.documentElement).getPropertyValue('--accent-color-light');
+        select_border_color =
+            getComputedStyle(document.documentElement).getPropertyValue('--accent-color');
         regular_border_color =
-            getComputedStyle(document.documentElement).getPropertyValue('--secondary-color-dark');
+            getComputedStyle(document.documentElement).getPropertyValue('--accent-color');
     }
 
     // Make an array of colors that will be assigned to each bar
@@ -530,8 +531,8 @@ function drawChart(state_id, weights, ranks) {
                 bar_color_array.push(mixColor(weights[ranks[idx]], "--accent-color"));
                 bar_hover_array.push(mixColor(weights[ranks[idx]], "--accent-color-light"));
             } else {
-                bar_color_array.push(mixColor(weights[ranks[idx]], "--secondary-color-light"));
-                bar_hover_array.push(mixColor(weights[ranks[idx]], "--secondary-color-dark"));
+                bar_color_array.push(mixColor(weights[ranks[idx]], "--graph-color-dark"));
+                bar_hover_array.push(mixColor(weights[ranks[idx]], "--graph-color-light"));
             }
             border_color_array.push(regular_border_color);
         }
@@ -557,6 +558,8 @@ function drawChart(state_id, weights, ranks) {
 
         // Configuration options go here
         options: {
+            responsive: true,
+            maintainAspectRatio: false,
             scales: {
                 yAxes: [{
                     gridLines: {
@@ -586,7 +589,7 @@ function drawChart(state_id, weights, ranks) {
                 titleFontColor: tooltip_text
             },
             animation: {
-                duration: 100
+                duration: GRAPH_ANIMATION_TIME
             }
         }
     });
@@ -738,7 +741,7 @@ function fillStateWindow(state_id) {
  * @notes This is an event handler function for the down arrow click event
  */
 function scrollAbout() {
-    $("html, body").animate({ scrollTop: $(window).height() }, 1000);
+    $("html, body").animate({ scrollTop: $(window).height() }, SCROLL_ANIMATION_TIME, "swing");
 }
 
 
@@ -827,7 +830,6 @@ function mixColor(weight, color) {
  */
 function setLayout(init){
     // Resize the graph with window resize
-    resizeChart()
     if($(window).height() < MIN_HEIGHT || $(window).width() < MIN_WIDTH) {
         console.error("Too small window size");
         $("#error").css("display", "grid");
