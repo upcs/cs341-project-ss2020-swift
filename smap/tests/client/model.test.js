@@ -879,8 +879,106 @@ describe("Stat.enable", () => {
     expect(stat.updateWeight).toHaveBeenCalledWith(1);
     expect(stat.slider).toBe(fakeSlider);
     expect($.get.mock.calls[0]).toEqual(expect.arrayContaining(["/api/data?cat=7", ""]));
-    
+
     $.get.mockRestore();
+  });
+});
+
+describe("stat.disable", () => {
+  let fakeSlider;
+
+  beforeEach(() => {
+    fakeSlider = document;
+    model.storage.reset();
+    model.data.restored = true;
+    window.makeInactiveSlider = jest.fn(() => fakeSlider);
+    window.colorState = jest.fn(() => {});
+  });
+
+  afterEach(() => {
+    resetData();
+    window.localStorage.clear();
+    window.makeInactiveSlider.mockRestore();
+    window.colorState.mockRestore();
+  });
+
+  test("not in data.active", () => {
+    fakeSlider = {
+      click: jest.fn(() => {})
+    }
+    let stat = {
+      category: {stat_id: 4, title: "Fake Stat"}
+    };
+    model.data.active.add(3);
+
+    expect(window.makeInactiveSlider).not.toHaveBeenCalled();
+    expect(window.colorState).not.toHaveBeenCalled();
+    expect(window.localStorage.getItem(model.storage.ACTIVE_SLIDER_KEY)).toBeNull();
+
+    model.Stat.prototype.disable.apply(stat, []);
+
+    expect(stat.enabled).toEqual(false);
+    expect(window.makeInactiveSlider).toHaveBeenCalledWith("Fake Stat");
+    expect(stat.slider).toBe(fakeSlider);
+    expect(window.localStorage.getItem(model.storage.ACTIVE_SLIDER_KEY)).toEqual("3");
+    expect(fakeSlider.click).toHaveBeenCalled();
+    expect(model.data.active.has(3)).toEqual(true);
+    expect(window.colorState).toHaveBeenCalledTimes(50);
+  });
+
+  test("no slider", () => {
+    fakeSlider = {
+      click: jest.fn(() => {})
+    }
+    let stat = {
+      category: {stat_id: 4, title: "Fake Stat"}
+    };
+    model.data.active.add(3);
+    model.data.active.add(4);
+
+    expect(window.makeInactiveSlider).not.toHaveBeenCalled();
+    expect(window.localStorage.getItem(model.storage.ACTIVE_SLIDER_KEY)).toBeNull();
+
+    model.Stat.prototype.disable.apply(stat, []);
+
+    expect(stat.enabled).toEqual(false);
+    expect(window.makeInactiveSlider).toHaveBeenCalledWith("Fake Stat");
+    expect(stat.slider).toBe(fakeSlider);
+    expect(window.localStorage.getItem(model.storage.ACTIVE_SLIDER_KEY)).toEqual("3");
+    expect(fakeSlider.click).toHaveBeenCalled();
+    expect(model.data.active.has(4)).toEqual(false);
+    expect(model.data.active.has(3)).toEqual(true);
+    expect(window.colorState).toHaveBeenCalledTimes(50);
+  });
+
+  test("with slider", () => {
+    let rm = jest.fn(() => {});
+    fakeSlider = {
+      click: jest.fn(() => {})
+    }
+    let stat = {
+      category: {stat_id: 4, title: "Fake Stat"},
+      slider: {
+        remove: rm
+      }
+    };
+    model.data.active.add(3);
+    model.data.active.add(4);
+
+    expect(window.makeInactiveSlider).not.toHaveBeenCalled();
+    expect(window.localStorage.getItem(model.storage.ACTIVE_SLIDER_KEY)).toBeNull();
+
+    model.Stat.prototype.disable.apply(stat, []);
+
+    expect(stat.enabled).toEqual(false);
+    expect(window.makeInactiveSlider).toHaveBeenCalledWith("Fake Stat");
+    expect(stat.slider).toBe(fakeSlider);
+    expect(window.localStorage.getItem(model.storage.ACTIVE_SLIDER_KEY)).toEqual("3");
+    expect(fakeSlider.click).toHaveBeenCalled();
+    expect(model.data.active.has(4)).toEqual(false);
+    expect(model.data.active.has(3)).toEqual(true);
+    expect(rm).toHaveBeenCalled();
+    expect(window.colorState).toHaveBeenCalledTimes(50);
   });
 });
 

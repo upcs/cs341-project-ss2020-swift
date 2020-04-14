@@ -321,13 +321,6 @@ Stat.prototype.disable = function(){
   displayWeights();
 }
 
-//Deletes a statistic
-Stat.prototype.delete = function(){
-  this.slider.remove();
-  data.active.remove(this.category.stat_id);
-  delete data.stats[category.stat_id];
-}
-
 /*
   Shows the metadata alert for this statistic.
   If metadata has not been downloaded, do so and show loading alert instead.
