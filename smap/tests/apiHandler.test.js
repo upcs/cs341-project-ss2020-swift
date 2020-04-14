@@ -96,6 +96,57 @@ describe('getData', () => {
     handler.getData([77], callback);
   });
 
+  test('negative input', (done) => {
+
+    function callback(data){
+
+      try {
+
+        //confirm that the data the was returned was undefined
+        expect(data[0]).toBeUndefined();
+
+        done();
+      } catch (error) {
+        done(error);
+      }
+    }
+    handler.getData([-1], callback);
+  });
+
+  test('extremely large input', (done) => {
+
+    function callback(data){
+
+      try {
+
+        //confirm that the data the was returned was undefined
+        expect(data[0]).toBeUndefined();
+
+        done();
+      } catch (error) {
+        done(error);
+      }
+    }
+    handler.getData([3.125e77], callback);
+  });
+
+  test('thwarting sql injections', (done) => {
+
+    function callback(data){
+
+      try {
+
+        //confirm that the data the was returned was undefined
+        expect(data[0]).toBeUndefined();
+
+        done();
+      } catch (error) {
+        done(error);
+      }
+    }
+    handler.getData(["0=0"], callback);
+  });
+
   test('multiple bad categories', (done) => {
 
     function callback(data){
