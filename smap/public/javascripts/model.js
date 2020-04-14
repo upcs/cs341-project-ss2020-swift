@@ -275,8 +275,6 @@ Stat.prototype.enable = function(){
     this.showMeta();
   });
 
-  updateCategoryStorage();
-
   //Fetches the data if we do not have it.
   if(!this.data){
     $.get("/api/data?cat=" + this.category.stat_id, "", (cat_data, status, xhr) => {
@@ -290,11 +288,13 @@ Stat.prototype.enable = function(){
         normalizeStats(this.data);
         // console.log(this.data);
         displayWeights();
+        updateCategoryStorage();
       }
     });
   } else {
     data.active.add(this.category.stat_id);
     displayWeights();
+    updateCategoryStorage();
   }
 }
 

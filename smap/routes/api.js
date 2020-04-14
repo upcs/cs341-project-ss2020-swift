@@ -39,7 +39,7 @@ router.get('/data', function(req, res, next){
 
   //Gets data associated with those categories, or throws 404 if any category does not exist
   let contents = handler.getData(cats, function(results){
-    if(!results){
+    if(!results || results.length === 0){
       next(createError(404));
       return;
     }
