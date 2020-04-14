@@ -304,8 +304,10 @@ body {
     /* Note: The following settings are specific to Chrome and webkit browsers */
 }::-webkit-scrollbar {
     width: 8px;
+    height: 8px;
 }::-webkit-scrollbar-track {
     width: 8px;
+    height: 8px;
     background-color: var(--color-light);
 }::-webkit-scrollbar-thumb {
     border: 1px solid var(--color-light);
@@ -366,14 +368,9 @@ body {
 /***  US Map Specific Styling  ***/
 /*********************************/
 
-#map-container {
-    /* Coloring */
-    background-color: var(--color-light);
-}
-
-object {
+svg {
     /* Other */
-    filter: drop-shadow(0px 0px 3px var(--secondary-color-dark));
+    filter: drop-shadow(0px 0px 4px var(--secondary-color-dark));
 }
 
 
@@ -668,6 +665,7 @@ object {
 
 #about-paragraph {
     grid-area: about-content;
+    text-indent: 2.5em;
 }
 
 .bottom-social {
