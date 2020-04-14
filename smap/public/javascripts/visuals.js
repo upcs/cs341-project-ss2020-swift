@@ -1,5 +1,6 @@
 'use strict';
 
+// Constants
 const blur_elements = [
     "nav-bar", "settings", "map-container", "about-container", "ne-inspector-container"
 ];
@@ -26,9 +27,12 @@ const themes = [
 ];
 const ne_states = ["MA", "CT", "NH", "RI", "VT", "DE", "MD", "MJ", "NY", "PA", "ME", "NJ"];
 
+// Window variables
 var chart;
 var theme_brightness = "light";
 var lastMove = 0;
+
+
 
 $("document").ready(function () {
 
@@ -86,7 +90,7 @@ $("document").ready(function () {
         if (us_map_document === 0 || ne_map_document === 0){
             return;
         }
-        setupHovering();
+        setUpHovering();
         prepareStateWindow();
         populateStateWindow(true); //is_ne is true
         populateStateWindow(false); //is_ne is false
@@ -229,11 +233,10 @@ $("document").ready(function () {
     /** All the functions and listeners pertaining to the state window **/
     /********************************************************************/
 
-    //blurs background and makes body unscrollable and unhides the state window
+    // Blurs background and makes body unscrollable and unhides the state window
     function prepareStateWindow() {
         var us_map = document.getElementById("us-map").contentDocument;
-
-        //when clicking on a state
+        // When clicking on a state
         $("path", us_map).click(function () {
             for (let element of blur_elements) {
                 $("#"+element).addClass("blurred");
@@ -245,7 +248,6 @@ $("document").ready(function () {
 
     /**
      * @param {bool} NE true if using NE magnifier, false for mainland US
-     *
      * @notes The point of this function is to reduce loading time, by loading up the information
      *      into the state window on load as opposed to on click. There may be more latency when
      *      clicking a statistic, but reasonably none when clicking on a state.
@@ -259,8 +261,7 @@ $("document").ready(function () {
         }
         // When clicking on a state
         $("path", map).click(function() {
-            let state_names = is_ne ? ne_state_names : us_state_names;
-            fillStateWindow($(this).attr("id"), state_names);
+            fillStateWindow($(this).attr("id"));
         });
     }
 
@@ -311,40 +312,27 @@ $("document").ready(function () {
         displayWeights();
     });
 
-    // TODO: Fix to work when about section exists.
     $("#nav-arrow").click( function() {
         $("html, body").animate({ scrollTop: $(window).height() }, 1000);
     });
-
-    // $(window).scroll( function() {
-    //     let scroll_val = Math.floor($(window).scrollTop());
-    //     if(window.performance.now() - lastMove > 33) {
-    //         $("#settings").css("left", -1*scroll_val);
-    //         var height = $(window).height();
-    //         var map_opacity = (height - scroll_val*1.5) / height;
-    //         $("#map-container").css("filter", "opacity(" + map_opacity + ")");
-    //         $("#map-legend-container").css("filter", "opacity(" + map_opacity + ")");
-    //         lastMove = window.performance.now();
-    //     }
-    // });
 });
 
-function fillStateWindow(state_id, state_names) {
-    // Get the state's id, and write the name in the window
-    var state_name = state_names[state_id];
-    $("#state-name").text(state_name);
 
+/**
+ * @param {String} state_id the state that was clicked to summon this state window
+ */
+function fillStateWindow(state_id) {
+    // Take the state id and retrieve the actual full name, and write the name in the window
+    let state_name = us_state_names[state_id];
+    $("#state-name").text(state_name);
     // Update the chart
     drawChart(state_id, data.weights, data.ranks);
-
     // Make array of stats organized by state's ranking in each statistic
     let stateCatArr = getStateInfo(state_id);
-
     // rank is the overall rank of the state based on selected stats
     let rank = data.ranks.indexOf(state_id) + 1;
     // Write the rank to the DOM
     $("#state-rank").text("State Rank: " + rank);
-
     // Get and display the appropriate state png
     $("#state-display").html(
         "<img src=\"images/us_states/"+state_id+".png\" alt=\""+state_name+
@@ -369,7 +357,7 @@ function fillStateWindow(state_id, state_names) {
         $("#good-stats").html("<b>" + errMsgNoStats + "</b>");
         // Hide the chart
         $("#myChart").css("visibility", "hidden");
-    // if only one stat is selected
+    // If only one stat is selected
     } else if (stateCatArr.length == 1) {
         // The best stat for the selected state is the first one in the stateCatArr
         // Get the stat from global var data by "id"
@@ -384,50 +372,44 @@ function fillStateWindow(state_id, state_names) {
         // Write message about having only 1 stat selected, so there is no worst stat
         let msgOneStat = "<i>(You have only selected one statisic ranking this state.)</i><br>";
         $("#good-stats").html(msgOneStat);
-
         // Write the best_stat name to the DOM
         $("#good-stats").append("<h3>Selected statistic:</h3>" + best_stat.category.stat_name_short + "\n");
         populateDataDetails(best_stat, true);
-
         // Show chart
         $("#myChart").css("visibility", "visible");
+    // Multiple stats are selected
     } else {
         // Retrieve the best and worst stats from the global variable data based on id
         let best_stat = data.stats[stateCatArr[0]["id"]];
         let worst_stat = data.stats[stateCatArr[stateCatArr.length - 1]["id"]];
-
         // Show all 4 grid areas
         $("#bad-stats").css("display", "block");
         $("#bad-stats-details").css("display", "block");
         $("#good-stats-details").css("display", "block");
-
         // Show both rows and both columns
         $("#state-window-data-container").css("grid-template-rows", "50% 50%");
         $("#state-window-data-container").css("grid-template-columns", "50% 50%");
-
         // Write good/bad stat names in good/bad grid items
         $("#good-stats").html("<h3>Best statistic:</h3>\n " + best_stat.category.stat_name_short + "\n");
         $("#bad-stats").html("<h3>Worst statistic:</h3>\n " + worst_stat.category.stat_name_short + "\n");
-
         // Write details/metadata in good/bad stats details grid items
         $("#good-stats-details").text("");
         $("#bad-stats-details").text("");
         populateDataDetails(best_stat, true);
         populateDataDetails(worst_stat, false);
-
         // Show the graph
         $("#graph").css("display", "block");
     }
 }
 
 /**
-* @param stat stat object to write details about
-* @param best bool, whether the stat is the best or the worst
+* @param {Object} stat stat object to write details about
+* @param {Boolean} best bool, whether the stat is the best or the worst
 */
 function populateDataDetails(stat, best) {
     let msg = "msg";
     if (best) $("#good-stats-details").html("<h3>Statistic Details:</h3>");
-    else $("#bad-stats-details").html("<h3>Statistic Details</h3>:");
+    else $("#bad-stats-details").html("<h3>Statistic Details:</h3>");
     if (stat.metadata) {
         msg = createDetailsMsg(stat);
         if(best) $("#good-stats-details").append(msg);
@@ -452,84 +434,110 @@ function populateDataDetails(stat, best) {
 
 /**
 * @param {Stat} stat Stat to create message about
-* @returns {msg} message about stat
+* @returns {String} message about stat
 */
 function createDetailsMsg(stat){
     let survey_period = stat.metadata.survey_period;
     let source = stat.metadata.source;
     let units = stat.data.units;
     let note = stat.metadata.note;
-
+    // Create a string out of the object fields
     let msg = "Survey period: " + survey_period +
     "<br>Source: " + source;
-
+    // If the note exists, add it, otherwise do not
     if (note !== "" && note !== "n.a.") {
         msg = msg + "<br>Note: " + note;
     }
     return msg;
 }
 
-async function getMetadata(){
-  let metadata = await $.get("/api/meta").catch((err) => {return null;});
-  return metadata;
-}
-
-// Make body unscrollable, blur background and show metadata alert
-function prepareMetadataAlert(){
-  $("body").addClass("unscrollable");
-  for (var element of blur_elements) {
-      $("#"+element).addClass("blurred");
-  }
-  $("#metadata-alert-container").removeClass("hidden");
-}
 
 /**
- * @param metadata - the metadata object returned from the server. Must have at least
+ * @return {Object} the metadata that will be used about the statistic that was selected
+ */
+async function getMetadata() {
+    // Ask the server nicely if we can get our metadata
+    let metadata = await $.get("/api/meta").catch(
+        // On error, return null, otherwise return
+        (err) => { return null; }
+    );
+    return metadata;
+}
+
+
+function prepareMetadataAlert(){
+    // Make body unscrollable
+    $("body").addClass("unscrollable");
+    // Blur background
+    for (var element of blur_elements) {
+        $("#"+element).addClass("blurred");
+    }
+    // Show the metadata alert
+    $("#metadata-alert-container").removeClass("hidden");
+}
+
+
+/**
+ * @param {Object} metadata - the metadata object returned from the server. Must have at least
  *      the following:
  *          state_name_short, publication_date, note, source, original_source
  */
 function showMetadataAlert(metadata){
-  let container = $("#metadata-alert-container");
-  $("#metadata-title").text(metadata.stat_name_short);
-  $("#metadata-date").text(metadata.publication_date);
-  $("#metadata-notes").text(metadata.note);
-  $("#metadata-publisher").text(metadata.source + ": " + metadata.original_source);
-  $(".loading").addClass("hidden");
-  $(".metadata-alert-element").removeClass("hidden");
+    // Set all the fields of the metadata using
+    $("#metadata-title").text(metadata.stat_name_short);
+    $("#metadata-date").text(metadata.publication_date);
+    $("#metadata-notes").text(metadata.note);
+    $("#metadata-publisher").text(metadata.source + ": " + metadata.original_source);
+    // Remove the loading placeholder now and show the metadata that was filled
+    $(".loading").addClass("hidden");
+    $(".metadata-alert-element").removeClass("hidden");
 }
 
-// Unblurs the background, makes background scrollable, shows loading, hides metadata alert
+
 function closeMetadataAlert() {
-  for (var element of blur_elements) {
-      $("#"+element).removeClass("blurred");
-  }
-  $("body").removeClass("unscrollable");
-  $(".loading").removeClass("hidden");
-  $(".metadata-alert-element").addClass("hidden");
-  $("#metadata-alert-container").addClass("hidden");
+    // Unblurs the background
+    for(var element of blur_elements) {
+        $("#"+element).removeClass("blurred");
+    }
+    // Makes background scrollable
+    $("body").removeClass("unscrollable");
+    // Shows the loading placeholder
+    $(".loading").removeClass("hidden");
+    // Hides the metadata alert
+    $(".metadata-alert-element").addClass("hidden");
+    $("#metadata-alert-container").addClass("hidden");
 }
 
-// Creates an active slider from the template and adds it to the page
-function makeActiveSlider(title, weight){
-  let slider = activeSliderTemplate.clone();
-  $(".statistic-slider", slider).attr("value", weight);
-  $(".statistic-slider-title", slider).html(title);
-  sliderContainer.append(slider);
-  return slider;
-}
-
-// Creates an inactive slider from the template and adds it to the page
-function makeInactiveSlider(title){
-  let slider = inactiveSliderTemplate.clone();
-  $(".statistic-option-title", slider).html(title);
-  selectionContainer.append(slider);
-  return slider;
-}
 
 /**
- * @param weight number between 0 and 1 representing how "colored" the color should be
-        //0 is low, 1 is high
- * @param color is the color to be mixed with the light color
+ * @param {String} title the title of the statistic to be filled into the title
+ * @param {Number} weight the default weight of the slider
+ */
+function makeActiveSlider(title, weight){
+    // Creates an active slider from the template and adds it to the page
+    let slider = activeSliderTemplate.clone();
+    $(".statistic-slider", slider).attr("value", weight);
+    $(".statistic-slider-title", slider).html(title);
+    sliderContainer.append(slider);
+    return slider;
+}
+
+
+/**
+ * @param {String} title the title of the statistic to be filled into the box
+ */
+function makeInactiveSlider(title) {
+    // Creates an inactive slider from the template and adds it to the page
+    let slider = inactiveSliderTemplate.clone();
+    $(".statistic-option-title", slider).html(title);
+    selectionContainer.append(slider);
+    return slider;
+}
+
+
+/**
+ * @param {Number} weight number between 0 (low) and 1 (high) representing how "colored" the color should be
+ * @param {String} color is the color to be mixed with the light color
  * @return is the resulting rgba string that can be used in the website
  */
 function mixColor(weight, color) {
@@ -561,6 +569,12 @@ function mixColor(weight, color) {
     return ("rgba("+ result[0] +", "+ result[1] +", "+ result[2] +", 1)");
 }
 
+
+/**
+ * @param {Document} doc the svg document that is to be used to grab state paths
+ * @param {String} state the state name that should be retrieved
+ * @param {Number} weight the number that is passed to mixColor
+ */
 function colorSVG(doc, state, weight) {
     // Get one of the SVG items by ID;
     var svgItem = doc.getElementById(state);
@@ -569,29 +583,49 @@ function colorSVG(doc, state, weight) {
     svgItem.setAttribute("style", "stroke-width: 1; stroke: "+border+"; fill: "+mixColor(weight, "--accent-color")+";");
 }
 
+
+/**
+ * @param {String} state the state that is to be colored
+ * @param {Number} weight the number that is passed to mixColor in colorSVG
+ */
 function colorState(state, weight) {
     let us_map = document.getElementById("us-map");
     let ne_map = document.getElementById("ne-map");
-
+    // Color the state on the regular US map
     colorSVG(us_map, state, weight);
+    // If the state being colored is also in the NE, color it too.
     if(ne_states.includes(state)) {
         colorSVG(ne_map, state, weight);
     }
 }
 
-//weights is the dictionary with keys of state abbreviations and values of the calculated weight
-//ranks is an array, with only state abbreviations, from best to worst
-function drawChart(state_id, weights, ranks) {
-    var ctx = document.getElementById('myChart').getContext('2d');
 
+/**
+ * @param {WebGL Context} ctx this is the graph WebGL context
+ */
+function resizeChart(ctx) {
+    // Set the width and height of the container
     ctx.canvas.width = $("#graph").width();
     ctx.canvas.height = $("#graph").height();
+}
 
-    //this prevents the charts from stacking and interfering with eachother
+
+/**
+ * @param {String} state_id is the state that was clicked from the state window. It will be highlighted
+ * @param {Number Array} weights the weights of the states that will be the y-axis data
+ * @param {String Array} ranks the ordered list of the states that will be the x-axis data
+ */
+function drawChart(state_id, weights, ranks) {
+    var ctx = document.getElementById('myChart').getContext('2d');
+    // Resize the chart according to the window size.
+    resizeChart(ctx);
+
+    // This prevents the charts from stacking and interfering with eachother
     if (chart != undefined){
         chart.destroy();
     }
 
+    // Grab actual colors, not just color strings from the document
     let tooltip_color = getComputedStyle(document.documentElement).getPropertyValue('--color-dark');
     let tooltip_text = getComputedStyle(document.documentElement).getPropertyValue('--color-light');
     let select_color = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color-light');
@@ -599,16 +633,20 @@ function drawChart(state_id, weights, ranks) {
     let select_border_color = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color-dark');
     let regular_border_color = getComputedStyle(document.documentElement).getPropertyValue('--accent-color-dark');
 
+    // Make an array of colors that will be assigned to each bar
     let bar_color_array = [];
     let bar_hover_array = [];
     let border_color_array = [];
 
+    // For each state, set the colors for the border, fill, etc.
     for (var idx = 0; idx < ranks.length; idx++) {
         if(ranks[idx] === state_id) {
+            // Make the selected state be different
             bar_color_array.push(select_color);
             bar_hover_array.push(select_hover);
             border_color_array.push(select_border_color);
         } else {
+            // Otherwise mix the color according to weight
             bar_color_array.push(mixColor(weights[ranks[idx]], "--accent-color"));
             bar_hover_array.push(mixColor(weights[ranks[idx]], "--accent-color-light"));
             border_color_array.push(regular_border_color);
@@ -628,7 +666,8 @@ function drawChart(state_id, weights, ranks) {
                 borderWidth: 2,
                 hoverBackgroundColor: bar_hover_array,
                 hoverBorderColor: border_color_array,
-                data: ranks.map( x => (100*weights[x]).toFixed(4)) //javascript is nice and has a mapping function that eliminates the need to loop
+                // Javascript is nice and has a mapping function that eliminates the need to loop
+                data: ranks.map( x => (100*weights[x]).toFixed(4))
             }]
         },
 

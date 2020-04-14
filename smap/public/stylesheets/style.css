@@ -816,7 +816,7 @@ object {
 }
 
 .unscrollable {
-    /* overflow: hidden; */
+    overflow: hidden;
 }
 
 /******************************/
