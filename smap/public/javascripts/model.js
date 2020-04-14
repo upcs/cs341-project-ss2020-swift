@@ -162,7 +162,9 @@ function rankStates(data){
   let error = false;
   ranks.sort((first, second) => {
     if (second in data && first in data){
-      return data[second] - data[first];
+      let value = data[second] - data[first];
+      console.log(second + " - " + first + " = " + value);
+      return value;
     } else {
       console.error("Error comparing " + second + " and " + first);
       error = true;
