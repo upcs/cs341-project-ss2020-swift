@@ -6,10 +6,10 @@
 
 // Constants
 
-const blur_elements = [
+const BLUR_ELEMENTS = [
     "nav-bar", "settings", "map-container", "about-container", "ne-inspector-container"
 ];
-const us_state_names = {
+const US_STATE_NAMES = {
     AL: "Alabama", AK: "Alaska", AZ: "Arizona", AR: "Arkansas", CA: "California",
     CO: "Colorado", CT: "Connecticut", DE: "Deleware", FL: "Florida", GA: "Georgia",
     HI: "Hawaii", ID: "Idaho", IL: "Illinois", IN: "Indiana", IA: "Iowa", KS: "Kansas",
@@ -22,23 +22,24 @@ const us_state_names = {
     VT: "Vermont", VA: "Virginia", WA: "Washington", WV: "West Virginia",
     WI: "Wisconson", WY: "Wyoming"
 };
-const ne_state_names = {
-    CT: "Connecticut", DE: "Deleware", ME: "Maine", MD: "Maryland", MA: "Massachusetts",
-    NH: "New Hampshire", NJ: "New Jersey", NY: "New York", PA: "Pennsylvania",
-    RI: "Rhode Island", VT: "Vermont"
-}
-const themes = [
+const THEMES = [
     "orange-red", "green-blue", "pink-purple", "dark-red", "dark-green", "dark-blue"
 ];
-const ne_states = ["MA", "CT", "NH", "RI", "VT", "DE", "MD", "MJ", "NY", "PA", "ME", "NJ"];
-
+const LIGHT_THEMES = ["orange-red", "green-blue", "pink-purple" ];
+const DARK_THEMES = ["dark-red", "dark-green", "dark-blue"];
+const NE_STATES = ["MA", "CT", "NH", "RI", "VT", "DE", "MD", "MJ", "NY", "PA", "ME", "NJ"];
+const MIN_WIDTH = 500;
+const MIN_HEIGHT = 500;
+const MIN_HORIZONTAL_WIDTH = 1000;
+const CRITICAL_ASPECT_RATIO = 1.125;
+const LAYOUT_CHANGE_TIME = 125;
 
 // Window variables
 
 var chart;
 var theme_brightness = "light";
 var lastMove = 0;
-
+var orientation;
 
 ///////////////////
 ///  FUNCTIONS  ///
@@ -126,6 +127,7 @@ $("document").ready(function () {
     $(".alert-close").click(closeAlert);
     $(".theme-template").click(themeHandler);
     $("#nav-arrow").click(scrollAbout);
+    $(window).resize(() => { setLayout(false); /* Show the screen flash transistion effect */ });
 });
 
 
@@ -182,10 +184,11 @@ function preload(callback, loop) {
     if (us_map_document === 0 || ne_map_document === 0){
         return;
     }
+    setLayout(true); // Do not show the flash transition effect
     setUpHovering();
     prepareStateWindow();
-    populateStateWindow(true); //is_ne is true
-    populateStateWindow(false); //is_ne is false
+    populateStateWindow(true); // Set up for just the NE
+    populateStateWindow(false); // Set up for the whole US
     callback(loop);
 }
 
@@ -247,41 +250,6 @@ function makeInactiveSlider(title) {
 
 
 /**
- * @param {Number} weight number between 0 (low) and 1 (high) representing how "colored" the color should be
- * @param {String} color is the color to be mixed with the light color
- * @return is the resulting rgba string that can be used in the website
- */
-function mixColor(weight, color) {
-    // Get the theme colors
-    var min_string = $(":root").css("--color-light");
-    var max_string = $(":root").css(color);
-    // Get the text from the inside of the "rgba(_______);"
-    var min_data = min_string.split("(")[1].split(")")[0];
-    var max_data = max_string.split("(")[1].split(")")[0];
-    // Split the string into a list of strings based on whitetext/commas
-    min_data = min_data.split(/[\s,]+/);
-    max_data = max_data.split(/[\s,]+/);
-    // Change each of the values to numbers
-    for (var color_channel of min_data) {
-        color_channel = Number(color_channel);
-    }
-    for (var color_channel of max_data) {
-        color_channel = Number(color_channel);
-    }
-    // Weight the values
-    min_data[0] *= (1 - weight);
-    min_data[1] *= (1 - weight);
-    min_data[2] *= (1 - weight);
-    max_data[0] *= weight;
-    max_data[1] *= weight;
-    max_data[2] *= weight;
-    // Make a result array and return a string based on this value
-    var result = [ min_data[0]+max_data[0], min_data[1]+max_data[1], min_data[2]+max_data[2] ];
-    return ("rgba("+ result[0] +", "+ result[1] +", "+ result[2] +", 1)");
-}
-
-
-/**
  * @param {Document} doc the svg document that is to be used to grab state paths
  * @param {String} state the state name that should be retrieved
  * @param {Number} weight the number that is passed to mixColor
@@ -305,7 +273,7 @@ function colorState(state, weight) {
     // Color the state on the regular US map
     colorSVG(us_map, state, weight);
     // If the state being colored is also in the NE, color it too.
-    if(ne_states.includes(state)) {
+    if(NE_STATES.includes(state)) {
         colorSVG(ne_map, state, weight);
     }
 }
@@ -375,7 +343,7 @@ function hideNEMagnifier() {
  * @notes This is an event handler function for when someone presses the close button
  */
 function closeAlert() {
-    for (let element of blur_elements) {
+    for (let element of BLUR_ELEMENTS) {
         $("#"+element).removeClass("blurred");
     }
     $("body").removeClass("unscrollable");
@@ -407,7 +375,7 @@ function prepareMetadataAlert(){
     // Make body unscrollable
     $("body").addClass("unscrollable");
     // Blur background
-    for (var element of blur_elements) {
+    for (var element of BLUR_ELEMENTS) {
         $("#"+element).addClass("blurred");
     }
     // Show the metadata alert
@@ -437,7 +405,7 @@ function showMetadataAlert(metadata){
  */
 function closeMetadataAlert() {
     // Unblurs the background
-    for(var element of blur_elements) {
+    for(var element of BLUR_ELEMENTS) {
         $("#"+element).removeClass("blurred");
     }
     // Makes background scrollable
@@ -461,7 +429,7 @@ function prepareStateWindow() {
     // When clicking on a state
     $("path", us_map).click(function () {
         // Blurs background
-        for (let element of blur_elements) {
+        for (let element of BLUR_ELEMENTS) {
             $("#"+element).addClass("blurred");
         }
         // Make body unscrollable
@@ -495,12 +463,13 @@ function populateStateWindow(is_ne){
 /**
  * @param {WebGL Context} ctx this is the graph WebGL context
  */
-function resizeChart(ctx) {
+function resizeChart() {
+    console.log("resizing canvas");
+    let ctx = document.getElementById('myChart').getContext('2d');
     // Set the width and height of the container
     ctx.canvas.width = $("#graph").width();
     ctx.canvas.height = $("#graph").height();
 }
-
 
 /**
  * @param {String} state_id is the state that was clicked from the state window. It will be highlighted
@@ -508,10 +477,9 @@ function resizeChart(ctx) {
  * @param {String Array} ranks the ordered list of the states that will be the x-axis data
  */
 function drawChart(state_id, weights, ranks) {
-    var ctx = document.getElementById('myChart').getContext('2d');
+    let ctx = document.getElementById('myChart').getContext('2d');
     // Resize the chart according to the window size.
-    resizeChart(ctx);
-
+    resizeChart();
     // This prevents the charts from stacking and interfering with eachother
     if (chart != undefined){
         chart.destroy();
@@ -520,10 +488,30 @@ function drawChart(state_id, weights, ranks) {
     // Grab actual colors, not just color strings from the document
     let tooltip_color = getComputedStyle(document.documentElement).getPropertyValue('--color-dark');
     let tooltip_text = getComputedStyle(document.documentElement).getPropertyValue('--color-light');
-    let select_color = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color-light');
-    let select_hover = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color-dark');
-    let select_border_color = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color-dark');
-    let regular_border_color = getComputedStyle(document.documentElement).getPropertyValue('--accent-color-dark');
+    let select_color;
+    let select_hover;
+    let select_border_color;
+    let regular_border_color;
+
+    if(theme_brightness === "light") {
+        select_color =
+            getComputedStyle(document.documentElement).getPropertyValue('--secondary-color-light');
+        select_hover =
+            getComputedStyle(document.documentElement).getPropertyValue('--secondary-color-dark');
+        select_border_color =
+            getComputedStyle(document.documentElement).getPropertyValue('--secondary-color-dark');
+        regular_border_color =
+            getComputedStyle(document.documentElement).getPropertyValue('--accent-color-dark');
+    } else {
+        select_color =
+            getComputedStyle(document.documentElement).getPropertyValue('--accent-color');
+        select_hover =
+            getComputedStyle(document.documentElement).getPropertyValue('--accent-color-dark');
+        select_border_color =
+            getComputedStyle(document.documentElement).getPropertyValue('--accent-color-light');
+        regular_border_color =
+            getComputedStyle(document.documentElement).getPropertyValue('--secondary-color-dark');
+    }
 
     // Make an array of colors that will be assigned to each bar
     let bar_color_array = [];
@@ -539,8 +527,13 @@ function drawChart(state_id, weights, ranks) {
             border_color_array.push(select_border_color);
         } else {
             // Otherwise mix the color according to weight
-            bar_color_array.push(mixColor(weights[ranks[idx]], "--accent-color"));
-            bar_hover_array.push(mixColor(weights[ranks[idx]], "--accent-color-light"));
+            if(theme_brightness === "light") {
+                bar_color_array.push(mixColor(weights[ranks[idx]], "--accent-color"));
+                bar_hover_array.push(mixColor(weights[ranks[idx]], "--accent-color-light"));
+            } else {
+                bar_color_array.push(mixColor(weights[ranks[idx]], "--secondary-color-light"));
+                bar_hover_array.push(mixColor(weights[ranks[idx]], "--secondary-color-dark"));
+            }
             border_color_array.push(regular_border_color);
         }
     }
@@ -657,7 +650,7 @@ function createStatDetailsMsg(stat){
  */
 function fillStateWindow(state_id) {
     // Take the state id and retrieve the actual full name, and write the name in the window
-    let state_name = us_state_names[state_id];
+    let state_name = US_STATE_NAMES[state_id];
     $("#state-name").text(state_name);
     // Update the chart
     drawChart(state_id, data.weights, data.ranks);
@@ -758,6 +751,12 @@ function themeHandler() {
     var theme_id = $(this).attr("id") + "-theme";
     $(".theme-template-active").addClass("theme-template").removeClass("theme-template-active");
     $(this).addClass("theme-template-active").removeClass("theme-template");
+    // Set the flag if light or dark theme
+    if(LIGHT_THEMES.includes($(this).attr("id"))) {
+        theme_brightness = "light";
+    } else if(DARK_THEMES.includes($(this).attr("id"))) {
+        theme_brightness = "dark";
+    }
     // Change the stylesheet reference
 
     /*EXTERNAL CITATION
@@ -780,4 +779,82 @@ function themeHandler() {
     });
     // Recolor the map
     displayWeights();
+}
+
+/****************************************** OTHER *****************************************/
+/** All the other functions that are not specifically related to any particular funciton **/
+/******************************************************************************************/
+
+
+/**
+ * @param {Number} weight number between 0 (low) and 1 (high) representing how "colored" the color should be
+ * @param {String} color is the color to be mixed with the light color
+ * @return is the resulting rgba string that can be used in the website
+ */
+function mixColor(weight, color) {
+    // Get the theme colors
+    var min_string = $(":root").css("--color-light");
+    var max_string = $(":root").css(color);
+    // Get the text from the inside of the "rgba(_______);"
+    var min_data = min_string.split("(")[1].split(")")[0];
+    var max_data = max_string.split("(")[1].split(")")[0];
+    // Split the string into a list of strings based on whitetext/commas
+    min_data = min_data.split(/[\s,]+/);
+    max_data = max_data.split(/[\s,]+/);
+    // Change each of the values to numbers
+    for (var color_channel of min_data) {
+        color_channel = Number(color_channel);
+    }
+    for (var color_channel of max_data) {
+        color_channel = Number(color_channel);
+    }
+    // Weight the values
+    min_data[0] *= (1 - weight);
+    min_data[1] *= (1 - weight);
+    min_data[2] *= (1 - weight);
+    max_data[0] *= weight;
+    max_data[1] *= weight;
+    max_data[2] *= weight;
+    // Make a result array and return a string based on this value
+    var result = [ min_data[0]+max_data[0], min_data[1]+max_data[1], min_data[2]+max_data[2] ];
+    return ("rgba("+ result[0] +", "+ result[1] +", "+ result[2] +", 1)");
+}
+
+
+/**
+ * @param {Boolean} init this variable says if the color flash should happen
+ * @notes this function changes the stylesheet if the aspect ratio is closer to vertical, or if the
+ *      horizontal width of the window is too small to allow for good sidebar usage
+ */
+function setLayout(init){
+    // Resize the graph with window resize
+    resizeChart()
+    if($(window).height() < MIN_HEIGHT || $(window).width() < MIN_WIDTH) {
+        console.error("Too small window size");
+        $("#error").css("display", "grid");
+    } else {
+        $("#error").css("display", "none");
+        let aspect_ratio = $(window).width() / $(window).height();
+        if(aspect_ratio < CRITICAL_ASPECT_RATIO || $(window).width() < MIN_HORIZONTAL_WIDTH) {
+            if(orientation !== "vertical") {
+                orientation = "vertical";
+                if(!init) { $("body").animate({opacity: "0"}, LAYOUT_CHANGE_TIME, "swing"); }
+                window.setTimeout(function() {
+                    $("#horizontal-layout").prop("disabled", true);
+                    $("#vertical-layout").prop("disabled", false);
+                }, LAYOUT_CHANGE_TIME);
+                if(!init) { $("body").animate({opacity: "1"}, LAYOUT_CHANGE_TIME, "swing"); }
+            }
+        } else {
+            if(orientation !== "horizontal") {
+                orientation = "horizontal";
+                if(!init) { $("body").animate({opacity: "0"}, LAYOUT_CHANGE_TIME, "swing"); }
+                window.setTimeout(function() {
+                    $("#vertical-layout").prop("disabled", true);
+                    $("#horizontal-layout").prop("disabled", false);
+                }, LAYOUT_CHANGE_TIME);
+                if(!init) { $("body").animate({opacity: "1"}, LAYOUT_CHANGE_TIME, "swing"); }
+            }
+        }
+    }
 }
