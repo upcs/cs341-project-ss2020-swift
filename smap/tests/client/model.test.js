@@ -782,16 +782,6 @@ describe("Stat.enable", () => {
       data: {}
     };
 
-    //TODO: Test that slider template has these classes
-    document.innerHTML = `
-    <div id='slider'>
-      <div class = "statistic-slider"></div>
-      <div class = "statistic-slider-remover"></div>
-      <div class = "statistic-slider-metadata"></div>
-    </div>
-    `;
-    fakeSlider = $("#slider");
-
     expect(window.localStorage.getItem(model.storage.ACTIVE_SLIDER_KEY)).toBeNull();
     expect(model.data.active.has(7)).toEqual(false);
 
@@ -816,7 +806,81 @@ describe("Stat.enable", () => {
   });
 
   test("without data", () => {
+    let data = {};
+    states.forEach((state, i) => {
+      data[state] = 0
+    });
+    data.OR = 1;
+    data.NV = 3;
 
+    $.get = jest.fn((url, blank, callback) => {
+      callback([data], "success", null);
+    });
+
+    let rm = jest.fn(() => {});
+    let stat = {
+      slider: {
+        remove: rm
+      },
+      weight: 1,
+      category: {
+        title: "Fake Stat",
+        stat_id: 7
+      },
+      updateWeight: jest.fn(() => {}),
+    };
+
+    expect(window.localStorage.getItem(model.storage.ACTIVE_SLIDER_KEY)).toBeNull();
+    expect(model.data.active.has(7)).toEqual(false);
+
+    model.Stat.prototype.enable.apply(stat, []);
+
+    expect(stat.enabled).toBe(true);
+    expect(rm).toHaveBeenCalled();
+    expect(window.makeActiveSlider).toHaveBeenCalledWith("Fake Stat", 1);
+    expect(stat.updateWeight).toHaveBeenCalledWith(1);
+    expect(stat.slider).toBe(fakeSlider);
+    expect($.get.mock.calls[0]).toEqual(expect.arrayContaining(["/api/data?cat=7", ""]));
+    expect(stat.data).toBe(data);
+    expect(stat.rankings.slice(0, 2)).toEqual(["NV", "OR"]);
+    expect(data.NV).toEqual(1);
+    expect(data.OR).toBeCloseTo(0.33333);
+    expect(model.data.active.has(7)).toEqual(true);
+    expect(window.colorState).toHaveBeenCalledTimes(50);
+    expect(window.localStorage.getItem(model.storage.ACTIVE_SLIDER_KEY)).toEqual("7");
+
+    $.get.mockRestore();
+  });
+
+  test("without data no callback", () => {
+    $.get = jest.fn(() => {});
+
+    let rm = jest.fn(() => {});
+    let stat = {
+      slider: {
+        remove: rm
+      },
+      weight: 1,
+      category: {
+        title: "Fake Stat",
+        stat_id: 7
+      },
+      updateWeight: jest.fn(() => {}),
+    };
+
+    expect(window.localStorage.getItem(model.storage.ACTIVE_SLIDER_KEY)).toBeNull();
+    expect(model.data.active.has(7)).toEqual(false);
+
+    model.Stat.prototype.enable.apply(stat, []);
+
+    expect(stat.enabled).toBe(true);
+    expect(rm).toHaveBeenCalled();
+    expect(window.makeActiveSlider).toHaveBeenCalledWith("Fake Stat", 1);
+    expect(stat.updateWeight).toHaveBeenCalledWith(1);
+    expect(stat.slider).toBe(fakeSlider);
+    expect($.get.mock.calls[0]).toEqual(expect.arrayContaining(["/api/data?cat=7", ""]));
+    
+    $.get.mockRestore();
   });
 });
 
