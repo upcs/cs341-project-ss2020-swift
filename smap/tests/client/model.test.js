@@ -522,6 +522,8 @@ describe('displayWeights', () => {
         expect(mockCalls.length).toEqual(50);
         expect(mockCalls[0]).toEqual(["AL", 0]);
         expect(model.data.weights.AL).toEqual(0);
+        console.log(model.data.weights.AK);
+        console.log(model.data.weights.MT);
         expect(model.data.ranks).toEqual(states);
     });
 
@@ -543,6 +545,8 @@ describe('displayWeights', () => {
       expect(mockCalls.length).toEqual(50);
       expect(mockCalls[0]).toEqual(["AL", 0]);
       expect(model.data.weights.AL).toEqual(0);
+      console.log(model.data.weights.AK);
+      console.log(model.data.weights.MT);
       expect(model.data.ranks).toEqual(states);
     });
 
