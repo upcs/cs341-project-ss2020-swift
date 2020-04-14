@@ -61,6 +61,9 @@ Philip Robinson,
 > Different themes can be chosen by hovering over the paintbrush in the bottom right, and selecting a
 > theme from the popup menu.   
 
+# Security Review
+>SMAP does not provide accounts, so the main security concern is the potential for SQL injections, which are prevented by >parameterizing the database queries. There is also potential for denial of service (DOS) issues, though we will not address >these for this project. For more information, go to tests > security_review.txt
+
 [![Build Status](https://travis-ci.com/upcs/cs341-project-ss2020-swift.svg?branch=master)](https://travis-ci.com/upcs/cs341-project-ss2020-swift)
 
 [![Code Coverage](https://codecov.io/gh/upcs/cs341-project-ss2020-swift/branch/master/graph/badge.svg)](https://codecov.io/gh/upcs/cs341-project-ss2020-swift)
