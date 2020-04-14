@@ -1,94 +1,186 @@
 'use strict';
 
 const blur_elements = [
-    $("#nav-bar"), $("#settings"), $("#map-container"), $("#about-container")
+    "nav-bar", "settings", "map-container", "about-container", "ne-inspector-container"
 ];
+const us_state_names = {
+    AL: "Alabama", AK: "Alaska", AZ: "Arizona", AR: "Arkansas", CA: "California",
+    CO: "Colorado", CT: "Connecticut", DE: "Deleware", FL: "Florida", GA: "Georgia",
+    HI: "Hawaii", ID: "Idaho", IL: "Illinois", IN: "Indiana", IA: "Iowa", KS: "Kansas",
+    KY: "Kentucky", LA: "Louisiana", ME: "Maine", MD: "Maryland", MA: "Massachusetts",
+    MI: "Michigan", MN: "Minnesota", MS: "Mississippi", MO: "Missouri", MT: "Montana",
+    NE: "Nebraska", NV: "Nevada", NH: "New Hampshire", NJ: "New Jersey",
+    NM: "New Mexico", NY: "New York", NC: "North Carolina", ND: "North Dakota",
+    OH: "Ohio", OK: "Oklahoma", OR: "Oregon", PA: "Pennsylvania", RI: "Rhode Island",
+    SC: "South Carolina", SD: "South Dakota", TN: "Tennessee", TX: "Texas", UT: "Utah",
+    VT: "Vermont", VA: "Virginia", WA: "Washington", WV: "West Virginia",
+    WI: "Wisconson", WY: "Wyoming"
+};
+const ne_state_names = {
+    CT: "Connecticut", DE: "Deleware", ME: "Maine", MD: "Maryland", MA: "Massachusetts",
+    NH: "New Hampshire", NJ: "New Jersey", NY: "New York", PA: "Pennsylvania",
+    RI: "Rhode Island", VT: "Vermont"
+}
+const themes = [
+    "orange-red", "green-blue", "pink-purple", "dark-red", "dark-green", "dark-blue"
+];
+const ne_states = ["MA", "CT", "NH", "RI", "VT", "DE", "MD", "MJ", "NY", "PA", "ME", "NJ"];
 
 var chart;
+var theme_brightness = "light";
+var lastMove = 0;
 
 $("document").ready(function () {
-    //////////////////////
-    // START ANIMATION //
+
+    /**************************** LOADING *****************************/
+    /** All the functions pertaining to loading the website properly **/
+    /******************************************************************/
+
+    /**
+     * @param {setInverval} loop the loading loop we're supposed to break and replace with the loading screen
+     *      saying it is ready
+     */
     function clear_loading(loop) {
+        // Stop the triple dot loading loop
         window.setTimeout(function() {
             clearInterval(loop);
         }, 500);
+        // Make the dots disappear
         $("#dot1").animate({opacity: "0"}, 500, "swing");
         $("#dot2").animate({opacity: "0"}, 500, "swing");
         $("#dot3").animate({opacity: "0"}, 500, "swing");
         window.setTimeout(function() {
+            // Remove the ellipses container
             $("#ellipses").slideUp(1000);
+            // Fade out the
             $("#loading").animate({opacity: "0"}, 500);
             $("#orange-red").click();
+            // Change the "loading assets" to say we're ready and fly it in
             window.setTimeout(function() { $("#loading").html("Ready!"); }, 500 );
             $("#loading").animate({opacity: "1", fontSize: "50px"}, 500);
+            // Fade out the loading window now that we're done with it
             window.setTimeout(function() {
                 $("#init").css("pointer-events","none");
                 $("#init").animate({opacity: "0"}, 500);
                 $("#loading").animate({fontSize: "100px"}, 400);
             }, 1500 );
         }, 1000);
-        // Print load
+        // Print load time
         let load_time = (window.performance.now() / 1000);
         console.log("Page load time: " + load_time + "s");
         console.log("Time until page operable: "+ (load_time+2.5) +"s");
     }
 
+
+    /**
+     * @param {function} callback the clear_loading function
+     * @param {setInterval} loop the loop we're supposed to pass into the callback function
+     */
     function preload(callback, loop) {
-        $("#model").css("display", "none");
+        // Remove the NE-magnifier (only open in the first place to trigger load event)
+        $("#ne-magnifier").css("display", "none");
+        // Check to see if the maps loaded (browser compatibility)
         let us_map_document = $("#us-map").length;
         let ne_map_document = $("#ne-map").length;
+        // Do not complete and callback if we're not done
         if (us_map_document === 0 || ne_map_document === 0){
-          return;
+            return;
         }
         setupHovering();
         prepareStateWindow();
-        populateStateWindow(true); //NE is true
-        populateStateWindow(false); //NE is false
+        populateStateWindow(true); //is_ne is true
+        populateStateWindow(false); //is_ne is false
         callback(loop);
     }
 
+    // Loading loop that shows up while elements are loading
     var ellipses_loop = setInterval(function() {
-        var dot1 = $("#dot1");
-        var dot2 = $("#dot2");
-        var dot3 = $("#dot3");
-        dot1.animate({opacity: "0", fontSize: "60px"}, 500, "swing");
-        dot1.animate({opacity: "1", fontSize: "80px"}, 500, "swing");
+        // Simply fade in and grow / fade out and shrink dots for a loading effect to watch while
+        // the page is preloading elements
+        $("#dot1").animate({opacity: "0", fontSize: "60px"}, 500, "swing");
+        $("#dot1").animate({opacity: "1", fontSize: "80px"}, 500, "swing");
         window.setTimeout(function() {
-            dot2.animate({opacity: "0", fontSize: "60px"}, 500, "swing");
-            dot2.animate({opacity: "1", fontSize: "80px"}, 500, "swing");
+            $("#dot2").animate({opacity: "0", fontSize: "60px"}, 500, "swing");
+            $("#dot2").animate({opacity: "1", fontSize: "80px"}, 500, "swing");
             window.setTimeout(function() {
-                dot3.animate({opacity: "0", fontSize: "60px"}, 500, "swing");
-                dot3.animate({opacity: "1", fontSize: "80px"}, 500, "swing");
+                $("#dot3").animate({opacity: "0", fontSize: "60px"}, 500, "swing");
+                $("#dot3").animate({opacity: "1", fontSize: "80px"}, 500, "swing");
             }, 250);
         }, 250);
     }, 1000 );
 
+    // Map Preloading Functions: If the map wasn't loaded by the browser, preload it anyway for
+    // other functions to use to do the prep work
     $.get("/images/us.svg", "", function(xhr, status, res){
       if (status !== "success"){
         console.error("Could not get US map");
       }
       let doc = xhr.documentElement;
+      // Give the element the following parameters
       doc.id = "us-map";
       doc.style.width = "100%";
       doc.style.height = "100%";
+      // Put it in the container
       $("#map-container").append(doc);
+      // Check if we need to load anything more
       preload(clear_loading, ellipses_loop);
     });
-
+    // See above
     $.get("/images/ne.svg", "", function(xhr, status, res){
       if (status !== "success"){
         console.error("Could not get NE map");
       }
       let doc = xhr.documentElement;
+      // Give the element the following parameters
       doc.id = "ne-map";
       doc.style.width = "100%";
       doc.style.height = "100vh";
+      // Put it in the container
       $("#ne-map-container").prepend(doc);
+      // Check if we need to load anything more
       preload(clear_loading, ellipses_loop);
     });
 
-    function setupHovering() {
+
+
+    /********************************** SLIDERS ***********************************/
+    /** All the functions and actions pertaining to loading the website properly **/
+    /******************************************************************************/
+
+    // Create the javascript object templates without id's from DOM templates
+    let active =  $("#active_slider_template");
+    let inactive = $("#inactive_slider_template");
+    activeSliderTemplate = active.clone();
+    inactiveSliderTemplate = inactive.clone();
+    activeSliderTemplate.removeAttr("id");
+    inactiveSliderTemplate.removeAttr("id");
+    // Remove the old templates from the DOM
+    active.remove();
+    inactive.remove();
+    // Update the model's slider container and selector
+    sliderContainer = $("#statistics-sliders");
+    selectionContainer = $("#statistics-selector");
+
+    //Gets list of categories and creates those sliders
+    $.get("/api/cats", "", function(data, status, res){
+      if (status !== "success"){
+        console.error("Failed to retrieve categories");
+      } else {
+        for (let cat of data){
+          cat.title = cat.stat_name_short;
+          new Stat(cat, DEFAULT_WEIGHT);
+        }
+        restoreFromStorage();
+      }
+    });
+
+
+
+    /********************************** MAP-ACTIONS **********************************/
+    /** All the functions and listeners pertaining to doing something with the maps **/
+    /*********************************************************************************/
+
+    function setUpHovering() {
         var us_map = document.getElementById("us-map");
         // Get one of the SVG items by ID;
         var us_map_top_element = $("#AK", us_map);
@@ -118,65 +210,24 @@ $("document").ready(function () {
         });
     }
 
-    // END ANIMATIONS //
-    ////////////////////
-
-    let active =  $("#active_slider_template");
-    activeSliderTemplate = active.clone();
-    activeSliderTemplate.removeAttr("id");
-    active.remove();
-
-    let inactive = $("#inactive_slider_template");
-    inactiveSliderTemplate = inactive.clone();
-    inactiveSliderTemplate.removeAttr("id");
-    inactive.remove();
-
-    sliderContainer = $("#statistics-sliders");
-    selectionContainer = $("#statistics-selector");
-
-    // Get the model
-    var model = document.getElementById("model");
-
-    // Get the image and insert it inside the model - use its "alt" text as a caption
-    var img = document.getElementById("ne-inspector");
-    img.onclick = function(){
-        model.style.display = "grid";
-    }
-
-    // Get the <span> element that closes the model
-    var span = document.getElementById("ne-magnifiyer-close");
-
-    // When the user clicks on <span> (x), close the model
-    span.onclick = function() {
-        model.style.display = "none";
-    }
-
-    //Gets list of categories and creates those sliders
-    $.get("/api/cats", "", function(data, status, res){
-      if (status !== "success"){
-        console.log("[!] Error getting categories");
-      } else {
-        for (let cat of data){
-          cat.title = cat.stat_name_short;
-          new Stat(cat, DEFAULT_WEIGHT);
-        }
-        restoreFromStorage();
-      }
+    // Handle opening and closing of the NE magnifier
+    $("#ne-inspector").click(function() {
+        $("#ne-magnifier").css("display", "grid");
+        $("#ne-inspector").css("display", "none");
+        $("#us-map").addClass("blurred");
     });
 
-    //Gets metadata information and populates the windows
-    // $.get("/api/meta", "", function(data, status, res){
-    //     if (status !== "success"){
-    //       console.log("Error getting metadata");
-    //       alert("AHHHH no metadata");
-    //     } else {
-    //         alert(data[1].published_by + " " + data[0].published_by);
-    //     //   for (let cat of data){
-    //     //     cat.title = cat.stat_name_short;
-    //     //     new Stat(cat, DEFAULT_WEIGHT);
-    //     //   }
-    //     }
-    //   });
+    $("#ne-magnifiyer-close").click(function() {
+        $("#ne-magnifier").css("display", "none");
+        $("#ne-inspector").css("display", "block");
+        $("#us-map").removeClass("blurred");
+    });
+
+
+
+    /*************************** STATE-WINDOW ***************************/
+    /** All the functions and listeners pertaining to the state window **/
+    /********************************************************************/
 
     //blurs background and makes body unscrollable and unhides the state window
     function prepareStateWindow() {
@@ -185,215 +236,53 @@ $("document").ready(function () {
         //when clicking on a state
         $("path", us_map).click(function () {
             for (let element of blur_elements) {
-                element.addClass("blurred");
+                $("#"+element).addClass("blurred");
             }
             $("body").addClass("unscrollable");
             $("#state-window-alert-container").removeClass("hidden");
         });
     }
 
-    //adds state specific details
     /**
-     *
      * @param {bool} NE true if using NE magnifier, false for mainland US
+     *
+     * @notes The point of this function is to reduce loading time, by loading up the information
+     *      into the state window on load as opposed to on click. There may be more latency when
+     *      clicking a statistic, but reasonably none when clicking on a state.
      */
-
-    function populateStateWindow(NE){
-        if(NE){
-            var map = document.getElementById("ne-map").contentDocument;
-            var state_names = {
-                CT: "Connecticut",
-                DE: "Deleware",
-                ME: "Maine",
-                MD: "Maryland",
-                MA: "Massachusetts",
-                NH: "New Hampshire",
-                NJ: "New Jersey",
-                NY: "New York",
-                PA: "Pennsylvania",
-                RI: "Rhode Island",
-                VT: "Vermont"
-            }
+    function populateStateWindow(is_ne){
+        // Check if we are working with NE map or whole US map and set variables accordingly
+        if(is_ne){
+            map = document.getElementById("ne-map").contentDocument;
+        } else {
+            map = document.getElementById("us-map").contentDocument;
         }
-        else {
-            var map = document.getElementById("us-map").contentDocument;
-            var state_names = {
-                AL: "Alabama",
-                AK: "Alaska",
-                AZ: "Arizona",
-                AR: "Arkansas",
-                CA: "California",
-                CO: "Colorado",
-                CT: "Connecticut",
-                DE: "Deleware",
-                FL: "Florida",
-                GA: "Georgia",
-                HI: "Hawaii",
-                ID: "Idaho",
-                IL: "Illinois",
-                IN: "Indiana",
-                IA: "Iowa",
-                KS: "Kansas",
-                KY: "Kentucky",
-                LA: "Louisiana",
-                ME: "Maine",
-                MD: "Maryland",
-                MA: "Massachusetts",
-                MI: "Michigan",
-                MN: "Minnesota",
-                MS: "Mississippi",
-                MO: "Missouri",
-                MT: "Montana",
-                NE: "Nebraska",
-                NV: "Nevada",
-                NH: "New Hampshire",
-                NJ: "New Jersey",
-                NM: "New Mexico",
-                NY: "New York",
-                NC: "North Carolina",
-                ND: "North Dakota",
-                OH: "Ohio",
-                OK: "Oklahoma",
-                OR: "Oregon",
-                PA: "Pennsylvania",
-                RI: "Rhode Island",
-                SC: "South Carolina",
-                SD: "South Dakota",
-                TN: "Tennessee",
-                TX: "Texas",
-                UT: "Utah",
-                VT: "Vermont",
-                VA: "Virginia",
-                WA: "Washington",
-                WV: "West Virginia",
-                WI: "Wisconson",
-                WY: "Wyoming"
-            };
-        }
-
-        //when clicking on a state
-        $("path", map).click(function () {
-
-            // Get the state's id, and write the name in the window
-            var state_id = $(this).attr("id")
-            var state_name = state_names[state_id];
-            $("#state-name").text(state_name);
-
-            // Update the chart
-            drawChart(state_id, data.weights, data.ranks);
-
-            // Make array of stats organized by state's ranking in each statistic
-            let stateCatArr = getStateInfo(state_id);
-
-            // rank is the overall rank of the state based on selected stats
-            let rank = data.ranks.indexOf(state_id) + 1;
-            // Write the rank to the DOM
-            $("#state-rank").text("State Rank: " + rank);
-
-            // Get and display the appropriate state png
-            $("#state-display").html("<img src=\"images/us_states/"+state_id+".png\" alt=\""+state_name+"\" class=\"state-window-image\" />");
-
-            // If no stats are selected
-            if (stateCatArr.length == 0) {
-                // Hide the bottom row and right column
-                $("#bad-stats").css("display", "none");
-                $("#bad-stats-details").css("display", "none");
-                $("#good-stats-details").css("display", "none");
-
-                // Make the good_stats area the size of the whole container
-                $("#state-window-data-container").css("grid-template-rows", "100% 0%");
-                $("#state-window-data-container").css("grid-template-columns", "100% 0%");
-
-                // Write message to state_rank area
-                $("#state-rank").text("State Rank: N/A");
-
-                // Clear good-stats-details
-                $("#good-stats-details").html("");
-
-                // Display error message about not selecting any stats
-                let errMsgNoStats = "You have not selected any statisics to rank this state. <br><br>Please click close and select a statisitic from the Statistic Selection category";
-                $("#good-stats").html("<b>" + errMsgNoStats + "</b>");
-
-                // Hide the chart
-                $("#myChart").css("visibility", "hidden");
-
-            } else if (stateCatArr.length == 1){ //if only one stat is selected
-                // The best stat for the selected state is the first one in the stateCatArr
-                    // Get the stat from global var data by "id"
-                let best_stat = data.stats[stateCatArr[0]["id"]];
-
-                // Hide bottom row
-                $("#bad-stats").css("display","none");
-                $("#bad-stats-details").css("display", "none");
-
-                $("#good-stats-details").css("display", "block");
-
-                // Set first row to take up whole grid area, show both columns
-                $("#state-window-data-container").css("grid-template-rows", "100% 0%");
-                $("#state-window-data-container").css("grid-template-columns", "50% 50%");
-
-                // Write message about having only 1 stat selected, so there is no worst stat
-                let msgOneStat = "<i>(You have only selected one statisic to rank this state by.)</i><br>";
-                $("#good-stats").html(msgOneStat);
-
-                // Write the best_stat name to the DOM
-                $("#good-stats").append("<h3>Selected statistic:</h3>" + best_stat.category.stat_name_short + "\n");
-                populateDataDetails(best_stat, true);
-
-                // Show chart
-                $("#myChart").css("visibility", "visible");
-            } else {
-                // Retrieve the best and worst stats from the global variable data based on id
-                let best_stat = data.stats[stateCatArr[0]["id"]];
-                let worst_stat = data.stats[stateCatArr[stateCatArr.length - 1]["id"]];
-
-                // Show all 4 grid areas
-                $("#bad-stats").css("display", "block");
-                $("#bad-stats-details").css("display", "block");
-                $("#good-stats-details").css("display", "block");
-
-                // Show both rows and both columns
-                $("#state-window-data-container").css("grid-template-rows", "50% 50%");
-                $("#state-window-data-container").css("grid-template-columns", "50% 50%");
-
-                // Write good/bad stat names in good/bad grid items
-                $("#good-stats").html("<h3>Best statistic:</h3>\n " + best_stat.category.stat_name_short + "\n");
-                $("#bad-stats").html("<h3>Worst statistic:</h3>\n " + worst_stat.category.stat_name_short + "\n");
-
-                // Write details/metadata in good/bad stats details grid items
-                $("#good-stats-details").text("");
-                $("#bad-stats-details").text("");
-                populateDataDetails(best_stat, true);
-                populateDataDetails(worst_stat, false);
-
-                // Show the graph
-                $("#graph").css("display", "block");
-            }
+        // When clicking on a state
+        $("path", map).click(function() {
+            let state_names = is_ne ? ne_state_names : us_state_names;
+            fillStateWindow($(this).attr("id"), state_names);
         });
     }
 
-    const blur_elements = [
-        $("#nav-bar"), $("#settings"), $("#map-container"), $("#about-container"), $("#ne-inspector-container")
-    ];
+    $("#metadata-alert-close").click(closeMetadataAlert);
 
-    $(".alert-close").click( () =>
-        closeAlert()
-    );
-
-    function closeAlert() {
+    $(".alert-close").click(function() {
         for (let element of blur_elements) {
-            element.removeClass("blurred");
+            $("#"+element).removeClass("blurred");
         }
         $("body").removeClass("unscrollable");
         $(".alert-container").addClass("hidden");
         $(".loading").removeClass("hidden");
-    }
+    });
+
+
+
+    /*************************** STATE-WINDOW ***************************/
+    /** All the functions and listeners pertaining to the state window **/
+    /********************************************************************/
 
     // On theme-circle click, change the active theme
-    $(".theme-template").click( function() {
-        const themes = [
-            "orange-red", "green-blue", "pink-purple", "dark-red", "dark-green", "dark-blue"
-        ];
+    $(".theme-template").click(function() {
         // Change the circle to be "active"
         var theme_id = $(this).attr("id") + "-theme";
         $(".theme-template-active").addClass("theme-template").removeClass("theme-template-active");
@@ -422,27 +311,114 @@ $("document").ready(function () {
         displayWeights();
     });
 
-    // Scrolling effects
-    var lastMove = 0;
     // TODO: Fix to work when about section exists.
     $("#nav-arrow").click( function() {
         $("html, body").animate({ scrollTop: $(window).height() }, 1000);
     });
 
-    $(window).scroll( function() {
-        let scroll_val = Math.floor($(window).scrollTop());
-        if(window.performance.now() - lastMove > 33) {
-            $("#settings").css("left", -1*scroll_val);
-            var height = $(window).height();
-            var map_opacity = (height - scroll_val*1.5) / height;
-            $("#map-container").css("filter", "opacity(" + map_opacity + ")");
-            $("#map-legend-container").css("filter", "opacity(" + map_opacity + ")");
-            lastMove = window.performance.now();
-        }
-    });
-
-    $("#metadata-alert-close").click(closeMetadataAlert);
+    // $(window).scroll( function() {
+    //     let scroll_val = Math.floor($(window).scrollTop());
+    //     if(window.performance.now() - lastMove > 33) {
+    //         $("#settings").css("left", -1*scroll_val);
+    //         var height = $(window).height();
+    //         var map_opacity = (height - scroll_val*1.5) / height;
+    //         $("#map-container").css("filter", "opacity(" + map_opacity + ")");
+    //         $("#map-legend-container").css("filter", "opacity(" + map_opacity + ")");
+    //         lastMove = window.performance.now();
+    //     }
+    // });
 });
+
+function fillStateWindow(state_id, state_names) {
+    // Get the state's id, and write the name in the window
+    var state_name = state_names[state_id];
+    $("#state-name").text(state_name);
+
+    // Update the chart
+    drawChart(state_id, data.weights, data.ranks);
+
+    // Make array of stats organized by state's ranking in each statistic
+    let stateCatArr = getStateInfo(state_id);
+
+    // rank is the overall rank of the state based on selected stats
+    let rank = data.ranks.indexOf(state_id) + 1;
+    // Write the rank to the DOM
+    $("#state-rank").text("State Rank: " + rank);
+
+    // Get and display the appropriate state png
+    $("#state-display").html(
+        "<img src=\"images/us_states/"+state_id+".png\" alt=\""+state_name+
+        "\" class=\"state-window-image\" />"
+    );
+    // If no stats are selected
+    if (stateCatArr.length == 0) {
+        // Hide the bottom row and right column
+        $("#bad-stats").css("display", "none");
+        $("#bad-stats-details").css("display", "none");
+        $("#good-stats-details").css("display", "none");
+        // Make the good_stats area the size of the whole container
+        $("#state-window-data-container").css("grid-template-rows", "100% 0%")
+            .css("grid-template-columns", "100% 0%");
+        // Write message to state_rank area
+        $("#state-rank").text("State Rank: N/A");
+        // Clear good-stats-details
+        $("#good-stats-details").html("");
+        // Display error message about not selecting any stats
+        let errMsgNoStats = "You have not selected any statisics to rank this state.<br><br>"+
+            "Please click close and select a statisitic from the Available Statistics category";
+        $("#good-stats").html("<b>" + errMsgNoStats + "</b>");
+        // Hide the chart
+        $("#myChart").css("visibility", "hidden");
+    // if only one stat is selected
+    } else if (stateCatArr.length == 1) {
+        // The best stat for the selected state is the first one in the stateCatArr
+        // Get the stat from global var data by "id"
+        let best_stat = data.stats[stateCatArr[0]["id"]];
+        // Hide bottom row
+        $("#bad-stats").css("display","none");
+        $("#bad-stats-details").css("display", "none");
+        $("#good-stats-details").css("display", "block");
+        // Set first row to take up whole grid area, show both columns
+        $("#state-window-data-container").css("grid-template-rows", "100% 0%")
+            .css("grid-template-columns", "50% 50%");
+        // Write message about having only 1 stat selected, so there is no worst stat
+        let msgOneStat = "<i>(You have only selected one statisic ranking this state.)</i><br>";
+        $("#good-stats").html(msgOneStat);
+
+        // Write the best_stat name to the DOM
+        $("#good-stats").append("<h3>Selected statistic:</h3>" + best_stat.category.stat_name_short + "\n");
+        populateDataDetails(best_stat, true);
+
+        // Show chart
+        $("#myChart").css("visibility", "visible");
+    } else {
+        // Retrieve the best and worst stats from the global variable data based on id
+        let best_stat = data.stats[stateCatArr[0]["id"]];
+        let worst_stat = data.stats[stateCatArr[stateCatArr.length - 1]["id"]];
+
+        // Show all 4 grid areas
+        $("#bad-stats").css("display", "block");
+        $("#bad-stats-details").css("display", "block");
+        $("#good-stats-details").css("display", "block");
+
+        // Show both rows and both columns
+        $("#state-window-data-container").css("grid-template-rows", "50% 50%");
+        $("#state-window-data-container").css("grid-template-columns", "50% 50%");
+
+        // Write good/bad stat names in good/bad grid items
+        $("#good-stats").html("<h3>Best statistic:</h3>\n " + best_stat.category.stat_name_short + "\n");
+        $("#bad-stats").html("<h3>Worst statistic:</h3>\n " + worst_stat.category.stat_name_short + "\n");
+
+        // Write details/metadata in good/bad stats details grid items
+        $("#good-stats-details").text("");
+        $("#bad-stats-details").text("");
+        populateDataDetails(best_stat, true);
+        populateDataDetails(worst_stat, false);
+
+        // Show the graph
+        $("#graph").css("display", "block");
+    }
+}
 
 /**
 * @param stat stat object to write details about
@@ -470,7 +446,7 @@ function populateDataDetails(stat, best) {
             }
         });
     } else {
-        console.error("<visuals><populateStateWindow>: Unknown error")
+        console.error("Unknown error while populating Statistic Details");
     }
 }
 
@@ -502,17 +478,16 @@ async function getMetadata(){
 function prepareMetadataAlert(){
   $("body").addClass("unscrollable");
   for (var element of blur_elements) {
-      element.addClass("blurred");
+      $("#"+element).addClass("blurred");
   }
   $("#metadata-alert-container").removeClass("hidden");
 }
 
-/*
-  Args:
-    metadata - the metadata object returned from the server. Must have at least
-    the following:
-        state_name_short, publication_date, note, source, original_source
-*/
+/**
+ * @param metadata - the metadata object returned from the server. Must have at least
+ *      the following:
+ *          state_name_short, publication_date, note, source, original_source
+ */
 function showMetadataAlert(metadata){
   let container = $("#metadata-alert-container");
   $("#metadata-title").text(metadata.stat_name_short);
@@ -526,7 +501,7 @@ function showMetadataAlert(metadata){
 // Unblurs the background, makes background scrollable, shows loading, hides metadata alert
 function closeMetadataAlert() {
   for (var element of blur_elements) {
-      element.removeClass("blurred");
+      $("#"+element).removeClass("blurred");
   }
   $("body").removeClass("unscrollable");
   $(".loading").removeClass("hidden");
@@ -595,7 +570,6 @@ function colorSVG(doc, state, weight) {
 }
 
 function colorState(state, weight) {
-    const ne_states = ["MA", "CT", "NH", "RI", "VT", "DE", "MD", "MJ", "NY", "PA", "ME", "NJ"];
     let us_map = document.getElementById("us-map");
     let ne_map = document.getElementById("ne-map");
 
