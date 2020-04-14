@@ -61,7 +61,7 @@ Philip Robinson,
 > Different themes can be chosen by hovering over the paintbrush in the bottom right, and selecting a
 > theme from the popup menu.   
 
-#Requirements Adherence Report:
+# Requirements Adherence Report:
 
 ### Vision
 > Our product meets the vision set forth by the introduction, an interactive map which is colored based on user     statistics input. We implemented a ranking system for each statistic, so the user can choose how much they want each statistic to factor into the states’ overall scores. We’ve also added an invert flag for negative statistics, so if a user selects “GDP,” states with higher GDP will be colored darker. However, if the user selects “Violent Crime > Rate” then states with lower Violent Crime rate will be colored darker.
@@ -83,7 +83,7 @@ Philip Robinson,
 
 ### Code Quality [todo]
 > Our code is thoroughly commented, and unit tested. Our server side test coverage is _____ and our client side test coverage is ____. We have also taken great care to make our website intuitive to new users. This meets our software quality requirements. 	
-    
+
 
 [![Build Status](https://travis-ci.com/upcs/cs341-project-ss2020-swift.svg?branch=master)](https://travis-ci.com/upcs/cs341-project-ss2020-swift)
 
