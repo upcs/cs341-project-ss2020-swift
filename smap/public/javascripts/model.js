@@ -163,7 +163,6 @@ function rankStates(data){
     if (second in data && first in data){
       return data[second] - data[first];
     } else {
-      console.log("Data has no value for state " + first + " or " + second);
       error = true;
       return 0;
     }
@@ -171,10 +170,7 @@ function rankStates(data){
   return error ? [] : ranks;
 }
 
-//Reads the weights from the global data object and uses them to display the map.
-function displayWeights(){
-  //Sum up weights for each state
-  let weights = data.weights;
+function computeTotalWeights(){
   for (let state of states){
     let weight = 0;
     for (let catID of data.active){
@@ -196,9 +192,14 @@ function displayWeights(){
     }
     data.weights[state] = weight;
   }
+  normalizeStats(data.weights);
+}
 
-  normalizeStats(weights);
-  data.ranks = rankStates(weights);
+//Reads the weights from the global data object and uses them to display the map.
+function displayWeights(){
+  //Sum up weights for each state
+  computeTotalWeights();
+  data.ranks = rankStates(data.weights);
 
   for (let state of states){
     let weight = data.weights[state];

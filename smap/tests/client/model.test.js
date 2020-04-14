@@ -460,6 +460,7 @@ describe('getStateInfo', () => {
   });
 });
 
+//TODO: Break into sepearte tests for computeTotalWeights()
 describe('displayWeights', () => {
     afterEach(resetData);
 
@@ -749,14 +750,73 @@ describe("Stat.updateWeight", () => {
 
 
 describe("Stat.enable", () => {
-  let fakeSlider = {}
+  let fakeSlider;
+
   beforeEach(() => {
+    fakeSlider = document;
+    model.storage.reset();
+    model.data.restored = true;
     window.makeActiveSlider = jest.fn(() => fakeSlider);
+    window.colorState = jest.fn(() => {});
   });
 
   afterEach(() => {
     resetData();
+    window.localStorage.clear();
     window.makeActiveSlider.mockRestore();
+    window.colorState.mockRestore();
+  });
+
+  test("with data", () => {
+    let rm = jest.fn(() => {});
+    let stat = {
+      slider: {
+        remove: rm
+      },
+      weight: 1,
+      category: {
+        title: "Fake Stat",
+        stat_id: 7
+      },
+      updateWeight: jest.fn(() => {}),
+      data: {}
+    };
+
+    //TODO: Test that slider template has these classes
+    document.innerHTML = `
+    <div id='slider'>
+      <div class = "statistic-slider"></div>
+      <div class = "statistic-slider-remover"></div>
+      <div class = "statistic-slider-metadata"></div>
+    </div>
+    `;
+    fakeSlider = $("#slider");
+
+    expect(window.localStorage.getItem(model.storage.ACTIVE_SLIDER_KEY)).toBeNull();
+    expect(model.data.active.has(7)).toEqual(false);
+
+    model.Stat.prototype.enable.apply(stat, []);
+
+    expect(stat.enabled).toBe(true);
+    expect(rm).toHaveBeenCalled();
+    expect(window.makeActiveSlider).toHaveBeenCalledWith("Fake Stat", 1);
+    expect(stat.updateWeight).toHaveBeenCalledWith(1);
+    expect(stat.slider).toBe(fakeSlider);
+    expect(window.localStorage.getItem(model.storage.ACTIVE_SLIDER_KEY)).toEqual("7");
+    expect(model.data.active.has(7)).toEqual(true);
+    expect(window.colorState).toHaveBeenCalledTimes(50);
+
+    /*Note:
+    It appears the only way to check for event listeners is to access
+    an undocumented private jQuery data structure. See:
+    https://stackoverflow.com/questions/2518421/jquery-find-events-handlers-registered-with-an-object
+    As such, unit tests will not check for event listener registration.
+    Those will be tested during acceptance and integration test.
+    */
+  });
+
+  test("without data", () => {
+
   });
 });
 
