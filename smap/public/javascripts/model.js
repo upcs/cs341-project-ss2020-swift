@@ -161,7 +161,11 @@ function rankStates(data){
   let error = false;
   ranks.sort((first, second) => {
     if (second in data && first in data){
-      return data[second] - data[first];
+      let value = data[second] - data[first];
+      if (value !== 0) return value;
+      //NOTE: In node v10, on which our server runs, sorts may not be stable
+      //As such, checking the order of ranks does not make sense unless we break ties
+      return first.localeCompare(second);
     } else {
       error = true;
       return 0;

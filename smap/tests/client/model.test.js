@@ -11,6 +11,7 @@ const states = ["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI"
 "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS",
 "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR",
 "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"];
+let sortedStates = states.slice().sort();
 
 function resetData(){
   model.data.active = new Set();
@@ -522,9 +523,7 @@ describe('displayWeights', () => {
         expect(mockCalls.length).toEqual(50);
         expect(mockCalls[0]).toEqual(["AL", 0]);
         expect(model.data.weights.AL).toEqual(0);
-        console.log(model.data.weights.AK);
-        console.log(model.data.weights.MT);
-        expect(model.data.ranks).toEqual(states);
+        expect(model.data.ranks).toEqual(sortedStates);
     });
 
     test('unloaded stat', () => {
@@ -547,7 +546,7 @@ describe('displayWeights', () => {
       expect(model.data.weights.AL).toEqual(0);
       console.log(model.data.weights.AK);
       console.log(model.data.weights.MT);
-      expect(model.data.ranks).toEqual(states);
+      expect(model.data.ranks).toEqual(sortedStates);
     });
 
     test('stat missing state', () => {
