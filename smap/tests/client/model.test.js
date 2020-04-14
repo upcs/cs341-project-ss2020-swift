@@ -33,47 +33,153 @@ afterEach(resetData);
   External citation: https://info340.github.io/jest.html
 */
 window.$ = $;
-// window.mixColor = jest.fn(weight => "rgba(0,0,0,1)");
+
+test("Data", () => {
+  let data = new model.Data();
+
+  expect(data.active).toEqual(new Set());
+  expect(data.stats).toEqual({});
+  expect(data.restored).toEqual(false);
+  expect(data.ranks).toEqual(states);
+  expect(data.metadataFetched).toEqual(false);
+  expect(data.weights).toEqual({});
+})
+
+describe("event listener integration tests", () => {
+  beforeEach(() => {
+    document.body.innerHTML = `
+    <div id="statistics-sliders">
+      <div class="statistic-slider-container" id="active_slider_template">
+          <div class="statistic-slider-remover">&#215;</div>
+          <div class="statistic-slider-title">Template</div>
+          <input class="statistic-slider" type="range" min="1" max="5" value="3" />
+          <div class="statistic-slider-metadata">&#9432;</div>
+          <div class="statistic-slider-tick-container">
+            <p class="single-ticks-1">1</p>
+            <p class="single-ticks-2">2</p>
+            <p class="single-ticks-3">3</p>
+            <p class="single-ticks-4">4</p>
+            <p class="single-ticks-5">5</p>
+          </div>
+      </div>
+    </div>
+    <div id="statistics-selector">
+      <div class="statistic-option" id="inactive_slider_template">
+          <div class="add-statistic">+</div>
+          <div class="statistic-option-title">Template</div>
+          <div class="statistic-option-metadata">&#9432;</div>
+      </div>
+    </div>
+    `;
+
+    window.colorState = jest.fn( () => {} );
+    window.prepareMetadataAlert = jest.fn(() => {});
+    window.closeMetadataAlert = jest.fn(() => {});
+    window.makeActiveSlider = jest.fn(() => {
+      let slider = $("#active_slider_template").clone();
+      $("#statistics-sliders").append(slider);
+      return slider;
+    });
+    window.makeInactiveSlider = jest.fn( () => {
+      let slider = $("#inactive_slider_template").clone();
+      $("#statistics-selector").append(slider);
+      return slider;
+    });
+
+    //Set so metadata is not fetched and window immediately closed
+    model.data.metadataFetched = true;
+  });
+
+  afterEach(() => {
+    resetData();
+    window.localStorage.clear();
+    window.colorState.mockRestore();
+    window.makeActiveSlider.mockRestore();
+    window.makeInactiveSlider.mockRestore();
+    window.prepareMetadataAlert.mockRestore();
+    window.closeMetadataAlert.mockRestore();
+  });
+
+  test('Activate a statistic by clicking it', () => {
+    let stat = new model.Stat({title:"test stat", stat_id:0}, model.DEFAULT_WEIGHT);
+    expect($(".statistic-option").length).toEqual(2);
+    expect($(".statistic-slider-container").length).toEqual(1);
+    expect(window.makeActiveSlider).not.toHaveBeenCalled();
+    expect(window.makeInactiveSlider).toHaveBeenCalledTimes(1);
+    expect(window.colorState).toHaveBeenCalledTimes(50);
+
+    stat.slider.click();
+
+    expect($(".statistic-option").length).toEqual(1);
+    expect($(".statistic-slider-container").length).toEqual(2);
+    expect(window.makeActiveSlider).toHaveBeenCalled();
+    expect(window.makeInactiveSlider).toHaveBeenCalledTimes(1);
+    expect(window.colorState).toHaveBeenCalledTimes(100); //Entire map redrawn
+  });
+
+  test("disable a statistic by clicking the x", () => {
+    let stat = new model.Stat({title:"test stat", stat_id:0}, model.DEFAULT_WEIGHT);
+    stat.enable();
+
+    expect($(".statistic-option").length).toEqual(1);
+    expect($(".statistic-slider-container").length).toEqual(2);
+    expect(window.makeActiveSlider).toHaveBeenCalledTimes(1);
+    expect(window.makeInactiveSlider).toHaveBeenCalledTimes(1);
+    expect(window.colorState).toHaveBeenCalledTimes(100);
+
+    $(".statistic-slider-remover", stat.slider).click();
+
+    expect($(".statistic-option").length).toEqual(2);
+    expect($(".statistic-slider-container").length).toEqual(1);
+    expect(window.makeActiveSlider).toHaveBeenCalledTimes(1);
+    expect(window.makeInactiveSlider).toHaveBeenCalledTimes(2);
+    expect(window.colorState).toHaveBeenCalledTimes(150);
+  });
+
+  test("changing the slider value updates the statistic", () => {
+    let stat = new model.Stat({title:"test stat", stat_id:0}, model.DEFAULT_WEIGHT);
+    stat.enable();
+
+    expect(window.colorState).toHaveBeenCalledTimes(100);
+    expect(stat.weight).toEqual(model.DEFAULT_WEIGHT);
+
+    let changeEvt = $.Event("change", {target: {value:2}});
+    $(".statistic-slider", stat.slider).trigger(changeEvt);
+
+    expect(window.colorState).toHaveBeenCalledTimes(150);
+    expect(stat.weight).toEqual(2);
+  });
+
+  test("clicking i shows metadata inactive", () => {
+    let stat = new model.Stat({title:"test stat", stat_id:0}, model.DEFAULT_WEIGHT);
+
+    expect(window.closeMetadataAlert).not.toHaveBeenCalled();
+    expect(window.prepareMetadataAlert).not.toHaveBeenCalled();
+
+    $(".statistic-option-metadata", stat.slider).click();
+
+    expect(window.closeMetadataAlert).toHaveBeenCalled();
+    expect(window.prepareMetadataAlert).toHaveBeenCalled();
+  });
+
+  test("clicking i shows metadata active", () => {
+    let stat = new model.Stat({title:"test stat", stat_id:0}, model.DEFAULT_WEIGHT);
+    stat.enable();
+
+    expect(window.closeMetadataAlert).not.toHaveBeenCalled();
+    expect(window.prepareMetadataAlert).not.toHaveBeenCalled();
+
+    $(".statistic-slider-metadata", stat.slider).click();
+
+    expect(window.closeMetadataAlert).toHaveBeenCalled();
+    expect(window.prepareMetadataAlert).toHaveBeenCalled();
+  });
+});
 
 //Sample test for now
 //add a done here for async tests
 /*
-test('Create a slider', () => {
-  //Creates mock document
-  document.body.innerHTML = `
-    <div id=statistics-sliders>
-      <div id="active_slider_template" class="statistic-slider-container">
-        <div class="statistic-slider-title">State GDP</div>
-        <div class="metadata_button">&#9432;</div>
-        <input type="range" min="1" max="5" value="3" id="stat1" class="statistic-slider" />
-      </div>
-    </div>
-    <div id=statistics-selector><div id="inactive_slider_template" class="statistic-option">Job Openings</div></div>
-  `;
 
-  let inactive_slider = $("#inactive_slider_template");
-  let active_slider = $("#active_slider_template");
-
-  //Has side effects, so must be included in the test
-  let script = require(path);
-
-  // Note: Check if function is called
-  window.colorState = jest.fn( () => {} );
-  window.makeActiveSlider = jest.fn( () => { return active_slider; } );
-  window.makeInactiveSlider = jest.fn( () => { return inactive_slider; } );
-  window.drawChart = jest.fn(() => {});
-
-  //you can uncomment line below if you reWIRE(../../public/javascripts/model) from a few lines prior
-  // script.__set__("displayWeights", () => {});
-  // var spy = jest.spyOn(script, "displayWeights").mockImplementation( () => {} );
-
-  let stat = new script.Stat({title:"test stat", stat_id:0}, script.DEFAULT_WEIGHT);
-  expect($(".statistic-option").length).toEqual(1);
-  expect(window.makeActiveSlider.mock.calls.length).toBe(0);
-  // expect($(".statistic-slider-container").length).toEqual(0);
-  inactive_slider.click();
-  expect($(".statistic-option").length).toEqual(0);
-  expect(window.makeActiveSlider.mock.calls.length).toBe(1);
 
 //reference for async tests
     //The ready function. Since these callbacks are called in order,
@@ -145,218 +251,82 @@ describe('setMetadata', () => {
 });
 
 describe('normalizeStats: ', () => {
-  test("50 good states, no inversion, using require NOT rewire", () => {
-    //require runs the script
-      //in jquery stuff, require makes a document.ready
-    let script = require("../../public/javascripts/model");
 
+  function makeDummyRow(id, invert, defaultValue){
     let row = {
-      stat_id: 1,
-      invert_flag: 0,
-      AL: 100,
-      AK: 300,
-      AZ: 200,
-      /////////
-      AR: 100,
-      CA: 100,
-      CO: 100,
-      CT: 100,
-      DE: 100,
-      FL: 100,
-      GA: 100,
-      HI: 100,
-      ID: 100,
-      IL: 100,
-      IN: 100,
-      IA: 100,
-      KS: 100,
-      KY: 100,
-      LA: 100,
-      ME: 100,
-      MD: 100,
-      MA: 100,
-      MI: 100,
-      MN: 100,
-      MS: 100,
-      MO: 100,
-      MT: 100,
-      NE: 100,
-      NV: 100,
-      NH: 100,
-      NJ: 100,
-      NM: 100,
-      NY: 100,
-      NC: 100,
-      ND: 100,
-      OH: 100,
-      OK: 100,
-      OR: 100,
-      PA: 100,
-      RI: 100,
-      SC: 100,
-      SD: 100,
-      TN: 100,
-      TX: 100,
-      UT: 100,
-      VT: 100,
-      VA: 100,
-      WA: 100,
-      WV: 100,
-      WI: 100,
-      WY: 100
-    }
+      stat_id: id,
+      invert_flag: invert,
+    };
+    states.forEach((state, i) => {
+      row[state] = defaultValue;
+    });
+    return row;
+  }
 
-    script.normalizeStats(row);
+  test("no inversion", () => {
+
+    let row = makeDummyRow(1, 0, 100);
+    row.AK = 300;
+    row.AZ = 200;
+
+    model.normalizeStats(row);
 
     expect(row["AK"]).toEqual(1); //max
     expect(row["AL"]).toEqual(0); //min
     expect(row["AZ"]).toEqual(.5);
   });
 
-  test("3 good states, no inversion", () => {
-    //require runs the script
-      //in jquery stuff, require makes a document.ready
-    let script = rewire("../../public/javascripts/model");
-    let states = script.__get__("states");
 
-    //starting at index 3, remove 47 states
-    states.splice(3,47);
+  test("with inversion", () => {
+    let row = makeDummyRow(1, 1, 200);
+    row.AK = 300;
+    row.AL = 100;
 
-    let row1 = {
-      stat_id: 1,
-      invert_flag: 0,
-      AL: 100,
-      AK: 300,
-      AZ: 200
-    }
-    script.normalizeStats(row1);
+    model.normalizeStats(row); //modifies in place from
 
-    expect(row1["AK"]).toEqual(1); //max
-    expect(row1["AL"]).toEqual(0); //min
-    expect(row1["AZ"]).toEqual(.5);
-  });
-
-  test("3 good states, with inversion", () => {
-    let script = rewire("../../public/javascripts/model");
-    let states = script.__get__("states");
-
-    //starting at index 3, remove 47 states
-    states.splice(3,47);
-
-    let row = {
-      stat_id: 1,
-      invert_flag: 1,
-      AL: 100,
-      AK: 300,
-      AZ: 200
-    }
-
-    script.normalizeStats(row); //modifies in place from
     expect(row["AL"]).toEqual(1); //max
     expect(row["AK"]).toEqual(0); //min
     expect(row["AZ"]).toEqual(0.5); //middle
   });
 
-  test("2 good states, and 1 state with init value of 0, no inversion", () => {
-    let script = rewire("../../public/javascripts/model");
-    let states = script.__get__("states");
+  test("1 negative state without inversion", () => {
+    let row = makeDummyRow(1, 0, 100);
+    row.AK = 300;
+    row.AZ = -100;
 
-    //starting at index 3, remove 47 states
-    states.splice(3,47);
+    model.normalizeStats(row); //modifies in place from
 
-    let row = {
-      stat_id: 1,
-      invert_flag: 0,
-      AL: 100,
-      AK: 0,
-      AZ: 200
-    }
-
-    script.normalizeStats(row); //modifies in place from
-    expect(row["AL"]).toEqual(0.5); //middle
-    expect(row["AZ"]).toEqual(1); //max
-    expect(row["AK"]).toEqual(0); //min
-  });
-
-  test("2 good states, and 1 bad state without inversion", () => {
-    let script = rewire("../../public/javascripts/model");
-    let states = script.__get__("states");
-
-    //starting at index 3, remove 47 states
-    states.splice(3,47);
-
-    let row = {
-      stat_id: 1,
-      invert_flag: 0,
-      AL: 100,
-      AK: 300,
-      AZ: -100
-    }
-
-    script.normalizeStats(row); //modifies in place from
     expect(row["AL"]).toEqual(0.5); //middle
     expect(row["AK"]).toEqual(1); //max
     expect(row["AZ"]).toEqual(0); //min
   });
 
   test("all states same value, not 0", () => {
-    let script = rewire("../../public/javascripts/model");
-    let states = script.__get__("states");
+    let row = makeDummyRow(1, 0, 100);
 
-    //starting at index 3, remove 47 states
-    states.splice(3,47);
+    model.normalizeStats(row); //modifies in place from
 
-    let row = {
-      stat_id: 1,
-      invert_flag: 0,
-      AL: 100,
-      AK: 100,
-      AZ: 100
-    }
-
-    script.normalizeStats(row); //modifies in place from
     expect(row["AL"]).toEqual(0.5);
     expect(row["AK"]).toEqual(0.5);
     expect(row["AZ"]).toEqual(0.5);
   });
 
   test("all states 0", () => {
-    let script = rewire("../../public/javascripts/model");
-    let states = script.__get__("states");
+    let row = makeDummyRow(1, 0, 0);
 
-    //starting at index 3, remove 47 states
-    states.splice(3,47);
+    model.normalizeStats(row); //modifies in place from
 
-    let row = {
-      stat_id: 1,
-      invert_flag: 0,
-      AL: 0,
-      AK: 0,
-      AZ: 0
-    }
-
-    script.normalizeStats(row); //modifies in place from
     expect(row["AL"]).toEqual(0);
     expect(row["AK"]).toEqual(0);
     expect(row["AZ"]).toEqual(0);
   });
 
   test("all states are negative except max which is 0", () => {
-    let script = rewire("../../public/javascripts/model");
-    let states = script.__get__("states");
+    let row = makeDummyRow(1, 0, -100);
+    row.AZ = 0;
 
-    //starting at index 3, remove 47 states
-    states.splice(3,47);
+    model.normalizeStats(row); //modifies in place from
 
-    let row = {
-      stat_id: 1,
-      invert_flag: 0,
-      AL: -100,
-      AK: -100,
-      AZ: 0
-    }
-
-    script.normalizeStats(row); //modifies in place from
     expect(row["AL"]).toEqual(0);
     expect(row["AK"]).toEqual(0);
     expect(row["AZ"]).toEqual(1);

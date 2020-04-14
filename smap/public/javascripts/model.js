@@ -311,7 +311,7 @@ Stat.prototype.disable = function(){
   //Add event listeners
   $(".statistic-option-metadata", this.slider).click((e) => {
     e.preventDefault();
-    e.stopPropagation()
+    e.stopPropagation();
     this.showMeta();
   });
 
