@@ -291,7 +291,7 @@ $("document").ready(function () {
                 $("#bad-stats").css("display", "none");
                 $("#bad-stats-details").css("display", "none");
                 $("#good-stats-details").css("display", "block");
-                
+
                 //Doing this to get these areas properly styled without adding any text
                 $("#good-stats-details").html("");
                 $("#myChart").css("visibility", "hidden");
@@ -305,7 +305,7 @@ $("document").ready(function () {
 
             } else if (stateCatArr.length == 1){
                 let best_stat = data.stats[stateCatArr[0]["id"]];
-                
+
                 $("#myChart").css("visibility", "visible");
                 $("#bad-stats").css("display","none");
                 $("#bad-stats-details").css("display", "none");
@@ -321,7 +321,7 @@ $("document").ready(function () {
             } else {
                 let best_stat = data.stats[stateCatArr[0]["id"]];
                 let worst_stat = data.stats[stateCatArr[stateCatArr.length - 1]["id"]];
-                
+
                 $("#graph").css("display", "block");
                 $("#bad-stats").css("display", "block");
                 $("#bad-stats-details").css("display", "block");
@@ -348,7 +348,7 @@ $("document").ready(function () {
 function populateDataDetails(stat, best) {
     let msg = "msg";
     if (best) $("#good-stats-details").html("<h3>Statistic Details:</h3>");
-    else $("#bad-stats-details").html("<h3>Statistic Details</h3>:");
+    else $("#bad-stats-details").html("<h3>Statistic Details:</h3>");
     if (stat.metadata) {
         msg = createDetailsMsg(stat);
         if(best) $("#good-stats-details").append(msg);
@@ -382,7 +382,7 @@ function createDetailsMsg(stat){
     let note = stat.metadata.note;
 
     let msg = "Survey period: " + survey_period +
-        "<br>Source: " + source;
+        "<br>Source: " + source + "<br>";
 
     if (note !== "" && note !== "n.a.") {
         msg = msg + "<br>Note: " + note;
