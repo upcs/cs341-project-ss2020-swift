@@ -457,8 +457,8 @@ object {
   padding-left: 30%;
 }
 
-/* The Model (background) */
-#model {
+/* The NE magnifier (background) */
+#ne-magnifier {
   display: grid;
   align-items: center;
   justify-items: end;
@@ -469,7 +469,7 @@ object {
   width: 100%; /* Full width */
   height: 100%; /* Full height */
   background-color: rgb(0,0,0); /* Fallback color */
-  background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+  background-color: rgba(0,0,0,0.667); /* Black w/ opacity */
 }
 
 /* The Close Button */
