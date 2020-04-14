@@ -158,11 +158,13 @@ function getStateInfo(stateAbbr){
 */
 function rankStates(data){
   let ranks = states.slice();
+  console.log(ranks);
   let error = false;
   ranks.sort((first, second) => {
     if (second in data && first in data){
       return data[second] - data[first];
     } else {
+      console.error("Error comparing " + second + " and " + first);
       error = true;
       return 0;
     }
