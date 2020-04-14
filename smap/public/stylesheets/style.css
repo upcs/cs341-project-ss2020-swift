@@ -974,7 +974,7 @@ i {
 }
 
 #loading-ad-right, #loading-ad-left {
-    width: 750px;
+    width: 50%;
     height: 100px;
     position: absolute;
     bottom: 20px;
