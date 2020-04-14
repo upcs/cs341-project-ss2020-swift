@@ -32,7 +32,7 @@ const MIN_WIDTH = 500;
 const MIN_HEIGHT = 500;
 const MIN_HORIZONTAL_WIDTH = 1000;
 const CRITICAL_ASPECT_RATIO = 1.125;
-const LAYOUT_CHANGE_TIME = 125;
+const LAYOUT_CHANGE_TIME = 250;
 
 // Window variables
 
@@ -464,7 +464,6 @@ function populateStateWindow(is_ne){
  * @param {WebGL Context} ctx this is the graph WebGL context
  */
 function resizeChart() {
-    console.log("resizing canvas");
     let ctx = document.getElementById('myChart').getContext('2d');
     // Set the width and height of the container
     ctx.canvas.width = $("#graph").width();

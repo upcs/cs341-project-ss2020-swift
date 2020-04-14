@@ -29,6 +29,10 @@
 /***  Global Styling  ***/
 /************************/
 
+html {
+    background-color: var(--color-light);
+}
+
 
 body {
     /* Positioning and Display */
@@ -655,15 +659,6 @@ object {
 }
 
 #about-content {
-    /* Positioning and Display */
-    display: grid;
-    justify-items: center;
-    grid-template-columns: auto 60% 20%;
-    grid-template-areas:
-        "about-ad-left about-content about-ad-right"
-    ;
-    padding-top: 20px;
-    padding-bottom: 20px;
     /* Coloring */
     background-color: var(--color-light);
     /* Fonts and Text */
@@ -963,10 +958,10 @@ i {
     box-shadow: 0px 0px 20px inset rgba(0, 0, 0, 0.75);
     text-align: center;
     font-size: 20px;
-    max-width: 45%;
 }
 
 #loading-ad-right, #loading-ad-left {
+    max-width: 45%;
     width: 750px;
     height: 100px;
     position: absolute;
@@ -979,13 +974,6 @@ i {
 
 #loading-ad-left {
     left: 20px;
-}
-
-#about-ad-right, #about-ad-left {
-    width: 125px;
-    height: 500px;
-    writing-mode: vertical-rl;
-    text-orientation: mixed;
 }
 
 #about-ad-right {

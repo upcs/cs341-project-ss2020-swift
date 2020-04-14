@@ -53,6 +53,24 @@
     height: 100%;
 }
 
+#about-content {
+    display: grid;
+    justify-items: center;
+    grid-template-columns: auto 60% 20%;
+    grid-template-areas:
+        "about-ad-left about-content about-ad-right"
+    ;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+#about-ad-right, #about-ad-left {
+    width: 125px;
+    height: 500px;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+}
+
 #ne-map-container {
   display: grid;
   width: 70%;
