@@ -852,6 +852,42 @@ describe("Stat.enable", () => {
 
     $.get.mockRestore();
   });
+
+  test("without data failed callback", () => {
+    $.get = jest.fn((url, blank, callback) => {
+      callback([], "failure", null);
+    });
+    window.alert = jest.fn(() => {});
+
+    let rm = jest.fn(() => {});
+    let stat = {
+      slider: {
+        remove: rm
+      },
+      weight: 1,
+      category: {
+        title: "Fake Stat",
+        stat_id: 7
+      },
+      updateWeight: jest.fn(() => {}),
+    };
+
+    expect(window.localStorage.getItem(model.storage.ACTIVE_SLIDER_KEY)).toBeNull();
+    expect(model.data.active.has(7)).toEqual(false);
+
+    model.Stat.prototype.enable.apply(stat, []);
+
+    expect(stat.enabled).toBe(true);
+    expect(rm).toHaveBeenCalled();
+    expect(window.makeActiveSlider).toHaveBeenCalledWith("Fake Stat", 1);
+    expect(stat.updateWeight).toHaveBeenCalledWith(1);
+    expect(stat.slider).toBe(fakeSlider);
+    expect($.get.mock.calls[0]).toEqual(expect.arrayContaining(["/api/data?cat=7", ""]));
+    expect(window.alert).toHaveBeenCalled();
+
+    $.get.mockRestore();
+    window.alert.mockRestore();
+  })
 });
 
 describe("stat.disable", () => {
@@ -999,6 +1035,29 @@ describe('restoreFromStorage', () => {
     expect(FakeStat.prototype.enable.mock.calls.length).toEqual(1);
     expect(model.data.restored).toBeTruthy();
   });
+
+  test('no sliders', () => {
+    let storage = window.localStorage;
+    expect(model.data.active.size).toEqual(0);
+    expect(model.data.restored).toBeFalsy();
+    model.storage.restore();
+    expect(model.data.active.size).toEqual(0);
+    expect(model.data.restored).toBeTruthy();
+  });
+
+  test('no stat', () => {
+    let storage = window.localStorage;
+    storage.setItem(model.storage.ACTIVE_SLIDER_KEY, "2");
+    storage.setItem(model.storage.ACTIVE_SLIDER_PREFIX + "2", "4");
+
+    expect(model.data.active.size).toEqual(0);
+    expect(model.data.restored).toBeFalsy();
+
+    model.storage.restore();
+
+    expect(model.data.active.size).toEqual(0);
+    expect(model.data.restored).toBeTruthy();
+  })
 
   test('one slider', () => {
     let storage = window.localStorage;
@@ -1196,7 +1255,7 @@ describe("rankStates", () => {
 });
 
 
-describe('Stat show metadata', () => {
+describe('Stat.showMeta', () => {
   var fetchedMetadata;
 
   beforeEach(() => {
@@ -1237,5 +1296,50 @@ describe('Stat show metadata', () => {
         done(err);
       }
     }, 1);
-  })
+  });
+
+  test('fetch metadata request fails', (done) => {
+    let stat = {stat_id: 2};
+    model.data.stats[2] = stat;
+    fetchedMetadata = null;
+
+    model.Stat.prototype.showMeta.apply(stat);
+
+    expect(window.prepareMetadataAlert).toHaveBeenCalled();
+    expect(window.getMetadata).toHaveBeenCalled();
+    expect(window.showMetadataAlert).not.toHaveBeenCalled();
+    expect(window.closeMetadataAlert).not.toHaveBeenCalled();
+    setTimeout(() => {
+      try{
+        expect(window.showMetadataAlert).not.toHaveBeenCalled();
+        expect(window.closeMetadataAlert).toHaveBeenCalled();
+        done();
+      } catch (err){
+        done(err);
+      }
+    }, 1);
+  });
+
+  //Same outcome as no metadata fetched
+  test('fetch metadata no good data', (done) => {
+    let stat = {stat_id: 2};
+    model.data.stats[2] = stat;
+    fetchedMetadata = [];
+
+    model.Stat.prototype.showMeta.apply(stat);
+
+    expect(window.prepareMetadataAlert).toHaveBeenCalled();
+    expect(window.getMetadata).toHaveBeenCalled();
+    expect(window.showMetadataAlert).not.toHaveBeenCalled();
+    expect(window.closeMetadataAlert).not.toHaveBeenCalled();
+    setTimeout(() => {
+      try{
+        expect(window.showMetadataAlert).not.toHaveBeenCalled();
+        expect(window.closeMetadataAlert).toHaveBeenCalled();
+        done();
+      } catch (err){
+        done(err);
+      }
+    }, 1);
+  });
 })
