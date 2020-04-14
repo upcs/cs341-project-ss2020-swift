@@ -20,8 +20,8 @@ router.get('/cats', function(req, res, next) {
       return;
     }
 
-    // console.log("<api.js>results[0][stat_id]: " + results[0]["stat_id"]);
-    // console.log("<api.js>results[0][stat_name_short]: " + results[0]["stat_name_short"]);
+    // console.log("results[0][stat_id]: " + results[0]["stat_id"]);
+    // console.log("results[0][stat_name_short]: " + results[0]["stat_name_short"]);
 
     // return contents, a object (dictionary) containing the key/value pairs of requested categories
     res.json(results);
