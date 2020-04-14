@@ -739,8 +739,12 @@ object {
 .alert-container {
     /* display: none; */
     display: grid;
-    grid-template-columns: auto 70%;
-    grid-template-areas: ". alert .";
+    grid-template-columns: [left]15% [alert]70% [right]15%;
+    grid-template-areas: 
+        ". alert ."
+        ". bottom ."
+    ;
+    grid-template-rows: [alert]70% [margin]30%;
     align-items: center;
     justify-content: center;
     position: fixed;
@@ -816,6 +820,7 @@ object {
 
 .alert-background {
     width: 100%;
+    height: 100%;
     border-radius: 0px 0px 10px 10px;
     /* padding-bottom: 35px; */
     background-color: rgba(120, 120, 120, 1);
@@ -865,7 +870,7 @@ i {
 #state-window-container{
     display: grid;
     background-color: rgba(255,255,255,1); /* full white */
-    height: 600px;
+    height: 100%;
     grid-template-columns: 33% 67%;
     grid-template-rows: 20% 50% 30%;
     grid-template-areas:
@@ -950,30 +955,32 @@ i {
 #good-stats{
     grid-area: good-stats;
     border-right-width: 0px;
+    overflow-y: scroll;
 }
 
 #good-stats-details{
     grid-area: good-stats-details;
     border-left-width: 0px;
     overflow-y: scroll;
-    /* text-align: left */
 }
 
 #bad-stats{
     grid-area: bad-stats;
     border-right-width: 0px;
+    overflow-y: scroll;
 }
 
 #bad-stats-details{
     grid-area: bad-stats-details;
     border-left-width: 0px;
     overflow-y: scroll;
-    /* text-align: left */
 }
 
 #graph{
     grid-area: graph;
     background-color: var(--subgroup-color-lighter);
+    overflow-y: scroll;
+
 }
 
 .state-window-image {
