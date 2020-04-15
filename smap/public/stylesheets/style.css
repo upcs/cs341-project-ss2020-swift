@@ -92,7 +92,7 @@ body {
     /* Positioning and Display */
     display: grid;
     grid-template-columns: [remove-statistic-guide]7% [stat-option-title]86% [metadata]7%;
-	grid-template-rows: [slider-title]auto [slider-slider]34% [slider-ticks]30%;
+	/* grid-template-rows: [slider-title]auto [slider-slider]34% [slider-ticks]30%; */
     grid-template-areas:
         "slider-remover slider-title slider-metadata"
         "slider-remover slider slider"
@@ -148,7 +148,8 @@ body {
     display: grid;
     grid-area: slider;
     height: 10px;
-    margin: 10px;
+    margin-bottom: 10px;
+    margin-top: 10px
     /* Borders */
     border: 2px solid var(--accent-color);
     border-radius: 8px;
@@ -166,7 +167,7 @@ body {
     width: 100%;
     margin-top: -5px;
     display: grid;
-    grid-template-columns: [beginning]4% [tick-1]1% [between-tick]23% [tick-2]1% [between-tick]21% [tick-3]1% [between-tick]23% [tick-4]1% [between-tick]22% [tick-5]1% [end]3%;
+    grid-template-columns:[begin]2% [tick-1]1% [between-tick]23% [tick-2]1% [between-tick]23% [tick-3]1% [between-tick]23% [tick-4]1% [between-tick]23% [tick-5]1% [end]2%;
     grid-template-rows: auto;
     grid-template-areas:
         "before-tick tick-1 between-1 tick-2 between-2 tick-3 between-3 tick-4 between-4 tick-5 end"
@@ -194,6 +195,7 @@ body {
 
 .single-ticks-2 {
     grid-area: tick-2;
+    margin-left: 2px;
 }
 
 .single-ticks-3 {
@@ -202,6 +204,7 @@ body {
 
 .single-ticks-4 {
     grid-area: tick-4;
+    margin-left: -2px;
 }
 
 .single-ticks-5 {
@@ -823,8 +826,8 @@ object {
     height: 100%;
     border-radius: 0px 0px 10px 10px;
     /* padding-bottom: 35px; */
-    background-color: rgba(120, 120, 120, 1);
-    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.75);
+    /* background-color: rgba(120, 120, 120, 1); */
+    /* box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.75); */
     z-index: 11;
     grid-area: alert;
 }
@@ -980,7 +983,8 @@ i {
     grid-area: graph;
     background-color: var(--subgroup-color-lighter);
     overflow-y: scroll;
-
+    scrollbar-width: thin;
+    scrollbar-color: var(--secondary-color-light) var(--color-light);
 }
 
 .state-window-image {
