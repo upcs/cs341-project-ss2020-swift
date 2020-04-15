@@ -40,6 +40,13 @@ var theme_brightness = "light";
 var lastMove = 0;
 
 
+//Promises to preload
+
+var cats_promise = $.get("/api/cats");
+var us_map_promise = $.get("/images/us.svg");
+var ne_map_promise = $.get("/images/ne.svg");
+
+
 ///////////////////
 ///  FUNCTIONS  ///
 ///////////////////
@@ -54,6 +61,8 @@ var lastMove = 0;
  *      as well as all of the server requests for custom preloading
  */
 $("document").ready(function () {
+    // Set up sliders template
+    createSliderTemplates();
 
     // Set up loading loop that shows up while elements are loading
     var ellipses_loop = setInterval(function() {
@@ -73,7 +82,7 @@ $("document").ready(function () {
 
     // Map Preloading Functions: If the map wasn't loaded by the browser, preload it anyway for
     // other functions to use to do the prep work
-    $.get("/images/us.svg", "", function(xhr, status, res){
+    us_map_promise.always(function(xhr, status, res){
         if (status !== "success"){
             console.error("Could not get US map");
         }
@@ -89,7 +98,7 @@ $("document").ready(function () {
     });
 
     // See above
-    $.get("/images/ne.svg", "", function(xhr, status, res){
+    ne_map_promise.always(function(xhr, status, res){
         if (status !== "success"){
             console.error("Could not get NE map");
         }
@@ -104,21 +113,6 @@ $("document").ready(function () {
         preload(clear_loading, ellipses_loop);
     });
 
-    //Gets list of categories and creates those sliders
-    $.get("/api/cats", "", function(data, status, res){
-        if (status !== "success"){
-            console.error("Failed to retrieve categories");
-        } else {
-            for (let cat of data){
-                cat.title = cat.stat_name_short;
-                new Stat(cat, DEFAULT_WEIGHT);
-            }
-            restoreFromStorage();
-        }
-    });
-
-    // Set up sliders template
-    createSliderTemplates();
     // Set up listeners
     $("#ne-inspector").click(showNEMagnifier);
     $("#ne-magnifiyer-close").click(hideNEMagnifier);
@@ -134,35 +128,44 @@ $("document").ready(function () {
  *      saying it is ready
  */
 function clear_loading(loop) {
-    // Stop the triple dot loading loop
-    window.setTimeout(function() {
-        clearInterval(loop);
-    }, 500);
+
+    const DOTS_FADE_OUT = 250;
+    const LOAD_FADE_OUT = 500;
+    const READY_HOLD = 400;
+    const FADE_IN = 500;
+    const ZOOM_IN = 400;
+    const ANIMATION_TIME = (DOTS_FADE_OUT + LOAD_FADE_OUT + READY_HOLD + Math.max(FADE_IN, ZOOM_IN)) / 1000.0;
+
     // Make the dots disappear
-    $("#dot1").animate({opacity: "0"}, 500, "swing");
-    $("#dot2").animate({opacity: "0"}, 500, "swing");
-    $("#dot3").animate({opacity: "0"}, 500, "swing");
-    window.setTimeout(function() {
-        // Click the default orange-red theme
-        $("#orange-red").click();
+    $("#dot1").animate({opacity: "0"}, DOTS_FADE_OUT, "swing");
+    $("#dot2").animate({opacity: "0"}, DOTS_FADE_OUT, "swing");
+    $("#dot3").animate({opacity: "0"}, DOTS_FADE_OUT, "swing");
+
+    // Click the default orange-red theme
+    $("#orange-red").click();
+
+    setTimeout(function(){
+        // Stop the triple dot loading loop
+        clearInterval(loop);
         // Remove the ellipses container
-        $("#ellipses").slideUp(1000);
+        $("#ellipses").slideUp(LOAD_FADE_OUT);
         // Fade out the loading animation
-        $("#loading").animate({opacity: "0"}, 500);
+        $("#loading").animate({opacity: "0"}, LOAD_FADE_OUT);
         // Change the "loading assets" to say we're ready and fly it in
-        window.setTimeout(function() { $("#loading").html("Ready!"); }, 500 );
-        $("#loading").animate({opacity: "1", fontSize: "50px"}, 500);
+        window.setTimeout(function() { $("#loading").html("Ready!"); }, LOAD_FADE_OUT);
+        $("#loading").animate({opacity: "1", fontSize: "50px"}, LOAD_FADE_OUT);
         // Fade out the loading window now that we're done with it
         window.setTimeout(function() {
             $("#init").css("pointer-events","none");
-            $("#init").animate({opacity: "0"}, 500);
-            $("#loading").animate({fontSize: "100px"}, 400);
-        }, 1500 );
-    }, 1000);
+            $("#init").animate({opacity: "0"}, FADE_IN);
+            $("#loading").animate({fontSize: "100px"}, ZOOM_IN);
+        }, LOAD_FADE_OUT + READY_HOLD );
+    }, DOTS_FADE_OUT);
+
     // Print load time
     let load_time = (window.performance.now() / 1000);
     console.log("Page load time: " + load_time + "s");
-    console.log("Time until page operable: "+ (load_time+2.5) +"s");
+    console.log("Time until page operable: "+ (load_time+ANIMATION_TIME) +"s");
 }
 
 
@@ -174,14 +177,30 @@ function clear_loading(loop) {
  */
 function preload(callback, loop) {
     // Remove the NE-magnifier (only open in the first place to trigger load event)
+    //TODO: Hide at start and cut this code
     $("#ne-magnifier").css("display", "none");
-    // Check to see if the maps loaded (browser compatibility)
+    // Check to see if the maps loaded
     let us_map_document = $("#us-map").length;
     let ne_map_document = $("#ne-map").length;
     // Do not complete and callback if we're not done
     if (us_map_document === 0 || ne_map_document === 0){
         return;
     }
+
+    //Gets list of categories and creates those sliders
+    //Must be done after map loads so map can be colored by restore
+    cats_promise.always(function(data, status, res){
+        if (status !== "success"){
+            console.error("Failed to retrieve categories");
+        } else {
+            for (let cat of data){
+                cat.title = cat.stat_name_short;
+                new Stat(cat, DEFAULT_WEIGHT);
+            }
+            restoreFromStorage();
+        }
+    });
+
     setUpHovering();
     prepareStateWindow();
     populateStateWindow(true); //is_ne is true
@@ -385,7 +404,7 @@ function closeAlert() {
 
 
 /**
- * @return {Object} the metadata that will be used about the statistic that was selected
+ * @return {Object} the metadata promise that will be used about the statistic that was selected
  */
 async function getMetadata() {
     // Ask the server nicely if we can get our metadata
