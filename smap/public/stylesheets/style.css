@@ -149,6 +149,7 @@ body {
     grid-area: slider;
     height: 10px;
     margin: 10px;
+    width: auto;
     /* Borders */
     border: 2px solid var(--accent-color);
     border-radius: 8px;
