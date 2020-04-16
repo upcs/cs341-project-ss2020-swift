@@ -161,9 +161,12 @@ function rankStates(data){
   let error = false;
   ranks.sort((first, second) => {
     if (second in data && first in data){
-      return data[second] - data[first];
+      let value = data[second] - data[first];
+      if (value !== 0) return value;
+      //NOTE: In node v10, on which our server runs, sorts may not be stable
+      //As such, checking the order of ranks does not make sense unless we break ties
+      return first.localeCompare(second);
     } else {
-      console.log("Data has no value for state " + first + " or " + second);
       error = true;
       return 0;
     }
@@ -171,16 +174,12 @@ function rankStates(data){
   return error ? [] : ranks;
 }
 
-//Reads the weights from the global data object and uses them to display the map.
-function displayWeights(){
-  //Sum up weights for each state
-  let weights = data.weights;
+function computeTotalWeights(){
   for (let state of states){
     let weight = 0;
     for (let catID of data.active){
       let localStat = data.stats[catID];
 
-      // console.log("typeof(localStat[data]): " + typeof(localStat["data"]));
       if(typeof localStat !== 'undefined' && typeof localStat["data"] !== 'undefined'){ //if localStat["data"] is defined...
 
         let stateData = localStat.data[state];
@@ -191,13 +190,20 @@ function displayWeights(){
           break;
         }
         weight += calculateWeight(localStat.weight) * stateData;
+      } else {
+        console.error("Bad stat. ID: " + catID);
       }
     }
     data.weights[state] = weight;
   }
+  normalizeStats(data.weights);
+}
 
-  normalizeStats(weights);
-  data.ranks = rankStates(weights);
+//Reads the weights from the global data object and uses them to display the map.
+function displayWeights(){
+  //Sum up weights for each state
+  computeTotalWeights();
+  data.ranks = rankStates(data.weights);
 
   for (let state of states){
     let weight = data.weights[state];
@@ -209,7 +215,7 @@ function displayWeights(){
 A Stat object is used to model both the HTML and the underlying data.
 It is of the following form:
 {
-  category: A category object as returned from the server. It must have id and title attributes.
+  category: A category object as returned from the server. It must have stat_id and title attributes.
   weight: How much to weight this category when enabled.
   enabled: Whether to use this category to calculate weights.
   slider: A JQuery object for the slider (whether active or inactive).
@@ -217,15 +223,22 @@ It is of the following form:
   metadata: The metadata for the statistic category - may be undefined
 }
 Constructor arguments:
- category - a category object, which must have a title
+ category - a category object, which must have a title and stat_id
  weight - The weight the stat has in calcuations if it is active*/
 function Stat(category, weight){
+  if (weight < MIN_WEIGHT || weight > MAX_WEIGHT){
+    throw "Bad weight";
+  }
+  if (!("stat_id" in category && "title" in category)){
+    throw "Bad inputs";
+  }
+
   if (data.stats[category.stat_id]){
     delete data.stats[category.stat_id];
     data.active.delete(category.stat_id);
   }
-  data.stats[category.stat_id] = this;
 
+  data.stats[category.stat_id] = this;
   this.category = category;
   this.weight = weight;
   this.enabled = false;
@@ -302,7 +315,7 @@ Stat.prototype.disable = function(){
   //Add event listeners
   $(".statistic-option-metadata", this.slider).click((e) => {
     e.preventDefault();
-    e.stopPropagation()
+    e.stopPropagation();
     this.showMeta();
   });
 
@@ -310,13 +323,6 @@ Stat.prototype.disable = function(){
 
   updateCategoryStorage();
   displayWeights();
-}
-
-//Deletes a statistic
-Stat.prototype.delete = function(){
-  this.slider.remove();
-  data.active.remove(this.category.stat_id);
-  delete data.stats[category.stat_id];
 }
 
 /*
