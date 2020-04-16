@@ -835,7 +835,8 @@ object {
 }
 /* 
 * External citation: https://www.ryadel.com/en/css3-media-query-target-only-ie-ie6-ie11-firefox-chrome-safari-edge/ 
-* This @media section is the most commonly used
+* This @media section is the most commonly used way to specify styling for only certain conditions, including 
+* the use of a specific browser.
 */
 @media not all and (min-resolution:.001dpcm) { 
     @media {
