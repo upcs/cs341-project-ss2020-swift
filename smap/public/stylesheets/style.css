@@ -743,11 +743,13 @@ object {
     /* display: none; */
     display: grid;
     grid-template-columns: [left]15% [alert]70% [right]15%;
+    grid-template-rows: [top]15% [alert]70% [bottom]15%;
+
     grid-template-areas: 
+        ". top ."
         ". alert ."
         ". bottom ."
     ;
-    grid-template-rows: [alert]70% [margin]30%;
     align-items: center;
     justify-content: center;
     position: fixed;
@@ -830,6 +832,19 @@ object {
     /* box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.75); */
     z-index: 11;
     grid-area: alert;
+}
+/* 
+* External citation: https://www.ryadel.com/en/css3-media-query-target-only-ie-ie6-ie11-firefox-chrome-safari-edge/ 
+* This @media section is the most commonly used
+*/
+@media not all and (min-resolution:.001dpcm) { 
+    @media {
+        .safari10 { 
+            color:#0000FF; 
+            background-color:#CCCCCC; 
+            height: 90vh;
+        }
+    }
 }
 
 .blurred {
