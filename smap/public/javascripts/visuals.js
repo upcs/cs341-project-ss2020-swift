@@ -689,6 +689,7 @@ if(typeof module !== "undefined" && module.exports){
     // rankStates: rankStates,
     // setMetadata: setMetadata,
     // displayWeights: displayWeights
+    blur_elements: blur_elements, 
     getMetadata: getMetadata,
     prepareMetadataAlert: prepareMetadataAlert,
     closeMetadataAlert: closeMetadataAlert,

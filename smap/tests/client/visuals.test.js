@@ -7,44 +7,48 @@ const path = '../../public/javascripts/visuals.js';
 window.$ = $;
 const visuals = require(path);
 
-
-describe("getMetadata", () => {
-    test("returns metadata", () => {
-        let getMetadata = jest.fn(() => {
-            visuals.getMetadata();
-        });
-        let metadata = getMetadata();
-        expect(getMetadata).toHaveBeenCalledTimes(1);
-        expect.anything();
-    });
-});
-
-describe("prepareMetadataAlert", () => {
-    test("returns metadata", () => {
-        document.body.innerHTML = `
-        <div id=metadata-title class="metadata-alert-item">init title text</div>
-        <div id=metadata-date class="metadata-alert-item">init date text</div>
-        <div id=metadata-notes class="metadata-alert-item">init notes text</div>
-        <div id=metadata-publisher class="metadata-alert-item">init publisher text</div>
-        <div id=loading-div class="loading"></div>
-        `
-        // expect("body")
-        //todo: finish this test
-        visuals.prepareMetadataAlert();
-
-        expect.anything();
-    });
-});
-
 function resetHTML(){
     document.body.innerHTML = `
+    <body>
         <div id=metadata-title class="metadata-alert-element hidden">init title text</div>
         <div id=metadata-date class="metadata-alert-element hidden">init date text</div>
         <div id=metadata-notes class="metadata-alert-element hidden">init notes text</div>
         <div id=metadata-publisher class="metadata-alert-element hidden">init publisher text</div>
         <div id=loading-div class="loading"></div>
-        `;
+    </body>
+    `;
 }
+
+describe("getMetadata", () => {
+    test("returns metadata", () => {
+        let metadata = visuals.getMetadata();
+
+        expect(metadata).toEqual(
+            // stat_name_short: "stat name short",
+            // publication_date: "publication date",
+            // note: "note",
+            // source: "source",
+            // original_source: "original source"
+            expect.anything() //should be in the form above, but I'm not mocking the $.get, so I can't test it here
+        );
+    });
+});
+
+describe("prepareMetadataAlert", () => {
+    beforeEach(resetHTML);
+    blur_elements = visuals.blur_elements;
+
+    test("returns metadata", () => {
+        expect($("body").hasClass("unscrollable")).toBe(false);
+        visuals.prepareMetadataAlert();
+        expect($("body").hasClass("unscrollable")).toBe(true);
+        // for()
+
+
+    });
+});
+
+
 
 describe("showMetadataAlert", () => {
     beforeEach(resetHTML);
