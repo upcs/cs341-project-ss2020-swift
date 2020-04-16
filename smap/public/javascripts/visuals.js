@@ -485,6 +485,11 @@ function prepareMetadataAlert(){
         state_name_short, publication_date, note, source, original_source
 */
 function showMetadataAlert(metadata){
+  if(metadata == null || metadata == {} || metadata.stat_name_short == null){
+      console.error("metadata is null");
+      $("#metadata-title").text("Error: metadata not available");
+      return;
+  }
   let container = $("#metadata-alert-container");
   $("#metadata-title").text(metadata.stat_name_short);
   $("#metadata-date").text(metadata.publication_date);
@@ -684,7 +689,7 @@ if(typeof module !== "undefined" && module.exports){
     // rankStates: rankStates,
     // setMetadata: setMetadata,
     // displayWeights: displayWeights
-    getMetadata: getMetadata, 
+    getMetadata: getMetadata,
     prepareMetadataAlert: prepareMetadataAlert,
     closeMetadataAlert: closeMetadataAlert,
     showMetadataAlert: showMetadataAlert
