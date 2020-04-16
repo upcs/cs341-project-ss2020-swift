@@ -103,7 +103,7 @@ function normalizeStats(row){
 //merely multiplying by the slider value meant a 50% increase for 1 to 2 but a 20% increase for 4 to 5
 function calculateWeight(value){
   if(!Number.isInteger(value) || value<=0){
-      console.error("<model.js><calculateWeight> Invalid slider value (must be int >= 1)");
+      console.error("<calculateWeight> Invalid slider value (must be int >= 1)");
       return 0;
   }
   const ratio = 1.8;

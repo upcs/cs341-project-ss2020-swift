@@ -1,5 +1,7 @@
 'use strict';
 
+// const $ = require('jquery');
+
 const blur_elements = [
     $("#nav-bar"), $("#settings"), $("#map-container"), $("#about-container")
 ];
@@ -462,6 +464,7 @@ function createDetailsMsg(stat){
     $("#metadata-alert-close").click(closeMetadataAlert);
 });
 
+
 async function getMetadata(){
   let metadata = await $.get("/api/meta").catch((err) => {return null;});
   return metadata;
@@ -657,4 +660,34 @@ function drawChart(state_id, weights, ranks) {
             }
         }
     });
+}
+
+// For testing purposes. More details later
+if(typeof module !== "undefined" && module.exports){
+  module.exports = {
+    // Stat: Stat,
+    // data: data,
+    // Data: Data,
+    // DEFAULT_WEIGHT: DEFAULT_WEIGHT,
+    // storage: {
+    //   available: storageAvailable,
+    //   updateCategory: updateCategoryStorage,
+    //   updateWeight: updateWeightStorage,
+    //   restore: restoreFromStorage,
+    //   reset: setStorage,
+    //   ACTIVE_SLIDER_KEY: ACTIVE_SLIDER_KEY,
+    //   ACTIVE_SLIDER_PREFIX: ACTIVE_SLIDER_PREFIX
+    // },
+    // normalizeStats: normalizeStats,
+    // calculateWeight: calculateWeight,
+    // getStateInfo: getStateInfo,
+    // rankStates: rankStates,
+    // setMetadata: setMetadata,
+    // displayWeights: displayWeights
+    getMetadata: getMetadata, 
+    prepareMetadataAlert: prepareMetadataAlert,
+    closeMetadataAlert: closeMetadataAlert,
+    showMetadataAlert: showMetadataAlert
+
+  }
 }

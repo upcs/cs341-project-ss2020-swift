@@ -1,5 +1,5 @@
 //SMAP Team
-//Testing for javascripts/statistics.js
+//Testing for javascripts/model.js
 
 "use strict";
 
