@@ -88,6 +88,10 @@ $("document").ready(function () {
       preload(clear_loading, ellipses_loop);
     });
 
+    /*
+    * A jQuery function to highlight/hover upon mousing over a state.
+    * Applies to both the normal map and the states in the northeast magnifier.
+    */
     function setupHovering() {
         var us_map = document.getElementById("us-map");
         // Get one of the SVG items by ID;
@@ -151,7 +155,9 @@ $("document").ready(function () {
         model.style.display = "none";
     }
 
-    //Gets list of categories and creates those sliders
+    /*
+    * Gets list of categories and creates those sliders
+    */
     $.get("/api/cats", "", function(data, status, res){
       if (status !== "success"){
         console.log("[!] Error getting categories");
@@ -164,7 +170,9 @@ $("document").ready(function () {
       }
     });
 
-    //blurs background and makes body unscrollable and unhides the state window
+    /* 
+    * Blurs background and makes body unscrollable and unhides the state window when a state is clicked.
+    */
     function prepareStateWindow() {
         var us_map = document.getElementById("us-map").contentDocument;
 
@@ -178,7 +186,12 @@ $("document").ready(function () {
         });
     }
 
-    //adds state specific details
+    /** 
+    * Populates a state window with state-specific information, including graphs, images, and good/bad stats.
+    * Args: 
+    * @param stat stat object to write details about
+    * @param NE true if the state is part of the northeast, false if it is not
+    */
     function populateStateWindow(NE){
         if(NE){
             var map = document.getElementById("ne-map").contentDocument;
@@ -328,6 +341,9 @@ $("document").ready(function () {
     }
 
 /**
+ * A helper function for populateStateWindow(). 
+ * Adds the best and worst stats for the selected state, as well as the corresponding stat metadata.
+ * Args:
  * @param stat stat object to write details about
  * @param best bool, whether the stat is the best or the worst
  */
@@ -358,6 +374,8 @@ function populateDataDetails(stat, best) {
 }
 
 /**
+ * A helper function that creates the metadata message for a selected statistic.
+ * 
  * @param {Stat} stat Stat to create message about
  * @returns {msg} message about stat
  */
@@ -384,6 +402,9 @@ function createDetailsMsg(stat){
         closeAlert()
     );
 
+    /**
+     * Closes an alert box; works for both state and metadata windows.
+     */
     function closeAlert() {
         for (let element of blur_elements) {
             element.removeClass("blurred");
@@ -393,7 +414,9 @@ function createDetailsMsg(stat){
         $(".loading").removeClass("hidden");
     }
 
-    // On theme-circle click, change the active theme
+    /**
+     * On theme-circle click, change the active theme
+     */
     $(".theme-template").click( function() {
         const themes = [
             "orange-red", "green-blue", "pink-purple", "dark-red", "dark-green", "dark-blue"
@@ -448,8 +471,17 @@ function createDetailsMsg(stat){
     $("#metadata-alert-close").click(closeMetadataAlert);
 });
 
+/**
+ * An asynchronous function wrapper to prevent errors when requesting metadata.
+ * @returns metadata: an array of all the metadata available in the database
+ *                     each element in the array corresponds to the dictionary 
+ *                      for a single stat; the dictionary contains information types 
+ *                      like stat name and year collected as keys and their corresponding
+ *                      values
+ */
 async function getMetadata(){
   let metadata = await $.get("/api/meta").catch((err) => {return null;});
+  console.log("META:" + metadata[0].stat_name_short);
   return metadata;
 }
 
