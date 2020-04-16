@@ -135,7 +135,7 @@ function getStateInfo(stateAbbr){
         arr.push({
           id: cat,
           rank: rank,
-          value: stat.data[stateAbbr],
+          value: stat.raw_data[stateAbbr],
           name: stat.category.title
         });
       }
@@ -164,13 +164,16 @@ function rankStates(data){
       let value = data[second] - data[first];
       if (value !== 0) return value;
       //NOTE: In node v10, on which our server runs, sorts may not be stable
-      //As such, checking the order of ranks does not make sense unless we break ties
+      //As such, checking the order of ranks does not make sense unless we break ties, which we do here by alphabetical order
       return first.localeCompare(second);
     } else {
       error = true;
       return 0;
     }
   });
+  if(data.invert_flag === 1) {
+    ranks.reverse();
+  }
   return error ? [] : ranks;
 }
 
@@ -220,6 +223,7 @@ It is of the following form:
   enabled: Whether to use this category to calculate weights.
   slider: A JQuery object for the slider (whether active or inactive).
   data: The data for the statistic - mapping from state abbreviations to numbers. May be undefined.
+  raw_data: unnormalized data
   metadata: The metadata for the statistic category - may be undefined
 }
 Constructor arguments:
@@ -286,11 +290,11 @@ Stat.prototype.enable = function(){
         alert("<statistics.js> AHHHHHHH FAILURE!!!");
       } else {
         this.data = cat_data[0];
+        this.raw_data = {};
+        Object.assign(this.raw_data, this.data); //Clones data object (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign)
         this.rankings = rankStates(this.data);
         data.active.add(this.category.stat_id);
-        // this.data is an object with all of the column names ["stat_id"], ["stat_name_short"], ["AL"], ["AK"], etc.
         normalizeStats(this.data);
-        // console.log(this.data);
         displayWeights();
         updateCategoryStorage();
       }
