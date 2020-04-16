@@ -88,7 +88,7 @@
         <div id="error" class="fullscreen">
             <div style="text-align: center;">
                 <h3>Your Broswer window is too small.</h3>
-                <h4>Please resize it</h4>
+                <h4>Please resize it or zoom out</h4>
             </div>
         </div>
         <!-- This div holds the app, which includes the settings sidebar, the map itself, as well as
@@ -103,17 +103,7 @@
                     Statistic Settings:
                 </div>
                 <div id="statistics-sliders">
-                    <!-- This is the template for each statistic slider container, the only thing
-                         that is unique is encapsulated in square brackets [[[]]] -->
-                    <!--
-                    <div class="statistic-slider-container" id="[[[ Statistic ID ]]]">
-                        <div class="statistic-slider-remover">&#215;</div>
-                        <div class="statistic-slider-title">[[[ Statistic Name ]]]</div>
-                        <input class="statistic-slider" type="range" min="1" max="5" value="3" />
-                        <div class="statistic-slider-metadata">&#9432;</div>
-                    </div>
-                    -->
-                    <!-- TODO: Remove the premade templates and populate using Javascript -->
+                    <!-- This is the template for each statistic slider container -->
 					<div class="statistic-slider-container" id="active_slider_template">
                         <div class="statistic-slider-remover">&#215;</div>
                         <div class="statistic-slider-title">Template</div>
@@ -134,16 +124,7 @@
                 </div>
                 <!-- All of the other statistics that are not sliders -->
                 <div id="statistics-selector">
-                    <!-- This is the template for each statistic selector container, the only thing
-                         that is unique is encapsulated in square brackets [[[]]] -->
-                    <!--
-                    <div class="statistic-option" id="[[[ Statistic ID ]]]">
-                        <div class="add-statistic">+</div>
-                        <div class="statistic-option-title">[[[ Statistic Title ]]]</div>
-                        <div class="statistic-option-metadata">&#9432;</div>
-                    </div>
-                    -->
-                    <!-- TODO: Remove the premade templates and populate using Javascript -->
+                    <!-- This is the template for each statistic selector container -->
 					<div class="statistic-option" id="inactive_slider_template">
                         <div class="add-statistic">+</div>
                         <div class="statistic-option-title">Template</div>
@@ -158,7 +139,9 @@
                     <img src="images/arrow.png" id="nav-arrow"/>
                 </div>
                 <div id="map-legend-container">
-                    <span>Worst </span><div id="map-legend" class="statistic-slider"> </div><span> Best</span>
+                    <div id="worst">Worst</div>
+                    <div id="map-legend" class="statistic-slider"> </div>
+                    <div id="best">Best</div>
                 </div>
 				<div id="theme-selector-container">
                     <div id="theme-roller-container">
@@ -204,16 +187,14 @@
                 </div>
                 <!-- End theme-roller -->
             </div>
-            <div id="map-container">
-            </div>
+            <div id="map-container"></div>
             <!-- Container for the whole ne magnifiyer -->
             <div id="ne-inspector-container">
                 <!-- Magnifying glass -->
                 <img id="ne-inspector" src="images/ne-inspector.png"/>
                 <!-- The container for the actual magnification bit -->
                 <div id="ne-magnifier">
-                    <div id="ne-map-container">
-                    </div>
+                    <div id="ne-map-container"></div>
                     <span id="ne-magnifiyer-close">&times;</span>
                 </div>
             </div>

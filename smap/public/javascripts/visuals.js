@@ -49,6 +49,7 @@ var chart;
 var theme_brightness = "light";
 var lastMove = 0;
 var orientation;
+var zoom_alert = false;
 
 ///////////////////
 ///  FUNCTIONS  ///
@@ -478,8 +479,8 @@ function populateStateWindow(is_ne){
 function drawChart(state_id, weights, ranks) {
     let ctx = document.getElementById('myChart').getContext('2d');
     // Resize the chart according to the window size.
-    ctx.canvas.width = $("#graph").width();
-    ctx.canvas.height = $("#graph").height();
+    // ctx.canvas.width = $("#graph").width();
+    // ctx.canvas.height = $("#graph").height();
     // This prevents the charts from stacking and interfering with eachother
     if (chart != undefined){
         chart.destroy();
@@ -830,13 +831,25 @@ function mixColor(weight, color) {
  */
 function setLayout(init){
     // Resize the graph with window resize
-    if($(window).height() < MIN_HEIGHT || $(window).width() < MIN_WIDTH) {
+    if(window.devicePixelRatio > 1.8 && !zoom_alert) {
+        zoom_alert = true;
+        console.warn("CSS Scaling may be effected at extremely high zoom resolutions." +
+            "Please consider alternative methods for accessibility reasons (e.g. Magnifier)");
+        window.alert("Warning: The website may exhibit strange scaling errors or be unusable at "+
+            "high web-browser zoom values.\n\n Proceed if this is not an issue. Otherwise, please "+
+            "consider using an alternative zoom tool for accessibility reasons like Windows Magnifier");
+    } else if (window.devicePixelRatio <= 1.5 && zoom_alert) {
+        zoom_alert = false;
+    }
+    let zoom_ratio = Math.pow(window.devicePixelRatio, 0.15);
+    console.log(zoom_ratio);
+    if($(window).height() < (MIN_HEIGHT/zoom_ratio) || $(window).width() < (MIN_WIDTH/zoom_ratio)) {
         console.error("Too small window size");
         $("#error").css("display", "grid");
     } else {
         $("#error").css("display", "none");
         let aspect_ratio = $(window).width() / $(window).height();
-        if(aspect_ratio < CRITICAL_ASPECT_RATIO || $(window).width() < MIN_HORIZONTAL_WIDTH) {
+        if(aspect_ratio < CRITICAL_ASPECT_RATIO || $(window).width() < MIN_HORIZONTAL_WIDTH/zoom_ratio) {
             if(orientation !== "vertical") {
                 orientation = "vertical";
                 if(!init) { $("body").animate({opacity: "0"}, LAYOUT_CHANGE_TIME, "swing"); }

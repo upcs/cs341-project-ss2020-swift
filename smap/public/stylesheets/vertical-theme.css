@@ -88,7 +88,3 @@
 #statistics-sliders-header, #statistics-sliders {
     border-right: 1px dotted var(--accent-color-dark);
 }
-
-#map-legend {
-    max-width: 35%;
-}
