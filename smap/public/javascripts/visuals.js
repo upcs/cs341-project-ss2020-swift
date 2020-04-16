@@ -32,6 +32,14 @@ const themes = [
 ];
 const ne_states = ["MA", "CT", "NH", "RI", "VT", "DE", "MD", "MJ", "NY", "PA", "ME", "NJ"];
 
+const DOTS_PULSE = 1000;
+const DOTS_LENGTH = 500
+const DOTS_OFFSET = 250;
+const DOTS_FADE_OUT = 400;
+const LOAD_FADE_OUT = 500;
+const READY_HOLD = 600;
+const FADE_IN = 500;
+const ZOOM_IN = 400;
 
 // Window variables
 
@@ -68,17 +76,17 @@ $("document").ready(function () {
     var ellipses_loop = setInterval(function() {
         // Simply fade in and grow / fade out and shrink dots for a loading effect to watch while
         // the page is preloading elements
-        $("#dot1").animate({opacity: "0", fontSize: "60px"}, 500, "swing");
-        $("#dot1").animate({opacity: "1", fontSize: "80px"}, 500, "swing");
+        $("#dot1").animate({opacity: "0", fontSize: "60px"}, DOTS_LENGTH, "swing");
+        $("#dot1").animate({opacity: "1", fontSize: "80px"}, DOTS_LENGTH, "swing");
         window.setTimeout(function() {
-            $("#dot2").animate({opacity: "0", fontSize: "60px"}, 500, "swing");
-            $("#dot2").animate({opacity: "1", fontSize: "80px"}, 500, "swing");
+            $("#dot2").animate({opacity: "0", fontSize: "60px"}, DOTS_LENGTH, "swing");
+            $("#dot2").animate({opacity: "1", fontSize: "80px"}, DOTS_LENGTH, "swing");
             window.setTimeout(function() {
-                $("#dot3").animate({opacity: "0", fontSize: "60px"}, 500, "swing");
-                $("#dot3").animate({opacity: "1", fontSize: "80px"}, 500, "swing");
-            }, 250);
-        }, 250);
-    }, 1000 );
+                $("#dot3").animate({opacity: "0", fontSize: "60px"}, DOTS_LENGTH, "swing");
+                $("#dot3").animate({opacity: "1", fontSize: "80px"}, DOTS_LENGTH, "swing");
+            }, DOTS_OFFSET);
+        }, DOTS_OFFSET);
+    }, DOTS_PULSE );
 
     // Map Preloading Functions: If the map wasn't loaded by the browser, preload it anyway for
     // other functions to use to do the prep work
@@ -128,12 +136,6 @@ $("document").ready(function () {
  *      saying it is ready
  */
 function clear_loading(loop) {
-
-    const DOTS_FADE_OUT = 250;
-    const LOAD_FADE_OUT = 500;
-    const READY_HOLD = 400;
-    const FADE_IN = 500;
-    const ZOOM_IN = 400;
     const ANIMATION_TIME = (DOTS_FADE_OUT + LOAD_FADE_OUT + READY_HOLD + Math.max(FADE_IN, ZOOM_IN)) / 1000.0;
 
     // Make the dots disappear
