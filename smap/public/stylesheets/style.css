@@ -864,7 +864,7 @@ i {
 
 #state-window-container{
     display: grid;
-    background-color: rgba(255,255,255,1); /* full white */
+   /* background-color: rgba(255,255,255,1); /* full white */
     height: 600px;
     grid-template-columns: 33% 67%;
     grid-template-rows: 20% 50% 30%;
@@ -929,8 +929,12 @@ i {
     display: grid;
     align-items: center;
     justify-items: center;
-    background-color: rgba(255, 255, 255, 1);
+    /*background-color: rgba(255, 255, 255, 1);*/
     filter: invert(var(--inversion));
+}
+
+#state-display img{
+    filter: drop-shadow(5px 4px 4px Black);
 }
 
 #state-window-data-container{
