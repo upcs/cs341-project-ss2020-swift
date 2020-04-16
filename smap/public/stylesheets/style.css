@@ -236,7 +236,6 @@ body {
     grid-template-areas:
         "statistic-option-add statistic-option-title ."
     ;
-    height: auto;
     margin-bottom: 4px;
     padding: 8px;
     /* Coloring */

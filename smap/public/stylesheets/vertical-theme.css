@@ -88,3 +88,15 @@
 #statistics-sliders-header, #statistics-sliders {
     border-right: 1px dotted var(--accent-color-dark);
 }
+
+.statistic-slider {
+    height: 20px;
+}
+
+#map-legend {
+    height: 15px;
+}
+
+.statistic-slider-container, .statistic-option, #best, #worst {
+    font-size: 20px;
+}
