@@ -528,9 +528,9 @@ function closeMetadataAlert(){
 
 /**
  * Creates an active slider from the template and adds it to the page.
- * @param {*} title 
- * @param {*} weight 
- * @returns slider, which resenbles the template
+ * @param {string} title the name of the statistic
+ * @param weight the value the slider is set to 
+ * @returns slider, which resenbles the template but with the title of the stat it corresponds to
  */
 function makeActiveSlider(title, weight){
   let slider = activeSliderTemplate.clone();
@@ -540,7 +540,13 @@ function makeActiveSlider(title, weight){
   return slider;
 }
 
-//Creates an inactive slider from the template and adds it to the page
+/**
+ * Creates an inactive slider from the template and adds it to the page.
+ * 
+ * @param {string} title the name of the statistic
+ * @returns slider, which resenbles the inacvtive slider template 
+ * but with the title of the stat it corresponds to
+ */
 function makeInactiveSlider(title){
   let slider = inactiveSliderTemplate.clone();
   $(".statistic-option-title", slider).html(title);
@@ -548,8 +554,15 @@ function makeInactiveSlider(title){
   return slider;
 }
 
-// Weight is a value between 0 and 1
-// 0 is low, 1 is high
+/**
+ * Creates a color based on the state's weight. States with smaller values have colors that 
+ * are lighter, while states with values close to 1 have more saturated colors.
+ * 
+ * @param {float} weight the normalized statistic weight; a value between 0 (low) and 1 (high)
+ * @param color one of the color variables defined in the stylesheets, like  "--accent-color"
+ * 
+ * @returns a string that fulfills the css syntax for rgba colors
+ */
 function mixColor(weight, color) {
     // Get the theme colors
     var min_string = $(":root").css("--color-light");
@@ -579,6 +592,13 @@ function mixColor(weight, color) {
     return ("rgba("+ result[0] +", "+ result[1] +", "+ result[2] +", 1)");
 }
 
+/**
+ * Colors individual states in the SVG according to their normalized weights.
+ * 
+ * @param doc the SVG document
+ * @param state the SVG element that corresponds to a certain state
+ * @param  weight the state's normalized weight
+ */
 function colorSVG(doc, state, weight) {
     // Get one of the SVG items by ID;
     var svgItem = doc.getElementById(state);
@@ -587,6 +607,12 @@ function colorSVG(doc, state, weight) {
     svgItem.setAttribute("style", "stroke-width: 1; stroke: "+border+"; fill: "+mixColor(weight, "--accent-color")+";");
 }
 
+/**
+ * Colors states in the SVG that only contains northeastern states.
+ * 
+ * @param state the SVG element that corresponds to a certain state
+ * @param  weight the state's normalized weight
+ */
 function colorState(state, weight) {
     const ne_states = ["MA", "CT", "NH", "RI", "VT", "DE", "MD", "MJ", "NY", "PA", "ME", "NJ"];
     let us_map = document.getElementById("us-map");
@@ -599,8 +625,14 @@ function colorState(state, weight) {
 
 }
 
-//weights is the dictionary with keys of state abbreviations and values of the calculated weight
-//ranks is an array, with only state abbreviations, from best to worst
+/**
+ * Makes a bar chart of state weights, from best to worst. Also includes styling of chart and it's bars.
+ * 
+ * 
+ * @param {int} state_id the id number that corresponds to a certain state
+ * @param {JSON} weights the dictionary with keys of state abbreviations and values of the calculated weight
+ * @param {[int]} ranks an array, with only state abbreviations, from best to worst
+ */
 function drawChart(state_id, weights, ranks) {
     var ctx = document.getElementById('myChart').getContext('2d');
 
