@@ -103,7 +103,7 @@ function parseDataURL(query) {
     cats - an array of the stat_ids corresponding to categories requested, or undefined if none provided
     callback - a callback function that specifies how to handle the results obtained from the db query in this function
   Return:
-    An object of the form {category: Data}, or undefined if the database query was unsuccessful. Note that passing in a nonexistant 
+    An array with objects of the form {category: Data}, or undefined if the database query was unsuccessful. Note that passing in a nonexistant 
     category is acceptable; it will be ignored, but will not create an error. If the query contains good and bad categories, only 
     the good ones will be part of the returned object.
 */

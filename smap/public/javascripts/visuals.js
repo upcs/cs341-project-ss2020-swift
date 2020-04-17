@@ -132,7 +132,7 @@ $("document").ready(function () {
 
 
 /**
- * Creates a loading screen and keeps it up until the rest of the site (like SVG files) is loaded.
+ * Animates removal of loading screen.
  * @param {setInverval} loop the loading loop we're supposed to break and replace with the loading screen
  *      saying it is ready
  */
@@ -255,7 +255,7 @@ function makeActiveSlider(title, weight){
 
 
 /**
- * Creates an active slider from template, but with the appropropriate name.
+ * Creates an inactive slider from template, but with the appropropriate name.
  * @param {String} title the title of the statistic to be filled into the box
  */
 function makeInactiveSlider(title) {
@@ -327,7 +327,7 @@ function colorSVG(doc, state, weight) {
 
 
 /**
- * Colors states in the SVG that only contains northeastern states.
+ * Colors states in the united states SVG. If the state is also in the northeast, it is colored in that SVG too.
  * @param {String} state the state that is to be colored
  * @param {Number} weight the number that is passed to mixColor in colorSVG
  */
