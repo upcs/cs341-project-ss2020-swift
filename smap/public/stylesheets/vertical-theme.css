@@ -89,10 +89,6 @@
     border-right: 1px dotted var(--accent-color-dark);
 }
 
-.statistic-slider {
-    height: 20px;
-}
-
 #map-legend {
     height: 15px;
 }
