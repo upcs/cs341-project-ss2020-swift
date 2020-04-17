@@ -485,6 +485,9 @@ async function getMetadata(){
   return metadata;
 }
 
+/**
+ * Unhide the metadata alert and blur the rest of the site.
+ */
 function prepareMetadataAlert(){
   $("body").addClass("unscrollable");
   for (var element of blur_elements) {
@@ -493,12 +496,13 @@ function prepareMetadataAlert(){
   $("#metadata-alert-container").removeClass("hidden");
 }
 
-/*
-  Args:
+/** 
+ * Populates the metadata alert box's information.
+ * Args:
     metadata - the metadata object returned from the server. Must have at least
     the following:
         state_name_short, publication_date, note, source, original_source
-*/
+ */
 function showMetadataAlert(metadata){
   let container = $("#metadata-alert-container");
   $("#metadata-title").text(metadata.stat_name_short);
@@ -509,6 +513,9 @@ function showMetadataAlert(metadata){
   $(".metadata-alert-element").removeClass("hidden");
 }
 
+/**
+ * Closes the metadata alert and removes blur on the rest of the website.
+ */
 function closeMetadataAlert(){
   for (var element of blur_elements) {
       element.removeClass("blurred");
@@ -519,7 +526,12 @@ function closeMetadataAlert(){
   $("#metadata-alert-container").addClass("hidden");
 }
 
-//Creates an active slider from the template and adds it to the page
+/**
+ * Creates an active slider from the template and adds it to the page.
+ * @param {*} title 
+ * @param {*} weight 
+ * @returns slider, which resenbles the template
+ */
 function makeActiveSlider(title, weight){
   let slider = activeSliderTemplate.clone();
   $(".statistic-slider", slider).attr("value", weight);
