@@ -107,18 +107,18 @@
                     </div>
                     -->
                     <!-- TODO: Remove the premade templates and populate using Javascript -->
-					<div class="statistic-slider-container" id="active_slider_template">
+					          <div class="statistic-slider-container" id="active_slider_template">
                         <div class="statistic-slider-remover">&#215;</div>
                         <div class="statistic-slider-title">Template</div>
                         <input class="statistic-slider" type="range" min="1" max="5" value="3" />
                         <div class="statistic-slider-metadata">&#9432;</div>
-                        <div class="statistic-slider-ticks">
-							<p>1</p>
-							<p>2</p>
-							<p>3</p>
-							<p>4</p>
-							<p>5</p>
-						</div>
+                        <div class="statistic-slider-tick-container">
+            							<p class="single-ticks-1">1</p>
+            							<p class="single-ticks-2">2</p>
+            							<p class="single-ticks-3">3</p>
+            							<p class="single-ticks-4">4</p>
+            							<p class="single-ticks-5">5</p>
+            						</div>
                     </div>
                 </div>
 
@@ -137,7 +137,7 @@
                     </div>
                     -->
                     <!-- TODO: Remove the premade templates and populate using Javascript -->
-					<div class="statistic-option" id="inactive_slider_template">
+					          <div class="statistic-option" id="inactive_slider_template">
                         <div class="add-statistic">+</div>
                         <div class="statistic-option-title">Template</div>
                         <div class="statistic-option-metadata">&#9432;</div>
@@ -202,7 +202,7 @@
                 <!-- Magnifying glass -->
                 <img id="ne-inspector" src="images/ne-inspector.png"/>
                 <!-- The container for the actual magnification bit -->
-                <div id="model">
+                <div id="ne-magnifier">
                     <div id="ne-map-container">
                     </div>
                     <span id="ne-magnifiyer-close">&times;</span>
@@ -231,7 +231,9 @@
                 States are then colored according to their score, with higher opacity corresponding to
                 scores closer to the highest score. With SMAP, users no longer need to have multiple
                 files of data open at once to create their own assessments; comprehensive state
-                analysis is at their fingertips! </p></span>
+                analysis is at their fingertips! </p>
+                <p>All map and state graphics are derived from
+                <a href="https://simplemaps.com/resources/svg-maps">Simple Maps</a>.</p></span>
                 <div class="ad" id="about-ad-left">
                     This is an ad. <br />Be afraid!
                 </div>

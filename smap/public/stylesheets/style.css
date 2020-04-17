@@ -91,8 +91,8 @@ body {
 .statistic-slider-container {
     /* Positioning and Display */
     display: grid;
-    grid-template-columns: [remove-statistic-guide]7% [stat-option-title]auto 7%;
-	grid-template-rows: [slider-title]33.3% auto [slider-ticks]33.3%;
+    grid-template-columns: [remove-statistic-guide]7% [stat-option-title]86% [metadata]7%;
+	grid-template-rows: [slider-title]auto [slider-slider]34% [slider-ticks]30%;
     grid-template-areas:
         "slider-remover slider-title slider-metadata"
         "slider-remover slider slider"
@@ -112,7 +112,6 @@ body {
 
 .statistic-slider-remover {
     /* Positioning and Display */
-    display: grid;
     grid-area: slider-remover;
     align-items: center;
     /* Fonts and Text */
@@ -124,16 +123,16 @@ body {
 
 .statistic-slider-title {
     /* Positioning and Display */
-    display: grid;
     grid-area: slider-title;
-    justify-content: flex-start;
+    justify-content: center;
     padding-left: 10px;
     padding-top: 5px;
+    padding-bottom: 5px;
+    overflow-wrap: break-word;
 }
 
 .statistic-slider-metadata {
     /* Positioning and Display */
-    display: grid;
     grid-area: slider-metadata;
     align-items: center;
     padding-right: 4px;
@@ -150,6 +149,7 @@ body {
     grid-area: slider;
     height: 10px;
     margin: 10px;
+    width: auto;
     /* Borders */
     border: 2px solid var(--accent-color);
     border-radius: 8px;
@@ -158,34 +158,55 @@ body {
     box-shadow: 0px 0px 2px inset var(--secondary-color-light);
     /* Other */
     -webkit-appearance: none !important;
-    z-index: 2;
 }
 
-/* TODO: This will be fixed at a later time, as it creates a weird scrollbar */
-.statistic-slider-ticks {
+.statistic-slider-tick-container {
     /* Positioning and Display */
-	display: flex;
-	justify-content: space-between;
-	grid-area: ticks;
-	width: 103.6%;
-	margin-left: 18px;
-	margin-top: -20px;
+    grid-area: ticks;
+	justify-content: space-evenly;
+    width: 100%;
+    margin-top: -5px;
+    display: grid;
+    grid-template-columns: [beginning]4% [tick-1]1% [between-tick]23% [tick-2]1% [between-tick]21% [tick-3]1% [between-tick]23% [tick-4]1% [between-tick]22% [tick-5]1% [end]3%;
+    grid-template-rows: auto;
+    grid-template-areas:
+        "before-tick tick-1 between-1 tick-2 between-2 tick-3 between-3 tick-4 between-4 tick-5 end"
+    ;
 }
 
-.statistic-slider-ticks p {
+.statistic-slider-tick-container p {
     /* Positioning and Display */
-	position: relative;
-	display: flex;
 	justify-content: center;
     text-align: center;
 	height: 8px;
-	margin-right: 50px;
+    margin-top: 0px;
     width: 1.66px;
     /* Coloring */
     background: var(--color-dark);
     /* Fonts and Text */
 	font-size: 12px;
     line-height: 35px;
+    display: grid;
+}
+
+.single-ticks-1 {
+    grid-area: tick-1;
+}
+
+.single-ticks-2 {
+    grid-area: tick-2;
+}
+
+.single-ticks-3 {
+    grid-area: tick-3;
+}
+
+.single-ticks-4 {
+    grid-area: tick-4;
+}
+
+.single-ticks-5 {
+    grid-area: tick-5;
 }
 
 #statistics-sliders-header {
@@ -205,9 +226,8 @@ body {
 #statistics-sliders {
     /* Positioning and Display */
     grid-area: sliders;
-    display: grid;
     padding: 4px;
-    align-content: start;
+    min-height: 100px;
     /* Other */
     overflow-y: auto;
     /* Note: The following two settings are specific to Firefox */
@@ -238,7 +258,7 @@ body {
     grid-template-areas:
         "statistic-option-add statistic-option-title ."
     ;
-    height: 20px;
+    height: auto;
     margin-bottom: 4px;
     padding: 8px;
     /* Coloring */
@@ -269,6 +289,8 @@ body {
 .statistic-option-title {
     /* Positioning and Display */
     grid-area: statistic-option-title;
+    /* flex-shrink: 1; */
+    overflow-wrap: break-word;
 }
 
 .statistic-option-metadata {
@@ -436,8 +458,8 @@ object {
   padding-left: 30%;
 }
 
-/* The Model (background) */
-#model {
+/* The NE magnifier (background) */
+#ne-magnifier {
   display: grid;
   align-items: center;
   justify-items: end;
@@ -448,7 +470,7 @@ object {
   width: 100%; /* Full width */
   height: 100%; /* Full height */
   background-color: rgb(0,0,0); /* Fallback color */
-  background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+  background-color: rgba(0,0,0,0.667); /* Black w/ opacity */
 }
 
 /* The Close Button */
@@ -843,7 +865,7 @@ i {
 
 #state-window-container{
     display: grid;
-    background-color: rgba(255,255,255,1); /* full white */
+   /* background-color: rgba(255,255,255,1); /* full white */
     height: 600px;
     grid-template-columns: 33% 67%;
     grid-template-rows: 20% 50% 30%;
@@ -908,8 +930,12 @@ i {
     display: grid;
     align-items: center;
     justify-items: center;
-    background-color: rgba(255, 255, 255, 1);
+    /*background-color: rgba(255, 255, 255, 1);*/
     filter: invert(var(--inversion));
+}
+
+#state-display img{
+    filter: drop-shadow(5px 4px 4px Black);
 }
 
 #state-window-data-container{
