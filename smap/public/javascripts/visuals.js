@@ -791,9 +791,10 @@ function themeHandler() {
     $("link[rel~='stylesheet']").each(function(_, theme) {
         theme = $(theme);
         if(theme.hasClass("theme")) {
+            theme.prop("disabled", true);
             if(theme.attr("title") != theme_id) {
                 //$("#"+theme+"-theme").attr("rel", "alternate stylesheet");
-                theme.prop("disabled", true);
+                // theme.prop("disabled", true);
             } else {
                 theme.prop("disabled", false);
             }
