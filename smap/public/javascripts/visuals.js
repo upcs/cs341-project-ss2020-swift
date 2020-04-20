@@ -37,11 +37,14 @@ const CRITICAL_ASPECT_RATIO = 1.125;
 const LAYOUT_CHANGE_TIME = 250;
 const GRAPH_ANIMATION_TIME = 1000;
 const SCROLL_ANIMATION_TIME = 1000;
-// All small intermediate animations are likely based off this time
-const ANIMATION_TIME_SHORT = 400;
-// All larger scale animations are based off of these times
-const ANIMATION_TIME_MED = 800;
-const ANIMATION_TIME_LONG = 1200;
+const DOTS_PULSE = 1000;
+const DOTS_LENGTH = 500
+const DOTS_OFFSET = 250;
+const DOTS_FADE_OUT = 400;
+const LOAD_FADE_OUT = 500;
+const READY_HOLD = 600;
+const FADE_IN = 500;
+const ZOOM_IN = 400;
 
 // Window variables
 
@@ -52,6 +55,11 @@ var orientation;
 var zoom_alert = false;
 
 //Promises to preload
+
+var cats_promise = $.get("/api/cats");
+var us_map_promise = $.get("/images/us.svg");
+var ne_map_promise = $.get("/images/ne.svg");
+
 
 ///////////////////
 ///  FUNCTIONS  ///
