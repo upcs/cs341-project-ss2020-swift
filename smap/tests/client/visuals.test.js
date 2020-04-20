@@ -47,14 +47,14 @@ describe("getMetadata", () => {
     });
 });
 
-//TODO: if time, fix this for the for loop that used to be in prepareMetadataAlert
+    //TODO: if time, fix this for the for loop that used to be in prepareMetadataAlert
 describe("prepareMetadataAlert", () => {
     beforeEach(resetMetadataAlertHTML);
 
     //Ideally, these would be fetched from over yonder in the visuals.js file, but I can't get that to work... TODO?
-    const blur_elements = [
-        $("#nav-bar"), $("#settings"), $("#map-container"), $("#about-container")
-    ];
+    // const blur_elements = [
+    //     $("#nav-bar"), $("#settings"), $("#map-container"), $("#about-container")
+    // ];
 
     test("returns metadata", () => {
         expect($("body").hasClass("unscrollable")).toBe(false);
@@ -65,28 +65,9 @@ describe("prepareMetadataAlert", () => {
 
         expect($("body").hasClass("unscrollable")).toBe(true);
         expect($("#nav-bar").hasClass("blurred")).toBe(true);
-        console.log("nav-bar: " + JSON.stringify($("#nav-bar")));
         expect($("#metadata-alert-container").hasClass("hidden")).toBe(false);
     });
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 describe("showMetadataAlert", () => {
@@ -238,3 +219,45 @@ describe("showMetadataAlert", () => {
         expect($(".metadata-alert-element").hasClass("hidden")).toBe(false);
     });
 });
+
+describe("closeMetadataAlert", () => {
+    resetMetadataAlertHTML();
+    test("happy path, no params", () => {
+        $("#nav-bar").addClass("blurred");       //because resetMetadataAlertHTML doesn't add blur
+        $("body").addClass("unscrollable");
+        $(".loading").addClass("hidden");
+        $(".metadata-alert-element").removeClass("hidden");
+        $("#metadata-alert-container").removeClass("hidden");
+
+        expect($("#nav-bar").hasClass("blurred")).toBe(true);
+        expect($("body").hasClass("unscrollable")).toBe(true);
+        expect($(".loading").hasClass("hidden")).toBe(true);
+        expect($(".metadata-alert-element").hasClass("hidden")).toBe(false);
+        expect($("#metadata-alert-container").hasClass("hidden")).toBe(false);
+
+        visuals.closeMetadataAlert();
+
+        expect($("#nav-bar").hasClass("blurred")).toBe(false);
+        expect($("body").hasClass("unscrollable")).toBe(false);
+        expect($(".loading").hasClass("hidden")).toBe(false);
+        expect($(".metadata-alert-element").hasClass("hidden")).toBe(true);
+        expect($("#metadata-alert-container").hasClass("hidden")).toBe(true);
+    });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//

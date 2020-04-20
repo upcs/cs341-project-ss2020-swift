@@ -698,8 +698,8 @@ if(typeof module !== "undefined" && module.exports){
     blur_elements: blur_elements,
     getMetadata: getMetadata,
     prepareMetadataAlert: prepareMetadataAlert,
-    closeMetadataAlert: closeMetadataAlert,
-    showMetadataAlert: showMetadataAlert
+    showMetadataAlert: showMetadataAlert,
+    closeMetadataAlert: closeMetadataAlert
 
   }
 }
