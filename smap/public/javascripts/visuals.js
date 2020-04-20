@@ -5,6 +5,7 @@
 const blur_elements = [
     $("#nav-bar"), $("#settings"), $("#map-container"), $("#about-container")
 ];
+//check prepareMetadataAlert and closeMetadataAlert if you get a bug where a new thing isn't blurring or unblurring
 
 var chart;
 
@@ -472,9 +473,13 @@ async function getMetadata(){
 
 function prepareMetadataAlert(){
   $("body").addClass("unscrollable");
-  for (var element of blur_elements) {
-      element.addClass("blurred");
-  }
+  // for (var element of blur_elements) {
+  //     element.addClass("blurred");
+  // }
+  $("#nav-bar").addClass("blurred");
+  $("#settings").addClass("blurred");
+  $("#map-container").addClass("blurred");
+  $("#about-container").addClass("blurred");
   $("#metadata-alert-container").removeClass("hidden");
 }
 
@@ -500,9 +505,14 @@ function showMetadataAlert(metadata){
 }
 
 function closeMetadataAlert(){
-  for (var element of blur_elements) {
-      element.removeClass("blurred");
-  }
+  // for (var element of blur_elements) {
+  //     element.removeClass("blurred");
+  // }
+  $("#nav-bar").removeClass("blurred");
+  $("#settings").removeClass("blurred");
+  $("#map-container").removeClass("blurred");
+  $("#about-container").removeClass("blurred");
+
   $("body").removeClass("unscrollable");
   $(".loading").removeClass("hidden");
   $(".metadata-alert-element").addClass("hidden");
@@ -683,13 +693,9 @@ if(typeof module !== "undefined" && module.exports){
     //   ACTIVE_SLIDER_KEY: ACTIVE_SLIDER_KEY,
     //   ACTIVE_SLIDER_PREFIX: ACTIVE_SLIDER_PREFIX
     // },
-    // normalizeStats: normalizeStats,
-    // calculateWeight: calculateWeight,
-    // getStateInfo: getStateInfo,
-    // rankStates: rankStates,
     // setMetadata: setMetadata,
     // displayWeights: displayWeights
-    blur_elements: blur_elements, 
+    blur_elements: blur_elements,
     getMetadata: getMetadata,
     prepareMetadataAlert: prepareMetadataAlert,
     closeMetadataAlert: closeMetadataAlert,

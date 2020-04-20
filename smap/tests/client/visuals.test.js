@@ -1,20 +1,31 @@
 //SMAP Team
 //testing visuals.js
 
+"use strict";
+
 const $ = require('jquery');
 const rewire = require('rewire');
-const path = '../../public/javascripts/visuals.js';
+const visuals_path = '../../public/javascripts/visuals.js';
+const index_path = '../../public/index';
 window.$ = $;
-const visuals = require(path);
+const visuals = require(visuals_path);
+// const index = require(index_path);
 
-function resetHTML(){
+function resetMetadataAlertHTML(){
     document.body.innerHTML = `
     <body>
-        <div id=metadata-title class="metadata-alert-element hidden">init title text</div>
-        <div id=metadata-date class="metadata-alert-element hidden">init date text</div>
-        <div id=metadata-notes class="metadata-alert-element hidden">init notes text</div>
-        <div id=metadata-publisher class="metadata-alert-element hidden">init publisher text</div>
-        <div id=loading-div class="loading"></div>
+        <div id="nav-bar"></div>
+        <div id="settings"></div>
+        <div id="map-container"></div>
+        <div id="about-container"></div>
+
+        <div id="metadata-alert-container" class="alert-container hidden">
+            <div id=metadata-title class="metadata-alert-element hidden">init title text</div>
+            <div id=metadata-date class="metadata-alert-element hidden">init date text</div>
+            <div id=metadata-notes class="metadata-alert-element hidden">init notes text</div>
+            <div id=metadata-publisher class="metadata-alert-element hidden">init publisher text</div>
+            <div id=loading-div class="loading"></div>
+        </div>
     </body>
     `;
 }
@@ -24,34 +35,62 @@ describe("getMetadata", () => {
         let metadata = visuals.getMetadata();
 
         expect(metadata).toEqual(
-            // stat_name_short: "stat name short",
-            // publication_date: "publication date",
-            // note: "note",
-            // source: "source",
-            // original_source: "original source"
+            /*
+            stat_name_short: "stat name short",
+            publication_date: "publication date",
+            note: "note",
+            source: "source",
+            original_source: "original source"
+            */
             expect.anything() //should be in the form above, but I'm not mocking the $.get, so I can't test it here
         );
     });
 });
 
+//TODO: if time, fix this for the for loop that used to be in prepareMetadataAlert
 describe("prepareMetadataAlert", () => {
-    beforeEach(resetHTML);
-    blur_elements = visuals.blur_elements;
+    beforeEach(resetMetadataAlertHTML);
+
+    //Ideally, these would be fetched from over yonder in the visuals.js file, but I can't get that to work... TODO?
+    const blur_elements = [
+        $("#nav-bar"), $("#settings"), $("#map-container"), $("#about-container")
+    ];
 
     test("returns metadata", () => {
         expect($("body").hasClass("unscrollable")).toBe(false);
+        expect($("nav-bar").hasClass("blurred")).toBe(false);
+        expect($("#metadata-alert-container").hasClass("hidden")).toBe(true);
+
         visuals.prepareMetadataAlert();
+
         expect($("body").hasClass("unscrollable")).toBe(true);
-        // for()
-
-
+        expect($("#nav-bar").hasClass("blurred")).toBe(true);
+        console.log("nav-bar: " + JSON.stringify($("#nav-bar")));
+        expect($("#metadata-alert-container").hasClass("hidden")).toBe(false);
     });
 });
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 describe("showMetadataAlert", () => {
-    beforeEach(resetHTML);
+    beforeEach(resetMetadataAlertHTML);
     test("happy path, metadata all exists", () => {
         let metadata = {
             stat_name_short: "stat name short",
