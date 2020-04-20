@@ -570,7 +570,7 @@ svg {
 	display: inline-grid !important;
 }
 
-#theme-selector-container:hover #theme-selector {
+#theme-selector-container:hover #theme-roller {
 	/* Animation */
     filter: invert(100%) contrast(60%) drop-shadow(0px 0px 8px var(--accent-color-dark));
     transition-duration: 0.25s;
@@ -711,12 +711,8 @@ svg {
 
 .alert-container {
     /* display: none; */
-    display: grid;
-    grid-template-columns: auto 70%;
-    grid-template-areas: ". alert .";
-    align-items: center;
-    justify-content: center;
     position: fixed;
+    width: 100%;
     background-color: rgba(0, 0, 0, 0.7);
     z-index: 10;
     right: 0;
@@ -788,13 +784,14 @@ svg {
 }
 
 .alert-background {
-    width: 100%;
+    width: 70%;
+    min-width: 500px;
     border-radius: 0px 0px 10px 10px;
     /* padding-bottom: 35px; */
     background-color: rgba(120, 120, 120, 1);
     box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.75);
-    z-index: 11;
     grid-area: alert;
+    max-height: 90vh;
 }
 
 .blurred {
@@ -833,19 +830,6 @@ i {
     background-color: rgba(100,0,100,0.5); /* Black background with opacity */
     z-index: 3; /* Specify a stack order in case you're using a different order for other elements */
     cursor: pointer; /* Add a pointer on hover */
-}
-
-#state-window-container{
-    display: grid;
-    background-color: rgba(255,255,255,1); /* full white */
-    height: 600px;
-    grid-template-columns: 33% 67%;
-    grid-template-rows: 20% 50% 30%;
-    grid-template-areas:
-        "state-rank state-name"
-        "state-display state-window-data-container"
-        "state-display graph"
-    ;
 }
 
 .grid-item{

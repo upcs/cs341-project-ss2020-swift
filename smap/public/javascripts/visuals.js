@@ -51,6 +51,8 @@ var lastMove = 0;
 var orientation;
 var zoom_alert = false;
 
+//Promises to preload
+
 ///////////////////
 ///  FUNCTIONS  ///
 ///////////////////
@@ -65,26 +67,28 @@ var zoom_alert = false;
  *      as well as all of the server requests for custom preloading
  */
 $("document").ready(function () {
+    // Set up sliders template
+    createSliderTemplates();
 
     // Set up loading loop that shows up while elements are loading
     var ellipses_loop = setInterval(function() {
         // Simply fade in and grow / fade out and shrink dots for a loading effect to watch while
         // the page is preloading elements
-        $("#dot1").animate({opacity: "0", fontSize: "60px"}, ANIMATION_TIME_SHORT);
-        $("#dot1").animate({opacity: "1", fontSize: "80px"}, ANIMATION_TIME_SHORT);
+        $("#dot1").animate({opacity: "0", fontSize: "60px"}, DOTS_LENGTH, "swing");
+        $("#dot1").animate({opacity: "1", fontSize: "80px"}, DOTS_LENGTH, "swing");
         window.setTimeout(function() {
-            $("#dot2").animate({opacity: "0", fontSize: "60px"}, ANIMATION_TIME_SHORT);
-            $("#dot2").animate({opacity: "1", fontSize: "80px"}, ANIMATION_TIME_SHORT);
+            $("#dot2").animate({opacity: "0", fontSize: "60px"}, DOTS_LENGTH, "swing");
+            $("#dot2").animate({opacity: "1", fontSize: "80px"}, DOTS_LENGTH, "swing");
             window.setTimeout(function() {
-                $("#dot3").animate({opacity: "0", fontSize: "60px"}, ANIMATION_TIME_SHORT);
-                $("#dot3").animate({opacity: "1", fontSize: "80px"}, ANIMATION_TIME_SHORT);
-            }, ANIMATION_TIME_SHORT / 2);
-        }, ANIMATION_TIME_SHORT / 2);
-    }, ANIMATION_TIME_MED );
+                $("#dot3").animate({opacity: "0", fontSize: "60px"}, DOTS_LENGTH, "swing");
+                $("#dot3").animate({opacity: "1", fontSize: "80px"}, DOTS_LENGTH, "swing");
+            }, DOTS_OFFSET);
+        }, DOTS_OFFSET);
+    }, DOTS_PULSE );
 
     // Map Preloading Functions: If the map wasn't loaded by the browser, preload it anyway for
     // other functions to use to do the prep work
-    $.get("/images/us.svg", "", function(xhr, status, res){
+    us_map_promise.always(function(xhr, status, res){
         if (status !== "success"){
             console.error("Could not get US map");
         }
@@ -100,7 +104,7 @@ $("document").ready(function () {
     });
 
     // See above
-    $.get("/images/ne.svg", "", function(xhr, status, res){
+    ne_map_promise.always(function(xhr, status, res){
         if (status !== "success"){
             console.error("Could not get NE map");
         }
@@ -115,21 +119,6 @@ $("document").ready(function () {
         preload(clear_loading, ellipses_loop);
     });
 
-    //Gets list of categories and creates those sliders
-    $.get("/api/cats", "", function(data, status, res){
-        if (status !== "success"){
-            console.error("Failed to retrieve categories");
-        } else {
-            for (let cat of data){
-                cat.title = cat.stat_name_short;
-                new Stat(cat, DEFAULT_WEIGHT);
-            }
-            restoreFromStorage();
-        }
-    });
-
-    // Set up sliders template
-    createSliderTemplates();
     // Set up listeners
     $("#ne-inspector").click(showNEMagnifier);
     $("#ne-magnifiyer-close").click(hideNEMagnifier);
@@ -142,44 +131,49 @@ $("document").ready(function () {
 
 
 /**
+ * Animates removal of loading screen.
  * @param {setInverval} loop the loading loop we're supposed to break and replace with the loading screen
  *      saying it is ready
  */
 function clear_loading(loop) {
-    // Stop the triple dot loading loop
-    window.setTimeout(function() {
-        clearInterval(loop);
-    }, 500);
+    const ANIMATION_TIME = (DOTS_FADE_OUT + LOAD_FADE_OUT + READY_HOLD + Math.max(FADE_IN, ZOOM_IN)) / 1000.0;
+
     // Make the dots disappear
-    $("#dot1").animate({opacity: "0"}, ANIMATION_TIME_SHORT, "swing");
-    $("#dot2").animate({opacity: "0"}, ANIMATION_TIME_SHORT, "swing");
-    $("#dot3").animate({opacity: "0"}, ANIMATION_TIME_SHORT, "swing");
-    window.setTimeout(function() {
-        // Click the default orange-red theme
-        $("#orange-red").click();
+    $("#dot1").animate({opacity: "0"}, DOTS_FADE_OUT, "swing");
+    $("#dot2").animate({opacity: "0"}, DOTS_FADE_OUT, "swing");
+    $("#dot3").animate({opacity: "0"}, DOTS_FADE_OUT, "swing");
+
+    // Click the default orange-red theme
+    $("#orange-red").click();
+
+    setTimeout(function(){
+        // Stop the triple dot loading loop
+        clearInterval(loop);
         // Remove the ellipses container
-        $("#ellipses").slideUp(ANIMATION_TIME_MED);
+        $("#ellipses").slideUp(LOAD_FADE_OUT);
         // Fade out the loading animation
-        $("#loading").animate({opacity: "0"}, ANIMATION_TIME_SHORT);
+        $("#loading").animate({opacity: "0"}, LOAD_FADE_OUT);
         // Change the "loading assets" to say we're ready and fly it in
-        window.setTimeout(function() { $("#loading").html("Ready!"); }, ANIMATION_TIME_SHORT );
-        $("#loading").animate({opacity: "1", fontSize: "50px"}, ANIMATION_TIME_SHORT);
+        window.setTimeout(function() { $("#loading").html("Ready!"); }, LOAD_FADE_OUT);
+        $("#loading").animate({opacity: "1", fontSize: "50px"}, LOAD_FADE_OUT);
         // Fade out the loading window now that we're done with it
         window.setTimeout(function() {
             $("#init").css("pointer-events","none");
-            $("#init").animate({opacity: "0"}, ANIMATION_TIME_SHORT);
-            $("#loading").animate({fontSize: "100px"}, 400);
-        }, ANIMATION_TIME_LONG );
-    }, ANIMATION_TIME_MED);
-    // Print load time in seconds
-    let load_time = window.performance.now() / 1000;
-    let animation_time = (ANIMATION_TIME_LONG+ANIMATION_TIME_MED) / 1000;
+            $("#init").animate({opacity: "0"}, FADE_IN);
+            $("#loading").animate({fontSize: "100px"}, ZOOM_IN);
+        }, LOAD_FADE_OUT + READY_HOLD );
+    }, DOTS_FADE_OUT);
+
+    // Print load time
+    let load_time = (window.performance.now() / 1000);
     console.log("Page load time: " + load_time + "s");
-    console.log("Time until page operable: "+ (load_time+animation_time) +"s");
+    console.log("Time until page operable: "+ (load_time+ANIMATION_TIME) +"s");
 }
 
 
 /**
+ * Preload SVG elements and catagory data.
+ *
  * @param {function} callback the clear_loading function
  * @param {setInterval} loop the loop we're supposed to pass into the callback function
  * @notes This function stays inside the document.ready due to it calling other functions that
@@ -187,15 +181,32 @@ function clear_loading(loop) {
  */
 function preload(callback, loop) {
     // Remove the NE-magnifier (only open in the first place to trigger load event)
+    //TODO: Hide at start and cut this code
     $("#ne-magnifier").css("display", "none");
-    // Check to see if the maps loaded (browser compatibility)
+    // Check to see if the maps loaded
     let us_map_document = $("#us-map").length;
     let ne_map_document = $("#ne-map").length;
     // Do not complete and callback if we're not done
     if (us_map_document === 0 || ne_map_document === 0){
         return;
     }
+
+    //Gets list of categories and creates those sliders
+    //Must be done after map loads so map can be colored by restore
+    cats_promise.always(function(data, status, res){
+        if (status !== "success"){
+            console.error("Failed to retrieve categories");
+        } else {
+            for (let cat of data){
+                cat.title = cat.stat_name_short;
+                new Stat(cat, DEFAULT_WEIGHT);
+            }
+            restoreFromStorage();
+        }
+    });
+
     setLayout(true); // Do not show the flash transition effect
+
     setUpHovering();
     prepareStateWindow();
     populateStateWindow(true); // Set up for just the NE
@@ -230,6 +241,7 @@ function createSliderTemplates() {
 
 
 /**
+ * Creates an active slider from template, but with the appropropriate name.
  * @param {String} title the title of the statistic to be filled into the title
  * @param {Number} weight the default weight of the slider
  */
@@ -244,6 +256,7 @@ function makeActiveSlider(title, weight){
 
 
 /**
+ * Creates an inactive slider from template, but with the appropropriate name.
  * @param {String} title the title of the statistic to be filled into the box
  */
 function makeInactiveSlider(title) {
@@ -275,6 +288,7 @@ function colorSVG(doc, state, weight) {
 
 
 /**
+ * Colors states in the united states SVG. If the state is also in the northeast, it is colored in that SVG too.
  * @param {String} state the state that is to be colored
  * @param {Number} weight the number that is passed to mixColor in colorSVG
  */
@@ -290,7 +304,8 @@ function colorState(state, weight) {
 }
 
 /**
- * @notes This is an preloading function
+ * @notes This is an preloading function for the highlighting of states that occurs upon mouse hover.
+ * Applies to both the entire US map and the NE magnifier map.
  */
 function setUpHovering() {
     var us_map = document.getElementById("us-map");
@@ -364,7 +379,7 @@ function closeAlert() {
 
 
 /**
- * @return {Object} the metadata that will be used about the statistic that was selected
+ * @return {Object} the metadata promise that will be used about the statistic that was selected
  */
 async function getMetadata() {
     // Ask the server nicely if we can get our metadata
@@ -772,10 +787,8 @@ function themeHandler() {
     $("link[rel~='stylesheet']").each(function(_, theme) {
         theme = $(theme);
         if(theme.hasClass("theme")) {
-            if(theme.attr("title") != theme_id) {
-                //$("#"+theme+"-theme").attr("rel", "alternate stylesheet");
-                theme.prop("disabled", true);
-            } else {
+            theme.prop("disabled", true);
+            if(theme.attr("title") === theme_id) {
                 theme.prop("disabled", false);
             }
         }
