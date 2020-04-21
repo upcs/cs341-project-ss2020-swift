@@ -14,6 +14,13 @@ Philip Robinson,
 #### Average Webpage Get Request Time: 2.264
 #### Average Webpage Loading Time: 4.764
 
+# Sprint 5 Improvements
+
+## Performance
+The loading time measurements we previously reported were not entirely accurate because it stopped timing when the loading screen began fading out rather than when it ended - which increased the time until the user could access the website by another half a second. This meant a total of 3 seconds of animation, which was longer than the webpage took to ready. The primary performance improvement was thus speeding up the loading animation by 1 second to make this time more reasonable.
+
+The next issue we noticed was that we have to send ajax requests for our map images to fix a standing bug. We also need to manipulate the DOM once the maps are loaded, so we were requesting the maps in the document.ready event listener. This lead to a delay where we had to wait for the document to load then wait for the maps to download in order for the page to finish loading. Instead, we request the maps (and, while we were at it, the category list) immediately and store their promises, but wait to resolve the promises until the DOM is ready. These requests used to have a delay around 0.2 seconds, which is now gone. There is now no practical delay between the document being ready and the loading being finished (excluding animation time).
+
 # Features List:
 
 ## MVP Features:
@@ -88,31 +95,12 @@ Philip Robinson,
 > Our only security requirement was to address Denial of Service (DoS) errors. We imagined a DoS error would result from too many people or bots using the website at the same time or simply simultaneously refreshing the page. Since we are not the only ones with this particular data set on the internet, and our website is simply a visualization tool, we have decided that it is very unlikely that a) too many people use our website at the same time or b) someone tries to cause a DoS error by making too many website requests. In either case, however unlikely, we think the worst thing that would happen is that we use up our GCloud budget. A bad DoS attack would shut down the website before we are charged more than our credit allows, and the expected lifetime of the product is now less than a month. Given the short lifespan of our product and the unlikelihood of a DoS error, intentional or unintentional, we have not further addressed the issue.
 
 ### Code Quality [todo]
-> Our code is equipped for graceful error handling. While it was impractical to design CSS for error pages, we have pages for error-related HTTP server status codes, including 400 and 404.
-
-> Our code is also thoroughly commented, and unit tested. Our server side test coverage is _____ and our client side test coverage is ____. We have also taken great care to make our website intuitive to new users. This meets our software quality requirements. 	
-
+> Our code is thoroughly commented, and unit tested. Our server side test coverage is _____ and our client side test coverage is ____. We have also taken great care to make our website intuitive to new users. This meets our software quality requirements. 	
 
 # Security Review
 >SMAP does not provide accounts, so the main security concern is the potential for SQL injections, which are prevented by >parameterizing the database queries. There is also potential for denial of service (DOS) issues, though we will not address >these for this project. For more information, go to tests > security_review.txt
 
-# Test Coverage
 
 [![Build Status](https://travis-ci.com/upcs/cs341-project-ss2020-swift.svg?branch=master)](https://travis-ci.com/upcs/cs341-project-ss2020-swift)
 
 [![Code Coverage](https://codecov.io/gh/upcs/cs341-project-ss2020-swift/branch/master/graph/badge.svg)](https://codecov.io/gh/upcs/cs341-project-ss2020-swift)
-
-## Quality of Testing [TODO]
-
-## Cleaverest Tests [TODO]
-
-# Cross-Browser Compatability and Bug Fixes [TODO]
-
-## Peer-Reported Issues
->Our peers reported two bugs (one was reported twice). One was that the social media buttons at the bottom of the page were >nonfunctional (Issues 68 and 69). Since these were placeholders in case we had time to implement social media sharing, this >bug was resolved by simply removing them. The other bug concerned the stat names, which would overflow their boxes and >push subsequent names further down (Issue #46). This was resolved by adding in css attributes for text-wrapping as well as >adaptive height for that grid-area.
-
-## Self-Reported Issues [TODO]
-> The majority of our significant bugs and issues resulted from cross-browser functionality, so all bugs (including the few >non-browser ones) will be discussed in this section.
-
-
-
