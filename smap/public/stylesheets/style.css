@@ -285,6 +285,13 @@ Thumbs are hard to come by, but this site knows how to style them
     border-bottom-width: 0px;
     background-color: var(--secondary-color-light);
 }
+@media not all and (min-resolution:.001dpcm) {
+    @media {
+        .safari10_sliders {
+            max-height: 40vh;
+        }
+    }
+}
 
 /**************************/
 /***  Selector Styling  ***/
@@ -374,6 +381,14 @@ Thumbs are hard to come by, but this site knows how to style them
     border-top-width: 0px;
     border-bottom-width: 0px;
     background-color: var(--secondary-color-light);
+}
+@media not all and (min-resolution:.001dpcm) {
+    @media {
+        .safari10_sliders {
+            max-height: 45vh;
+            color: teal;
+        }
+    }
 }
 
 /*************************/
@@ -876,7 +891,7 @@ object {
 @media not all and (min-resolution:.001dpcm) {
     @media {
         .safari10 {
-            height: 90vh;
+            max-height: 90vh;
         }
     }
 }
