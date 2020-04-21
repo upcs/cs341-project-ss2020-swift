@@ -1,0 +1,105 @@
+#app-container {
+    display: grid;
+    grid-template-columns: auto;
+    grid-template-rows: [app-height]50% [settings-height]40% [nav-bar-height]10%;
+    grid-template-areas:
+        "map-area"
+        "settings"
+        "nav-bar"
+    ;
+    width: 100%;
+    height: 100vh;
+}
+
+#settings {
+    display: grid;
+    grid-area: settings;
+    grid-template-columns: 50% auto;
+    grid-template-rows: [settings-guide]20% [sliders-guide]auto;
+    grid-template-areas:
+        "sliders-header selector-header"
+        "sliders selector"
+    ;
+    box-shadow: 0px -4px 8px rgba(0, 0, 0, 0.25);
+}
+
+#about-content {
+    display: grid;
+    justify-items: center;
+    grid-template-rows: auto 150px 125px;
+    grid-template-areas:
+        "about-content"
+        "about-ad-left"
+        "about-ad-right"
+    ;
+    padding: 20px;
+}
+
+#about-ad-right, #about-ad-left {
+    width: 90% !important;
+    height: 125px;
+}
+
+#nav-bar {
+    /* Positioning and Display */
+    grid-area: nav-bar;
+    display: grid;
+    align-items: center;
+	grid-template-columns:
+        [right-nav-padding]5.5% [spacing]29.5% [arrow]30% [legend]29.5% [theme-selector]5.5%
+    ;
+    grid-template-areas: "legend legend center-nav theme-selector theme-selector" ;
+    box-shadow: 0px -4px 8px rgba(0, 0, 0, 0.25);
+}
+
+#map-container {
+    grid-area: map-area;
+    align-items: center;
+    justify-items: center;
+    height: 100%;
+}
+
+#us-map {
+    max-width: 100%;
+    height: 100%;
+}
+
+#ne-map-container {
+  display: grid;
+  width: 100%;
+  height: 100vh;
+}
+
+#model {
+    display: grid;
+    align-items: start;
+    height: 50%;
+}
+
+#ne-map {
+    height: 100% !important;
+}
+
+#statistics-selector-header, #statistics-selector {
+    border-left: 1px dotted var(--accent-color-dark);
+}
+
+#statistics-sliders-header, #statistics-sliders {
+    border-right: 1px dotted var(--accent-color-dark);
+}
+
+#map-legend {
+    height: 15px;
+}
+
+.statistic-slider-container, .statistic-option, #best, #worst {
+    font-size: 20px;
+}
+
+#ne-magnifier {
+    align-items: start;
+}
+
+#state-rank {
+    font-size: 24px;
+}
