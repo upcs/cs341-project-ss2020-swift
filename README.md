@@ -21,14 +21,17 @@ The loading time measurements we previously reported were not entirely accurate 
 
 The next issue we noticed was that we have to send ajax requests for our map images to fix a standing bug. We also need to manipulate the DOM once the maps are loaded, so we were requesting the maps in the document.ready event listener. This lead to a delay where we had to wait for the document to load then wait for the maps to download in order for the page to finish loading. Instead, we request the maps (and, while we were at it, the category list) immediately and store their promises, but wait to resolve the promises until the DOM is ready. These requests used to have a delay around 0.2 seconds, which is now gone. There is now no practical delay between the document being ready and the loading being finished (excluding animation time).
 
-## Cross-Browser Compatibility [TODO]
+## Cross-Browser Compatibility
 
-## Significant Bug Fixes [TODO]
+The majority of our reported issues were related to cross-browser functionality. Safari handles sizing differently than most browsers, using an older method to interpret percentages. When the height of an item within a grid is defined by percentage, that percentage is of the entire screen size, not of the parent grid. Thus, specific styling had to be implemented for the statistics sidebar and alert windows in Safari, using vh instead of % for sizing.
 
+A specific style sheet was also developed for users on mobile devices. [TODO]
 
+## Significant Bug Fixes 
+
+Most bug fixes centered around race conditions (discussed below) and the information in state and metadata windows. We worked to ensure appropriate handling of units for each statistic. We also fixed our code to handle edge cases in the state window for when either one or no statistics are selected. Another bug for the alerts was that they would not resize with the browser window, so at certain (reasonably small) window sizes, users could not close the alerts. Adding an extra div and  changing where certain aspects of the alert was defined helped to resolve this issue. 
 
 ### Issue #41: Theme Race Condition and #57 Coloring Issues in Chrome [TODO]
-
 
 
 
