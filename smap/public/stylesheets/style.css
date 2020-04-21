@@ -719,34 +719,6 @@ svg {
     text-indent: 2.5em;
 }
 
-.bottom-social {
-    /* Positioning and Display */
-    width: 70px;
-    height: 70px;
-    padding: 5px;
-    /* Other */
-    filter: invert(var(--inversion));
-}
-
-.bottom-social:hover {
-    /* Other */
-    opacity: 75%;
-}
-
-.bottom-social:active {
-    /* Other */
-    opacity: 50%;
-}
-
-#bottom-bar {
-    /* Positioning and Display */
-    padding-top: 50px;
-    padding-left: 15%;
-    padding-right: 15%;
-    /* Coloring */
-    background-color: var(--group-color);
-}
-
 /*******************************/
 /***  Metadata Alert Styling ***/
 /*******************************/
@@ -1035,7 +1007,7 @@ i {
 }
 
 #loading-ad-right, #loading-ad-left {
-    width: 50%;
+    width: 45%;
     height: 100px;
     position: absolute;
     bottom: 20px;
