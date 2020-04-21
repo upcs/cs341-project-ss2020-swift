@@ -16,11 +16,13 @@ Description: Ensuring that the “Loading Assets…” screen appears with prope
 Expected Result: The dots in the loading screen bounce up and down until the site itself has 
     loaded. There will be a reasonable amount of space for the empty statistic containers.
 Actual Result: 
--	Firefox: When all the statistics are selected and moved from "Statistic Selection" to "Statistic Setting" it is clear that all statistics were selected. The names of the statistics remain in each of their box. The sidebar that contains the statistics remains on the screen when the user scrolls down the page the the "About SMAP" section.
+-	Firefox: When all the statistics are selected and moved from "Statistic Selection" to "Statistic Setting" it is clear that all statistics were selected. 
+        The names of the statistics remain in each of their box. The sidebar that contains the statistics remains on the screen when the user scrolls down 
+        the page the the "About SMAP" section. Behaves as expected.
 -	Chrome: Same as Firefox.
--	Safari (desktop): When the “Statistic Settings” box is empty, the grey area below it is very small. Statistic boxes are not dynamic, so some of the names spill out of the box.
+-	Safari (desktop): Same as Firefox
 -	Safari (mobile): Same as desktop Safari.
--	Microsoft Edge: same as Firefox.
+-	Microsoft Edge: Same as Firefox.
 
 Title: Applying a filter to the map.
 Description: A filter is added to the map by clicking on a slider.
@@ -29,7 +31,7 @@ Expected Result: The filter moves from the “Statistic Selection” box to the 
 Actual Result: 
 -	Firefox: As expected.
 -	Chrome: As expected.
--	Safari (desktop): As expected.
+-	Safari (desktop): As expected. 
 -	Safari (mobile): As expected.
 - 	Microsoft Edge: As expected.
 
@@ -40,7 +42,7 @@ Expected Result: The user selects a theme from the menu that appears when hoveri
 Actual Result:
 -	Firefox: As expected.
 -	Chrome: As expected.
--	Safari (desktop): Same as Chrome.
+-	Safari (desktop): As expected.
 -	Safari (mobile): Same as Chrome.
 -	Microsoft Edge: As expected.
 
@@ -50,7 +52,7 @@ Expected Result: When the user reloads the page, the previously selected sliders
 Actual Result:
 -	Firefox: As expected. 
 -	Chrome: As expected.
--	Safari (desktop): As expected.
+-	Safari (desktop): As expected. 
 -	Safari (mobile): As expected.
 -	Microsoft Edge: As expected.
 
@@ -61,7 +63,7 @@ Expected Result: The map colors change slightly based on the newly added statist
 Actual Result:
 -	Firefox: As expected.
 -	Chrome: As expected
--	Safari (desktop): As expected.
+-	Safari (desktop): As expected. 
 -	Safari (mobile): As expected.
 -	Microsoft Edge: As expected
 
@@ -78,12 +80,11 @@ Actual Result:
 
 Title: Viewing site information.
 Expected Result: Scrolling all the way down or clicking on the downward arrow shows the user a 
-brief description of the SMAP website. As the site scrolls down, the sidebar with the 
-    statistics is pushed to the left and eventually completely off-screen.
+brief description of the SMAP website. As the site scrolls down.
 Actual Result:
--	Firefox: As expected, but the statistics sidebar does not move.
+-	Firefox: As expected.
 -	Chrome: Same as Firefox.
--	Safari (desktop): As expected.
+-	Safari (desktop): As expected. 
 -	Safari (mobile): As expected.
 -	Microsoft Edge: Same as Firefox.
 
@@ -93,7 +94,7 @@ Expected Result: The map will update colors with each statistic added, and each 
 Actual Result:
 -	Firefox: As expected. 
 -	Chrome: As expected.
--	Safari (desktop): “Statistic Settings” area is not scrollable, so there are a few statistics that get pushed off-screen but can’t be clicked because the sidebar slides off-screen.
+-	Safari (desktop): As expected.
 -	Safari (mobile): Same as desktop Safari, but worse because the screen is small.
 -	Microsoft Edge: As expected.
 
@@ -102,51 +103,49 @@ Expected Result: Clicking the X on the left side of the slider updates the map c
 Actual Result:
 -	Firefox: As expected.
 -	Chrome: As expected.
--	Safari (desktop): As expected.
+-	Safari (desktop): As expected. 
 -	Safari (mobile): As expected.
 - 	Microsoft Edge: As expected.
 
 Title: Northeast magnifier.
-Expected Result: Clicking the magnifying glass in the top right corner should show the northeast states zoomed in on the center of the screen. These states should be colored the same as they were in the non-zoomed portion of the map. Clicking on any of these states should show the state info. Clicking on the X at the upper right corner will close the window.
+Expected Result: Clicking the magnifying glass in the top right corner should show the northeast states zoomed in on the center of the screen. 
+    These states should be colored the same as they were in the non-zoomed portion of the map. Clicking on any of these states should show the state info. 
+    Clicking on the X at the upper right corner will close the window.
 Actual result:
 -	Firefox: As expected.
 -	Chrome: As expected.
--	Safari (desktop):
+-	Safari (desktop): As expected.
 -	Safari (mobile):
 -	Microsoft Edge: As expected.
 
 Title: State window.
-Expected Result: Clicking on a state should show a window that contains a picture of that state, the selected statistics for which it ranks best and worst, and a bar graph of all state's rankings with the selected state bar highlighted. This window should be styled based on the selected theme. A close button should be visible, and clicking it should return the view to normal.
+Expected Result: Clicking on a state should show a window that contains a picture of that state, the selected statistics for which it ranks best and worst, 
+    and a bar graph of all state's rankings with the selected state bar highlighted. This window should be styled based on the selected theme. 
+    A close button should be visible, and clicking it should return the view to normal.
 Actual result:
 -	Firefox: As expected.
 -	Chrome: As expected.
--	Safari (desktop):
+-	Safari (desktop): As expected.
 -	Safari (mobile):
 -	Microsoft Edge: As expected.
 
 Title: Metadata window.
-Expected result: Clicking on the (i) button next to a statistic (regardless of whether the statistic is active) should show a window containing information about the statistic. A close buttom should be visible, and clicking it should return the view to normal.
+Expected result: Clicking on the (i) button next to a statistic (regardless of whether the statistic is active) should show a window containing 
+    information about the statistic. A close buttom should be visible, and clicking it should return the view to normal.
 Actual result:
 -	Firefox: As expected.
 -	Chrome: As expected.
--	Safari (desktop):
+-	Safari (desktop): As expected.
 -	Safari (mobile);
 -	Microsoft Edge: As expected.
 
 Title: Resizing the Browser Window.
-Expected result: The statistics, map, and about SMAP sections correctly resize with the sizing of the window.
+Expected result: The statistics, map, and about SMAP sections correctly resize with the sizing of the window. State and metadata alert windows should still
+    have an accessible close button. For unreasonably small screens (not counting mobile), the page should display a message warning the user that the window
+    is too small and should be resized.
 Actual result:
 -	Firefox: As expected.
 -	Chrome: As expected.
-- 	Safari (desktop):
+- 	Safari (desktop): As expected.
 -	Safari (mobile):
 -	Microsoft Edge: Allows for resizing, but does not have a minimum size window.
-
-Title: Pop up windows.
-Expected result: The state window and the NE magnifier windows will close when the close button is clicked.
-Actual result:
--	Firefox: As expected.
--	Chrome: As expected.
--	Safari (desktop):
--	Safari (mobile):
--	Microsoft Edge: As expected.
