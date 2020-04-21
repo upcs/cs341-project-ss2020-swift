@@ -21,6 +21,24 @@ The loading time measurements we previously reported were not entirely accurate 
 
 The next issue we noticed was that we have to send ajax requests for our map images to fix a standing bug. We also need to manipulate the DOM once the maps are loaded, so we were requesting the maps in the document.ready event listener. This lead to a delay where we had to wait for the document to load then wait for the maps to download in order for the page to finish loading. Instead, we request the maps (and, while we were at it, the category list) immediately and store their promises, but wait to resolve the promises until the DOM is ready. These requests used to have a delay around 0.2 seconds, which is now gone. There is now no practical delay between the document being ready and the loading being finished (excluding animation time).
 
+## Cross-Browser Compatibility
+
+
+
+## Test Coverage
+
+
+
+## Security
+
+
+
+## Peer Bug Fixes
+
+
+
+## Error Handling
+
 # Features List:
 
 ## MVP Features:
