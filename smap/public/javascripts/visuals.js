@@ -855,8 +855,9 @@ function mixColor(weight, color) {
  *      horizontal width of the window is too small to allow for good sidebar usage
  */
 function setLayout(init){
-    // Resize the graph with window resize
+    // Notify the user if they are zooming really far in.
     if(window.devicePixelRatio > 1.8 && !zoom_alert) {
+        // Set flag so if they continue to zoom in, they won't get bugged every time.
         zoom_alert = true;
         console.warn("CSS Scaling may be effected at extremely high zoom resolutions." +
             "Please consider alternative methods for accessibility reasons (e.g. Magnifier)");
@@ -866,17 +867,22 @@ function setLayout(init){
     } else if (window.devicePixelRatio <= 1.5 && zoom_alert) {
         zoom_alert = false;
     }
+    // Make a dynamically scaling minimum width. Note, 0.15 is a magic number
     let zoom_ratio = Math.pow(window.devicePixelRatio, 0.15);
-    console.log(zoom_ratio);
+    // If we are too small, display the error
     if($(window).height() < (MIN_HEIGHT/zoom_ratio) || $(window).width() < (MIN_WIDTH/zoom_ratio)) {
         console.error("Too small window size");
         $("#error").css("display", "grid");
     } else {
         $("#error").css("display", "none");
+        // Get the aspect ratio to determine if we should use vertical or horizontal stylesheets
         let aspect_ratio = $(window).width() / $(window).height();
+        // If we should go vertical
         if(aspect_ratio < CRITICAL_ASPECT_RATIO || $(window).width() < MIN_HORIZONTAL_WIDTH/zoom_ratio) {
             if(orientation !== "vertical") {
+                // Go vertical
                 orientation = "vertical";
+                // Set a flash of color as a transition
                 if(!init) { $("body").animate({opacity: "0"}, LAYOUT_CHANGE_TIME, "swing"); }
                 window.setTimeout(function() {
                     $("#horizontal-layout").prop("disabled", true);
@@ -886,7 +892,9 @@ function setLayout(init){
             }
         } else {
             if(orientation !== "horizontal") {
+                // Go horizontal
                 orientation = "horizontal";
+                // Set a flash of color as a transition
                 if(!init) { $("body").animate({opacity: "0"}, LAYOUT_CHANGE_TIME, "swing"); }
                 window.setTimeout(function() {
                     $("#vertical-layout").prop("disabled", true);
