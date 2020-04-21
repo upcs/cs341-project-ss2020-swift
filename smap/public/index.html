@@ -14,6 +14,8 @@
         <!-- Include our stylesheets -->
         <link rel="stylesheet" href="stylesheets/style.css" />
         <link rel="stylesheet" href="stylesheets/themes/master-theme-sheet.css">
+        <link rel="stylesheet" href="stylesheets/vertical-theme.css" id="vertical-layout" />
+        <link rel="stylesheet" href="stylesheets/horizontal-theme.css" id="horizontal-layout" />
         <link rel="stylesheet" href="stylesheets/themes/light/orange-red-theme.css" class="theme" title="orange-red-theme">
         <link rel="alternate stylesheet" href="stylesheets/themes/light/green-blue-theme.css" class="theme" title="green-blue-theme">
         <link rel="alternate stylesheet" href="stylesheets/themes/light/pink-purple-theme.css" class="theme" title="pink-purple-theme">
@@ -24,7 +26,6 @@
         <script src="javascripts/model.js" type="text/javascript"></script>
         <script src="javascripts/visuals.js" type="text/javascript"></script>
         <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
-
     </head>
     <body>
         <div id="metadata-alert-container" class="alert-container hidden">
@@ -70,7 +71,7 @@
             </div>
         </div>
 
-		<div id="init">
+		<div id="init" class="fullscreen">
             <div>
                 <h1 id="loading">Loading assets</h1>
                 <div id="ellipses">
@@ -82,6 +83,12 @@
                 <div class="ad" id="loading-ad-left">
                     This is an ad. Be afraid!
                 </div>
+            </div>
+        </div>
+        <div id="error" class="fullscreen">
+            <div style="text-align: center;">
+                <h3>Your Broswer window is too small.</h3>
+                <h4>Please resize it or zoom out</h4>
             </div>
         </div>
         <!-- This div holds the app, which includes the settings sidebar, the map itself, as well as
@@ -96,17 +103,6 @@
                     Statistic Settings:
                 </div>
                 <div class="safari10_sliders" id="statistics-sliders">
-                    <!-- This is the template for each statistic slider container, the only thing
-                         that is unique is encapsulated in square brackets [[[]]] -->
-                    <!--
-                    <div class="statistic-slider-container" id="[[[ Statistic ID ]]]">
-                        <div class="statistic-slider-remover">&#215;</div>
-                        <div class="statistic-slider-title">[[[ Statistic Name ]]]</div>
-                        <input class="statistic-slider" type="range" min="1" max="5" value="3" />
-                        <div class="statistic-slider-metadata">&#9432;</div>
-                    </div>
-                    -->
-                    <!-- TODO: Remove the premade templates and populate using Javascript -->
 					          <div class="statistic-slider-container" id="active_slider_template">
                         <div class="statistic-slider-remover">&#215;</div>
                         <div class="statistic-slider-title">Template</div>
@@ -127,16 +123,6 @@
                 </div>
                 <!-- All of the other statistics that are not sliders -->
                 <div class="safari10_sliders" id="statistics-selector">
-                    <!-- This is the template for each statistic selector container, the only thing
-                         that is unique is encapsulated in square brackets [[[]]] -->
-                    <!--
-                    <div class="statistic-option" id="[[[ Statistic ID ]]]">
-                        <div class="add-statistic">+</div>
-                        <div class="statistic-option-title">[[[ Statistic Title ]]]</div>
-                        <div class="statistic-option-metadata">&#9432;</div>
-                    </div>
-                    -->
-                    <!-- TODO: Remove the premade templates and populate using Javascript -->
 					          <div class="statistic-option" id="inactive_slider_template">
                         <div class="add-statistic">+</div>
                         <div class="statistic-option-title">Template</div>
@@ -151,10 +137,14 @@
                     <img src="images/arrow.png" id="nav-arrow"/>
                 </div>
                 <div id="map-legend-container">
-                    Worst <div id="map-legend" class="statistic-slider"> </div> Best
+                    <div id="worst">Worst</div>
+                    <div id="map-legend" class="statistic-slider"> </div>
+                    <div id="best">Best</div>
                 </div>
 				<div id="theme-selector-container">
-                    <img src="images/theme_roller.png"  id="theme-selector"/>
+                    <div id="theme-roller-container">
+                        <img src="images/theme_roller.png"  id="theme-roller"/>
+                    </div>
                     <!-- Collection of themes -->
                     <div id="theme-container">
                         <div id="light">
@@ -195,16 +185,14 @@
                 </div>
                 <!-- End theme-roller -->
             </div>
-            <div id="map-container">
-            </div>
+            <div id="map-container"></div>
             <!-- Container for the whole ne magnifiyer -->
             <div id="ne-inspector-container">
                 <!-- Magnifying glass -->
                 <img id="ne-inspector" src="images/ne-inspector.png"/>
                 <!-- The container for the actual magnification bit -->
                 <div id="ne-magnifier">
-                    <div id="ne-map-container">
-                    </div>
+                    <div id="ne-map-container"></div>
                     <span id="ne-magnifiyer-close">&times;</span>
                 </div>
             </div>
