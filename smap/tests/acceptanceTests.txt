@@ -16,136 +16,173 @@ Description: Ensuring that the “Loading Assets…” screen appears with prope
 Expected Result: The dots in the loading screen bounce up and down until the site itself has 
     loaded. There will be a reasonable amount of space for the empty statistic containers.
 Actual Result: 
--	Firefox: When all the statistics are selected and moved from "Statistic Selection" to "Statistic Setting" it is clear that all statistics were selected. 
-        The names of the statistics remain in each of their box. The sidebar that contains the statistics remains on the screen when the user scrolls down 
-        the page the the "About SMAP" section. Behaves as expected.
--	Chrome: Same as Firefox.
--	Safari (desktop): Same as Firefox
+-	Firefox (desktop): When all the statistics are selected and moved from "Statistic Selection" to "Statistic Setting" it is clear that all statistics were selected. The names of the statistics remain in each of their box. The sidebar that contains the statistics remains on the screen when the user scrolls down the page the the "About SMAP" section. Behaves as expected.
+-	Firefox (mobile): Same as desktop Firefox.
+-	Chrome (desktop): Same as Firefox.
+-	Chrome (mobile): Same as Firefox.
+-	Safari (desktop): Same as desktop Chrome.
 -	Safari (mobile): Same as desktop Safari.
--	Microsoft Edge: Same as Firefox.
+-	Microsoft Edge (desktop): Same as Firefox.
+-	Microsoft Edge (mobile): Same as desktop Microsoft Edge.
 
 Title: Applying a filter to the map.
 Description: A filter is added to the map by clicking on a slider.
 Expected Result: The filter moves from the “Statistic Selection” box to the “Statistic Settings” 
     box. The map becomes colored, with different states as different colors. When the cursor is on a state, that state is highlighted a slightly brighter color and has a thicker border.
 Actual Result: 
--	Firefox: As expected.
--	Chrome: As expected.
+-	Firefox (desktop): As expected.
+-	Firefox (mobile): As expected.
+-	Chrome (desktop): As expected.
+-	Chrome (mobile): As expected.
 -	Safari (desktop): As expected. 
 -	Safari (mobile): As expected.
-- 	Microsoft Edge: As expected.
+- 	Microsoft Edge (desktop): As expected.
+-	Microsoft Edge (mobile): As expected. 
 
 Title: Selecting a theme color.
 Description: A theme color is applied to the map, after a statistic has already been selected.
 Expected Result: The user selects a theme from the menu that appears when hovering over the 
     paint roller icon. The map, sliders, slider headings, and best/worst indicator change colors.
 Actual Result:
--	Firefox: As expected.
--	Chrome: As expected.
+-	Firefox (desktop): As expected.
+-	Firefox (mobile): As expected.
+-	Chrome (desktop): As expected.
+-	Chrome (mobile): As expected.
 -	Safari (desktop): As expected.
--	Safari (mobile): Same as Chrome.
--	Microsoft Edge: As expected.
+-	Safari (mobile): Same as desktop Chrome.
+-	Microsoft Edge (desktop): As expected.
+-	Microsoft Edge (mobile): As expected.
 
 Title: Remembering the last session.
 Description: Reloading the page will not reset the sliders.
 Expected Result: When the user reloads the page, the previously selected sliders will appear (and the map will be colored accordingly). In addition, the active theme should be the same theme as before. 
 Actual Result:
--	Firefox: As expected. 
--	Chrome: As expected.
+-	Firefox (desktop): As expected. Reverts back to default theme. 
+-	Firefox (mobile): Same as desktop Firefox.
+-	Chrome (desktop): As expected. Reverts back to deault theme.
+-	Chrome (mobile): Same as desktop Chrome.
 -	Safari (desktop): As expected. 
 -	Safari (mobile): As expected.
--	Microsoft Edge: As expected.
+-	Microsoft Edge (desktop): As expected. Reverts back to default theme.
+-	Microsoft Edge (mobile): Same as desktop Microsoft Edge.
 
 Title: Applying multiple filters.
 Description: More than one filter is applied.
 Expected Result: The map colors change slightly based on the newly added statistic. The slider 
     moved from “Statistic Selection” to “Statistic Settings.” The theme color did not change.
 Actual Result:
--	Firefox: As expected.
--	Chrome: As expected
+-	Firefox (desktop): As expected.
+-	Firefox (mobile): As expected.
+-	Chrome (desktop): As expected.
+-	Chrome (mobile): As expected.
 -	Safari (desktop): As expected. 
 -	Safari (mobile): As expected.
--	Microsoft Edge: As expected
+-	Microsoft Edge (desktop): As expected.
+-	Microsoft Edge (mobile): As expected.
 
 Title: Defining weights when multiple filters are selected.
 Description: The slider value is moved from its normal place (3) to a different value.
 Expected Result: The map will update its colors, either slightly or a lot, depending on if the 
     slider was moved by one unit or multiple.
 Actual Result:
--	Firefox: As expected.
--	Chrome: As expected.
+-	Firefox (desktop): As expected.
+-	Firefox (mobile): As expected.
+-	Chrome (desktop): As expected.
+-	Chrome (mobile): As expected.
 -	Safari (desktop): As expected.
 -	Safari (mobile): As expected.
--	Microsoft Edge: As expected.
+-	Microsoft Edge (desktop): As expected.
+-	Microsoft Edge (mobile): As expected.
 
 Title: Viewing site information.
 Expected Result: Scrolling all the way down or clicking on the downward arrow shows the user a 
 brief description of the SMAP website. As the site scrolls down.
 Actual Result:
--	Firefox: As expected.
--	Chrome: Same as Firefox.
+-	Firefox (desktop): As expected.
+-	Firefox (mobile): As expected
+-	Chrome (desktop): As expected.
+-	Chrome (mobile): As expected.
 -	Safari (desktop): As expected. 
 -	Safari (mobile): As expected.
--	Microsoft Edge: Same as Firefox.
+-	Microsoft Edge (desktop): As expected.
+-	Microsoft Edge (mobile): As expected.
 
 Title: Selecting all statistics.
 Description: All ten of the available statistics are selected at once.
 Expected Result: The map will update colors with each statistic added, and each will be added to the “Statistic Settings” section (and removed from “Statistic Selection”).
 Actual Result:
--	Firefox: As expected. 
--	Chrome: As expected.
+-	Firefox (desktop): As expected. 
+-	Firefox (mobile): As expected.
+-	Chrome (desktop): As expected.
+-	Chrome (mobile): As expected.
 -	Safari (desktop): As expected.
 -	Safari (mobile): Same as desktop Safari, but worse because the screen is small.
--	Microsoft Edge: As expected.
+-	Microsoft Edge (desktop): As expected.
+-	Microsoft Edge (mobile): As expected.
 
 Title: Removing all selected statistics.
 Expected Result: Clicking the X on the left side of the slider updates the map color appropriately (or changes it to white if that was the only active statistic). The slider moves from “Statistic Settings” to “Statistic Selection.”
 Actual Result:
--	Firefox: As expected.
--	Chrome: As expected.
+-	Firefox (desktop): As expected.
+-	Firefox (mobile): As expected.
+-	Chrome (desktop): As expected.
+-	Chrome (mobile): As expected.
 -	Safari (desktop): As expected. 
 -	Safari (mobile): As expected.
-- 	Microsoft Edge: As expected.
+- 	Microsoft Edge (desktop): As expected.
+-	Microsoft Edge (mobile): As expected.
 
 Title: Northeast magnifier.
 Expected Result: Clicking the magnifying glass in the top right corner should show the northeast states zoomed in on the center of the screen. 
     These states should be colored the same as they were in the non-zoomed portion of the map. Clicking on any of these states should show the state info. 
     Clicking on the X at the upper right corner will close the window.
 Actual result:
--	Firefox: As expected.
--	Chrome: As expected.
+-	Firefox (desktop): As expected.
+-	Firefox (mobile): As expected.
+-	Chrome (desktop): As expected.
+-	Chrome (mobile): As expected.
 -	Safari (desktop): As expected.
 -	Safari (mobile):
--	Microsoft Edge: As expected.
+-	Microsoft Edge (desktop): As expected.
+-	Microsoft Edge (mobile): As expected. Will not close the window when you click the 'X'.
 
 Title: State window.
 Expected Result: Clicking on a state should show a window that contains a picture of that state, the selected statistics for which it ranks best and worst, 
     and a bar graph of all state's rankings with the selected state bar highlighted. This window should be styled based on the selected theme. 
     A close button should be visible, and clicking it should return the view to normal.
 Actual result:
--	Firefox: As expected.
--	Chrome: As expected.
+-	Firefox (desktop): As expected.
+-	Firefox (mobile): As expected.
+-	Chrome (desktop): As expected.
+-	Chrome (mobile): As expected.
 -	Safari (desktop): As expected.
 -	Safari (mobile):
--	Microsoft Edge: As expected.
+-	Microsoft Edge (desktop): As expected.
+-	Microsoft Edge (mobile): As expected.
 
 Title: Metadata window.
 Expected result: Clicking on the (i) button next to a statistic (regardless of whether the statistic is active) should show a window containing 
     information about the statistic. A close buttom should be visible, and clicking it should return the view to normal.
 Actual result:
--	Firefox: As expected.
--	Chrome: As expected.
+-	Firefox (desktop): As expected.
+-	Firefox (mobile): As expected.
+-	Chrome (desktop): As expected.
+-	Chrome (mobile): As expected.
 -	Safari (desktop): As expected.
 -	Safari (mobile);
--	Microsoft Edge: As expected.
+-	Microsoft Edge (desktop): As expected.
+-	Microsoft Edge (mobile): Can not veiw the metadata (i) in the 'Select Statistic'. Covered by the scroll bar.
 
 Title: Resizing the Browser Window.
 Expected result: The statistics, map, and about SMAP sections correctly resize with the sizing of the window. State and metadata alert windows should still
     have an accessible close button. For unreasonably small screens (not counting mobile), the page should display a message warning the user that the window
     is too small and should be resized.
 Actual result:
--	Firefox: As expected.
--	Chrome: As expected.
+-	Firefox (dekstop): As expected.
+-	Firefox (mobile): As expected.
+-	Chrome (desktop): As expected.
+-	Chrome (mobile): As expected.
 - 	Safari (desktop): As expected.
 -	Safari (mobile):
--	Microsoft Edge: Allows for resizing, but does not have a minimum size window.
+-	Microsoft Edge (desktop): Allows for resizing, but does not have a minimum size window.
+-	Microsoft Edge (mobile): Cannot close the NE magnifier window because of the scroll bar.
