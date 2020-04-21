@@ -5,6 +5,9 @@ var firstIdSting = '2';
 var secondTestId = 9;
 var secondIdString = '9';
 
+const EXTRA_DATA_FIELDS = ["stat_id", "invert_flag", "stat_name_short", "units"];
+const DATA_SIZE = 50 + EXTRA_DATA_FIELDS.length;
+
 //tests for parseDataURL() function ------------------------------------
 describe('parseDataURL', () => {
   test('exists', () => {
@@ -40,7 +43,8 @@ describe('getData', () => {
         expect(data[0].stat_id).toBe(firstTestId);
 
         //check size of dictionary returned; should be 53
-        expect(Object.keys(data[0]).length).toBe(53);
+        expect(Object.keys(data[0]).length).toBe(DATA_SIZE);
+        expect(Object.keys(data[0])).toEqual(expect.arrayContaining(EXTRA_DATA_FIELDS));
 
         //check the value of just one state
         //expect(data[0]["NV"]).toBe(61864);
@@ -63,8 +67,10 @@ describe('getData', () => {
         expect(data[1].stat_id).toBe(secondTestId);
 
         //check size of dictionary returned; should be 53
-        expect(Object.keys(data[0]).length).toBe(53);
-        expect(Object.keys(data[1]).length).toBe(53);
+        expect(Object.keys(data[0]).length).toBe(DATA_SIZE);
+        expect(Object.keys(data[1]).length).toBe(DATA_SIZE);
+        expect(Object.keys(data[0])).toEqual(expect.arrayContaining(EXTRA_DATA_FIELDS));
+        expect(Object.keys(data[1])).toEqual(expect.arrayContaining(EXTRA_DATA_FIELDS));
 
         //check the value of just one state
         expect(data[0]["NV"]).toBe(541.1);
@@ -178,7 +184,8 @@ describe('getData', () => {
         expect(data[1]).toBeUndefined();
 
         //check size of dictionary returned; should be 53
-        expect(Object.keys(data[0]).length).toBe(53);
+        expect(Object.keys(data[0]).length).toBe(DATA_SIZE);
+        expect(Object.keys(data[0])).toEqual(expect.arrayContaining(EXTRA_DATA_FIELDS));
 
         //check the value of just one state
         expect(data[0]["NV"]).toBe(3.4);

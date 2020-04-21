@@ -187,6 +187,8 @@ function clear_loading(loop) {
 
 
 /**
+ * Preload SVG elements and catagory data.
+ *
  * @param {function} callback the clear_loading function
  * @param {setInterval} loop the loop we're supposed to pass into the callback function
  * @notes Preload SVG elements and catagory data.
@@ -316,6 +318,8 @@ function colorState(state, weight) {
 }
 
 /**
+ * Colors individual states in the SVG according to their normalized weights.
+ *
  * @notes This is an preloading function for the highlighting of states that occurs upon mouse hover.
  * Applies to both the entire US map and the NE magnifier map.
  */
@@ -499,6 +503,8 @@ function populateStateWindow(is_ne){
 
 
 /**
+ * Makes a bar chart of state weights, from best to worst. Also includes styling of chart and it's bars.
+ *
  * @param {String} state_id is the state that was clicked from the state window. It will be highlighted
  * @param {Number Array} weights the weights of the states that will be the y-axis data
  * @param {String Array} ranks the ordered list of the states that will be the x-axis data
@@ -727,7 +733,7 @@ function fillStateWindow(state_id) {
         let msgOneStat = "<i>(You have only selected one statisic ranking this state.)</i><br>";
         $("#good-stats").html(msgOneStat);
         // Write the best_stat name to the DOM
-        $("#good-stats").append("<h3>Selected statistic:</h3>" + best_stat.category.stat_name_short + "\n");
+        $("#good-stats").append(makeStatMessage(stateCatArr[0], best_stat.category.stat_name_short, true, best_stat.data.units));
         populateStateStatDetails(best_stat, true);
         // Show chart
         $("#myChart").css("visibility", "visible");
@@ -735,7 +741,8 @@ function fillStateWindow(state_id) {
     } else {
         // Retrieve the best and worst stats from the global variable data based on id
         let best_stat = data.stats[stateCatArr[0]["id"]];
-        let worst_stat = data.stats[stateCatArr[stateCatArr.length - 1]["id"]];
+        let worst_stat_info = stateCatArr[stateCatArr.length - 1];
+        let worst_stat = data.stats[worst_stat_info.id];
         // Show all 4 grid areas
         $("#bad-stats").css("display", "block");
         $("#bad-stats-details").css("display", "block");
@@ -744,8 +751,8 @@ function fillStateWindow(state_id) {
         $("#state-window-data-container").css("grid-template-rows", "50% 50%");
         $("#state-window-data-container").css("grid-template-columns", "50% 50%");
         // Write good/bad stat names in good/bad grid items
-        $("#good-stats").html("<h3>Best statistic:</h3>\n " + best_stat.category.stat_name_short + "\n");
-        $("#bad-stats").html("<h3>Worst statistic:</h3>\n " + worst_stat.category.stat_name_short + "\n");
+        $("#good-stats").html(makeStatMessage(stateCatArr[0], best_stat.category.stat_name_short, true, best_stat.data.units));
+        $("#bad-stats").html(makeStatMessage(worst_stat_info, worst_stat.category.stat_name_short, false, worst_stat.data.units));
         // Write details/metadata in good/bad stats details grid items
         $("#good-stats-details").text("");
         $("#bad-stats-details").text("");
@@ -756,6 +763,19 @@ function fillStateWindow(state_id) {
     }
 }
 
+function makeStatMessage(statInfo, name, is_best, units){
+  let unitsStr;
+  if (units[0] === '%'){
+    unitsStr = units;
+  } else {
+    unitsStr = " " + units;
+  }
+  return `
+  <h3>${is_best ? "Best" : "Worst"} statistic: ${name} </h3>
+  ${statInfo.value}${unitsStr} <br />
+  Rank: ${statInfo.rank}
+  `
+}
 
 /*************************** BOTTOM-BAR ***************************/
 /** All the functions and listeners pertaining to the bottom-bar **/
