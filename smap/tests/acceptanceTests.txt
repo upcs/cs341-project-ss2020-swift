@@ -1,10 +1,14 @@
-Title: Performance testing of load time.
+﻿Title: Performance testing of load time.
 Description: Load time was tested five times and averaged. No data was collected for the mobile version of Safari, since there is no way to view the console.
     The first number is page lode time; the second is the time until the page is operable. Both are in seconds.
 Actual Results:
--	Firefox: 0.32764 / 3.0188
--	Chrome: 0.412904 / 2.912904
--	Safari (desktop): 0.2772 / 2.7772
+-	Firefox (Sprint 4): 0.32764 / 3.0188 ************DO THIS ONE AGAIN!!*************************
+-       Firefox (Sprint 5): 1.584 / 3.584
+-	Chrome (Sprint 4): 0.412904 / 2.912904
+-	Chrome (Sprint 5): 1.4199300000000221 / 3.419930000000022
+-	Safari (desktop) (Sprint 4): 0.2772 / 2.7772
+-	Safari (desktop) (Sprint 5): 0.668 / 2.668
+-	Microsoft Edge (Sprint 5): 0.8545218 / 2.854218
 
 Title: Site loading and consistency of aesthetics.
 Description: Ensuring that the “Loading Assets…” screen appears with proper animation. Also, 
@@ -12,10 +16,11 @@ Description: Ensuring that the “Loading Assets…” screen appears with prope
 Expected Result: The dots in the loading screen bounce up and down until the site itself has 
     loaded. There will be a reasonable amount of space for the empty statistic containers.
 Actual Result: 
--	Firefox: There is very little empty space in the “Statistic Selection” section when all of the statistics are active, which makes it hard to tell that all the statistics are actually gone, especially that scrolling down causes the entire sidebar to slide off-screen. Also, statistic boxes are not dynamic, so some of the names spill out of the box.
+-	Firefox: When all the statistics are selected and moved from "Statistic Selection" to "Statistic Setting" it is clear that all statistics were selected. The names of the statistics remain in each of their box. The sidebar that contains the statistics remains on the screen when the user scrolls down the page the the "About SMAP" section.
 -	Chrome: Same as Firefox.
 -	Safari (desktop): When the “Statistic Settings” box is empty, the grey area below it is very small. Statistic boxes are not dynamic, so some of the names spill out of the box.
 -	Safari (mobile): Same as desktop Safari.
+-	Microsoft Edge: same as Firefox.
 
 Title: Applying a filter to the map.
 Description: A filter is added to the map by clicking on a slider.
@@ -26,6 +31,7 @@ Actual Result:
 -	Chrome: As expected.
 -	Safari (desktop): As expected.
 -	Safari (mobile): As expected.
+- 	Microsoft Edge: As expected.
 
 Title: Selecting a theme color.
 Description: A theme color is applied to the map, after a statistic has already been selected.
@@ -33,9 +39,10 @@ Expected Result: The user selects a theme from the menu that appears when hoveri
     paint roller icon. The map, sliders, slider headings, and best/worst indicator change colors.
 Actual Result:
 -	Firefox: As expected.
--	Chrome: Sliders, slider headings, and best/worst indicator will all update properly. The map, however, lags behind by one theme.
+-	Chrome: As expected.
 -	Safari (desktop): Same as Chrome.
 -	Safari (mobile): Same as Chrome.
+-	Microsoft Edge: As expected.
 
 Title: Remembering the last session.
 Description: Reloading the page will not reset the sliders.
@@ -45,6 +52,7 @@ Actual Result:
 -	Chrome: As expected.
 -	Safari (desktop): As expected.
 -	Safari (mobile): As expected.
+-	Microsoft Edge: As expected.
 
 Title: Applying multiple filters.
 Description: More than one filter is applied.
@@ -55,6 +63,7 @@ Actual Result:
 -	Chrome: As expected
 -	Safari (desktop): As expected.
 -	Safari (mobile): As expected.
+-	Microsoft Edge: As expected
 
 Title: Defining weights when multiple filters are selected.
 Description: The slider value is moved from its normal place (3) to a different value.
@@ -65,16 +74,18 @@ Actual Result:
 -	Chrome: As expected.
 -	Safari (desktop): As expected.
 -	Safari (mobile): As expected.
+-	Microsoft Edge: As expected.
 
 Title: Viewing site information.
 Expected Result: Scrolling all the way down or clicking on the downward arrow shows the user a 
 brief description of the SMAP website. As the site scrolls down, the sidebar with the 
     statistics is pushed to the left and eventually completely off-screen.
 Actual Result:
--	Firefox: As expected.
--	Chrome: As expected.
+-	Firefox: As expected, but the statistics sidebar does not move.
+-	Chrome: Same as Firefox.
 -	Safari (desktop): As expected.
 -	Safari (mobile): As expected.
+-	Microsoft Edge: Same as Firefox.
 
 Title: Selecting all statistics.
 Description: All ten of the available statistics are selected at once.
@@ -84,6 +95,7 @@ Actual Result:
 -	Chrome: As expected.
 -	Safari (desktop): “Statistic Settings” area is not scrollable, so there are a few statistics that get pushed off-screen but can’t be clicked because the sidebar slides off-screen.
 -	Safari (mobile): Same as desktop Safari, but worse because the screen is small.
+-	Microsoft Edge: As expected.
 
 Title: Removing all selected statistics.
 Expected Result: Clicking the X on the left side of the slider updates the map color appropriately (or changes it to white if that was the only active statistic). The slider moves from “Statistic Settings” to “Statistic Selection.”
@@ -92,26 +104,49 @@ Actual Result:
 -	Chrome: As expected.
 -	Safari (desktop): As expected.
 -	Safari (mobile): As expected.
+- 	Microsoft Edge: As expected.
 
 Title: Northeast magnifier.
-Expected Result: Clicking the magnifying glass in the top right corner should show the northeast states zoomed in on the center of the screen. These states should be colored the same as they were in the non-zoomed in portion of the map. Clicking on any of these states should show the state info. Clicking on the X at the upper right corner will close the window.
+Expected Result: Clicking the magnifying glass in the top right corner should show the northeast states zoomed in on the center of the screen. These states should be colored the same as they were in the non-zoomed portion of the map. Clicking on any of these states should show the state info. Clicking on the X at the upper right corner will close the window.
 Actual result:
--
--
--
--
+-	Firefox: As expected.
+-	Chrome: As expected.
+-	Safari (desktop):
+-	Safari (mobile):
+-	Microsoft Edge: As expected.
 
 Title: State window.
 Expected Result: Clicking on a state should show a window that contains a picture of that state, the selected statistics for which it ranks best and worst, and a bar graph of all state's rankings with the selected state bar highlighted. This window should be styled based on the selected theme. A close button should be visible, and clicking it should return the view to normal.
 Actual result:
--
--
--
--
+-	Firefox: As expected.
+-	Chrome: As expected.
+-	Safari (desktop):
+-	Safari (mobile):
+-	Microsoft Edge: As expected.
 
 Title: Metadata window.
 Expected result: Clicking on the (i) button next to a statistic (regardless of whether the statistic is active) should show a window containing information about the statistic. A close buttom should be visible, and clicking it should return the view to normal.
 Actual result:
--
--
--
+-	Firefox: As expected.
+-	Chrome: As expected.
+-	Safari (desktop):
+-	Safari (mobile);
+-	Microsoft Edge: As expected.
+
+Title: Resizing the Browser Window.
+Expected result: The statistics, map, and about SMAP sections correctly resize with the sizing of the window.
+Actual result:
+-	Firefox: As expected.
+-	Chrome: As expected.
+- 	Safari (desktop):
+-	Safari (mobile):
+-	Microsoft Edge: Allows for resizing, but does not have a minimum size window.
+
+Title: Pop up windows.
+Expected result: The state window and the NE magnifier windows will close when the close button is clicked.
+Actual result:
+-	Firefox: As expected.
+-	Chrome: As expected.
+-	Safari (desktop):
+-	Safari (mobile):
+-	Microsoft Edge: As expected.
