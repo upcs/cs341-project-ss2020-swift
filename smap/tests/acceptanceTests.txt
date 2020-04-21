@@ -1,4 +1,4 @@
-Title: Preformance testing of load time.
+Title: Performance testing of load time.
 Description: Load time was tested five times and averaged. No data was collected for the mobile version of Safari, since there is no way to view the console.
     The first number is page lode time; the second is the time until the page is operable. Both are in seconds.
 Actual Results:
@@ -39,8 +39,7 @@ Actual Result:
 
 Title: Remembering the last session.
 Description: Reloading the page will not reset the sliders.
-Expected Result: When the user reloads the page, the previously selected sliders will appear (and 
-    the map will be colored accordingly). Note that current code does not retain theme info, but does apply to weights.
+Expected Result: When the user reloads the page, the previously selected sliders will appear (and the map will be colored accordingly). In addition, the active theme should be the same theme as before. 
 Actual Result:
 -	Firefox: As expected. 
 -	Chrome: As expected.
@@ -93,3 +92,26 @@ Actual Result:
 -	Chrome: As expected.
 -	Safari (desktop): As expected.
 -	Safari (mobile): As expected.
+
+Title: Northeast magnifier.
+Expected Result: Clicking the magnifying glass in the top right corner should show the northeast states zoomed in on the center of the screen. These states should be colored the same as they were in the non-zoomed in portion of the map. Clicking on any of these states should show the state info. Clicking on the X at the upper right corner will close the window.
+Actual result:
+-
+-
+-
+-
+
+Title: State window.
+Expected Result: Clicking on a state should show a window that contains a picture of that state, the selected statistics for which it ranks best and worst, and a bar graph of all state's rankings with the selected state bar highlighted. This window should be styled based on the selected theme. A close button should be visible, and clicking it should return the view to normal.
+Actual result:
+-
+-
+-
+-
+
+Title: Metadata window.
+Expected result: Clicking on the (i) button next to a statistic (regardless of whether the statistic is active) should show a window containing information about the statistic. A close buttom should be visible, and clicking it should return the view to normal.
+Actual result:
+-
+-
+-

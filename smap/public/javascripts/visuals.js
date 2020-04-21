@@ -27,9 +27,12 @@ const ne_state_names = {
     NH: "New Hampshire", NJ: "New Jersey", NY: "New York", PA: "Pennsylvania",
     RI: "Rhode Island", VT: "Vermont"
 }
+
 const themes = [
     "orange-red", "green-blue", "pink-purple", "dark-red", "dark-green", "dark-blue"
 ];
+const default_theme_selector_id = "orange-red";
+
 const ne_states = ["MA", "CT", "NH", "RI", "VT", "DE", "MD", "MJ", "NY", "PA", "ME", "NJ"];
 
 const DOTS_PULSE = 1000;
@@ -144,9 +147,6 @@ function clear_loading(loop) {
     $("#dot2").animate({opacity: "0"}, DOTS_FADE_OUT, "swing");
     $("#dot3").animate({opacity: "0"}, DOTS_FADE_OUT, "swing");
 
-    // Click the default orange-red theme
-    $("#orange-red").click();
-
     setTimeout(function(){
         // Stop the triple dot loading loop
         clearInterval(loop);
@@ -174,7 +174,7 @@ function clear_loading(loop) {
 
 /**
  * Preload SVG elements and catagory data.
- * 
+ *
  * @param {function} callback the clear_loading function
  * @param {setInterval} loop the loop we're supposed to pass into the callback function
  * @notes This function stays inside the document.ready due to it calling other functions that
@@ -273,9 +273,9 @@ function makeInactiveSlider(title) {
 
 
 /**
- * Creates a color based on the state's weight. States with smaller values have colors that 
+ * Creates a color based on the state's weight. States with smaller values have colors that
  * are lighter, while states with values close to 1 have more saturated colors.
- * 
+ *
  * @param {Number} weight number between 0 (low) and 1 (high) representing how "colored" the color should be
  * @param {String} color is the color to be mixed with the light color
  * @return is the resulting rgba string that can be used in the website
@@ -312,7 +312,7 @@ function mixColor(weight, color) {
 
 /**
  * Colors individual states in the SVG according to their normalized weights.
- * 
+ *
  * @param {Document} doc the svg document that is to be used to grab state paths
  * @param {String} state the state name that should be retrieved
  * @param {Number} weight the number that is passed to mixColor
@@ -537,7 +537,7 @@ function resizeChart(ctx) {
 
 /**
  * Makes a bar chart of state weights, from best to worst. Also includes styling of chart and it's bars.
- * 
+ *
  * @param {String} state_id is the state that was clicked from the state window. It will be highlighted
  * @param {Number Array} weights the weights of the states that will be the y-axis data
  * @param {String Array} ranks the ordered list of the states that will be the x-axis data
@@ -789,10 +789,19 @@ function scrollAbout() {
  * @notes This is an event handler function for a theme circle click
  */
 function themeHandler() {
+    setTheme(this.id);
+}
+
+function setTheme(theme_selector_id){
+    let theme_id = theme_selector_id + "-theme";
+
     // Change the circle to be "active"
-    var theme_id = $(this).attr("id") + "-theme";
+    let theme_selector = $("#" + theme_selector_id);
+    if (theme_selector.length == 0){
+      return false;
+    }
     $(".theme-template-active").addClass("theme-template").removeClass("theme-template-active");
-    $(this).addClass("theme-template-active").removeClass("theme-template");
+    theme_selector.addClass("theme-template-active").removeClass("theme-template");
     // Change the stylesheet reference
 
     /*EXTERNAL CITATION
@@ -813,4 +822,6 @@ function themeHandler() {
     });
     // Recolor the map
     displayWeights();
+    updateThemeStorage(theme_selector_id);
+    return true;
 }

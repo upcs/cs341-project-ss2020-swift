@@ -1002,15 +1002,21 @@ describe('restoreFromStorage', () => {
     this.weight = model.DEFAULT_WEIGHT;
   };
 
+  let themeSuccess = false;
+
   beforeEach(() => {
     resetData();
     FakeStat.prototype.enable = jest.fn(function(){model.data.active.add(this.category.stat_id)});
     FakeStat.prototype.disable = jest.fn(function(){model.data.active.delete(this.category.stat_id)});
     FakeStat.prototype.updateWeight = jest.fn(function(weight){this.weight = weight});
+    window.setTheme = jest.fn(() => themeSuccess);
+    window.default_theme_selector_id = "fake-theme";
   });
 
   afterEach(() => {
     window.localStorage.clear();
+    window.setTheme.mockRestore();
+    delete window.default_theme_selector_id;
   });
 
   test('null storage', () => {

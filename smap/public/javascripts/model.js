@@ -364,6 +364,7 @@ Stat.prototype.showMeta = function(){
 */
 const ACTIVE_SLIDER_KEY = "active_sliders";
 const ACTIVE_SLIDER_PREFIX = "slider_";
+const THEME_KEY = "theme"
 
 //EXTERNAL CITATION:
 //  The following code is from
@@ -410,6 +411,10 @@ function setStorage(){
 function restoreFromStorage(){
   setStorage();
   if (storage) {
+    let theme = storage.getItem(THEME_KEY);
+    if (theme === undefined || !setTheme(theme)){
+      setTheme(default_theme_selector_id);
+    }
     let sliders = storage.getItem(ACTIVE_SLIDER_KEY);
     if (sliders) {
       let cats = sliders.split(",");
@@ -463,6 +468,12 @@ function updateWeightStorage(cat){
         storage.setItem(ACTIVE_SLIDER_PREFIX + cat, value);
       }
     }
+  }
+}
+
+function updateThemeStorage(theme){
+  if (storage && data.restored){
+    storage.setItem(THEME_KEY, theme);
   }
 }
 
