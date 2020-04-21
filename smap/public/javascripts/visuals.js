@@ -505,9 +505,6 @@ function populateStateWindow(is_ne){
  */
 function drawChart(state_id, weights, ranks) {
     let ctx = document.getElementById('myChart').getContext('2d');
-    // Resize the chart according to the window size.
-    // ctx.canvas.width = $("#graph").width();
-    // ctx.canvas.height = $("#graph").height();
     // This prevents the charts from stacking and interfering with eachother
     if (chart != undefined){
         chart.destroy();
