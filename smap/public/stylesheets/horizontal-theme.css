@@ -40,7 +40,6 @@
 }
 
 #map-container {
-    display: grid;
     grid-row: 1/1;
     grid-column: 2/4;
     align-items: center;

@@ -54,7 +54,6 @@
 
 #map-container {
     grid-area: map-area;
-    display: grid;
     align-items: center;
     justify-items: center;
     height: 100%;
