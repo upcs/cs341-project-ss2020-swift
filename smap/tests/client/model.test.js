@@ -1019,7 +1019,7 @@ describe('restoreFromStorage', () => {
     script.__set__('setStorage', available);
     let storage = window.localStorage;
     storage.setItem(script.storage.ACTIVE_SLIDER_KEY, "3");
-    model.data.stats[3] = new FakeStat(3)
+    model.data.stats[3] = new FakeStat(3);
     expect(script.data.active.size).toEqual(0);
     expect(available.mock.calls.length).toEqual(0);
     expect(script.data.restored).toBeFalsy();
@@ -1272,7 +1272,7 @@ describe('Stat.showMeta', () => {
     window.showMetadataAlert = jest.fn(() => {});
     window.closeMetadataAlert = jest.fn(() => {});
     fetchedMetadata = [];
-    window.getMetadata = jest.fn(async () => {return fetchedMetadata}); //TODO: Make a promise
+    window.getMetadata = jest.fn(async () => {return fetchedMetadata});
   });
 
   test('happy path', () => {

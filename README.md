@@ -27,7 +27,96 @@ The next issue we noticed was that we have to send ajax requests for our map ima
 
 ## Test Coverage
 
+The API Handler code that deals with requests is 100% covered by tests. The code that deals with maintaining the data model (model.js) is nearly at 100% coverage. To achieve these numbers, we have over two thousand lines of code for tests that cover a variety of cases. We made extensive use of mocks in order to isolate client side code and tested for a variety of edge cases (some of which are code was already checking for, some of which it was not). Below is a hand-picked assortment of our juiciest tests.
 
+### Stat.enable -> without data failed callback
+Creating a Stat object using the constructor has some side effects (like updating the global data object) that we don't want to deal with. As such, we are using the ```apply()``` function to let us use a fake Stat object when testing this function. This particular test has another knot however, because we are supposed to test what happens when the get request fails. As such, we must mock the jQuery ```get()``` function to complete this test. Relevant code portions are below.
+
+```javascript
+$.get = jest.fn((url, blank, callback) => {
+  callback([], "failure", null);
+});
+window.alert = jest.fn(() => {});
+
+let rm = jest.fn(() => {});
+let stat = {
+  slider: {
+    remove: rm
+  },
+  weight: 1,
+  category: {
+    title: "Fake Stat",
+    stat_id: 7
+  },
+  updateWeight: jest.fn(() => {}),
+};
+
+//Precondition checks...
+
+model.Stat.prototype.enable.apply(stat, []);
+
+//Postcondition checks...
+
+$.get.mockRestore();
+window.alert.mockRestore();
+```
+
+### restoreFromStorage -> null storage
+There is a rare possibility that a browser does not support local storage, which we use for saving user state such as theme and selected statistics. We wanted to test to make sure we could handle this case gracefully. However, Jest's built-in browser supports local storage, and there is no obvious way to disable this functionality for a single test. The solution came in two parts. First, we put the code that set whether storage was available in a separate ```setStorage``` function. This function cannot be mocked using Jest alone because it resides in the same file. However, the Node module ```rewire``` can do exactly this. As a result, we mock the function to fail to set storage, allowing us to test the edge case where the browser is not allowed to save data. Note that ```rewire``` does not work perfectly with Jest - tests using it do not contribute to code coverage. Thus, our coverage report says this case is not covered even though it is.
+
+But if you thought this test couldn't get any more interesting - you're in luck. Restoring from storage requires access to Stat objects, but we didn't want to create real ones to isolate this code. Thus, we create a new FakeStat object with mock functions that are used by ```restoreFromStorage``` so we can check which functions it calls and with what parameters. Some of this functionality was in the ```beforeEach``` and ```afterEach``` portions of the tests, but I have put it all together below so it's easy to read.
+
+```javascript
+function FakeStat(id){
+  this.category = {stat_id: id};
+  this.weight = model.DEFAULT_WEIGHT;
+};
+FakeStat.prototype.enable = jest.fn(function(){model.data.active.add(this.category.stat_id)});
+FakeStat.prototype.disable = jest.fn(function(){model.data.active.delete(this.category.stat_id)});
+FakeStat.prototype.updateWeight = jest.fn(function(weight){this.weight = weight});
+
+model.data.stats[3] = new FakeStat(3);
+
+let script = rewire(path);
+let available = jest.fn(() => {});
+script.__set__('setStorage', available);
+
+let storage = window.localStorage;
+storage.setItem(script.storage.ACTIVE_SLIDER_KEY, "3");
+
+//Precondition checks...
+
+script.storage.restore();
+
+//Postcondition checks...
+
+window.localStorage.clear();
+```
+
+
+### Stat.showMeta -> fetchedMetadata
+Our code is lazy, which means we don't query our API until we absolutely need to. This shows up in the ```showMeta()``` function, where the user is requesting to see metadata information, and we need to test what happens when we haven't asked the API for metadata yet. The function that handles this call is asynchronous, so even if we mock the function to return instantaneously the rest of the code is not run. As it turns out, setting a timeout of 1 ms is sufficient for Javascript to let the async handler to run and successfully test the code.
+
+```javascript
+fetchedMetadata = [{stat_id:2, note:{data:[]}}];
+window.getMetadata = jest.fn(async () => {return fetchedMetadata});
+
+let stat = {stat_id: 2};
+model.Stat.prototype.showMeta.apply(stat);
+
+//Testing for code not related to get request
+
+setTimeout(() => {
+  try{
+    expect(window.showMetadataAlert).toHaveBeenCalled();
+    expect(window.closeMetadataAlert).not.toHaveBeenCalled();
+    done();
+  } catch (err){
+    done(err);
+  }
+}, 1);
+
+```
 
 ## Security
 
