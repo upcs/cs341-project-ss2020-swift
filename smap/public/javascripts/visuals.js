@@ -51,7 +51,7 @@ const ZOOM_IN = 400;
 var chart;
 var theme_brightness = "light";
 var lastMove = 0;
-var orientation;
+var layout_orientation;
 var zoom_alert = false;
 
 //Promises to preload
@@ -873,17 +873,17 @@ function mixColor(weight, color) {
  */
 function setLayout(init){
     // Notify the user if they are zooming really far in.
-    if(window.devicePixelRatio > 1.8 && !zoom_alert) {
-        // Set flag so if they continue to zoom in, they won't get bugged every time.
-        zoom_alert = true;
-        console.warn("CSS Scaling may be effected at extremely high zoom resolutions." +
-            "Please consider alternative methods for accessibility reasons (e.g. Magnifier)");
-        window.alert("Warning: The website may exhibit strange scaling errors or be unusable at "+
-            "high web-browser zoom values.\n\n Proceed if this is not an issue. Otherwise, please "+
-            "consider using an alternative zoom tool for accessibility reasons like Windows Magnifier");
-    } else if (window.devicePixelRatio <= 1.5 && zoom_alert) {
-        zoom_alert = false;
-    }
+    // if(window.devicePixelRatio > 1.8 && !zoom_alert) {
+    //     // Set flag so if they continue to zoom in, they won't get bugged every time.
+    //     zoom_alert = true;
+    //     console.warn("CSS Scaling may be effected at extremely high zoom resolutions." +
+    //         "Please consider alternative methods for accessibility reasons (e.g. Magnifier)");
+    //     window.alert("Warning: The website may exhibit strange scaling errors or be unusable at "+
+    //         "high web-browser zoom values.\n\n Proceed if this is not an issue. Otherwise, please "+
+    //         "consider using an alternative zoom tool for accessibility reasons like Windows Magnifier");
+    // } else if (window.devicePixelRatio <= 1.5 && zoom_alert) {
+    //     zoom_alert = false;
+    // }
     // Make a dynamically scaling minimum width. Note, 0.15 is a magic number
     let zoom_ratio = Math.pow(window.devicePixelRatio, 0.15);
     // If we are too small, display the error
@@ -896,9 +896,9 @@ function setLayout(init){
         let aspect_ratio = $(window).width() / $(window).height();
         // If we should go vertical
         if(aspect_ratio < CRITICAL_ASPECT_RATIO || $(window).width() < MIN_HORIZONTAL_WIDTH/zoom_ratio) {
-            if(orientation !== "vertical") {
+            if(layout_orientation !== "vertical") {
                 // Go vertical
-                orientation = "vertical";
+                layout_orientation = "vertical";
                 // Set a flash of color as a transition
                 if(!init) { $("body").animate({opacity: "0"}, LAYOUT_CHANGE_TIME, "swing"); }
                 window.setTimeout(function() {
@@ -908,9 +908,9 @@ function setLayout(init){
                 if(!init) { $("body").animate({opacity: "1"}, LAYOUT_CHANGE_TIME, "swing"); }
             }
         } else {
-            if(orientation !== "horizontal") {
+            if(layout_orientation !== "horizontal") {
                 // Go horizontal
-                orientation = "horizontal";
+                layout_orientation = "horizontal";
                 // Set a flash of color as a transition
                 if(!init) { $("body").animate({opacity: "0"}, LAYOUT_CHANGE_TIME, "swing"); }
                 window.setTimeout(function() {
