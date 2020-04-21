@@ -9,7 +9,7 @@ Sarah Bunger,
 Hayden Liao,
 Meredith Marcinko,
 Ryan Regier,
-Philip Robinson,
+Philip Robinson
 
 #### Average Webpage Get Request Time: 2.264
 #### Average Webpage Loading Time: 4.764
@@ -23,13 +23,28 @@ The next issue we noticed was that we have to send ajax requests for our map ima
 
 ## Cross-Browser Compatibility
 
+The majority of our reported issues were related to cross-browser functionality. Safari handles sizing differently than most browsers, using an older method to interpret percentages. When the height of an item within a grid is defined by percentage, that percentage is of the entire screen size, not of the parent grid. Thus, specific styling had to be implemented for the statistics sidebar and alert windows in Safari, using vh instead of % for sizing.
+
+A specific style sheet was also developed for users on mobile devices. [TODO]
+
+## Significant Bug Fixes
+
+Most bug fixes centered around race conditions (discussed below) and the information in state and metadata windows. We worked to ensure appropriate handling of units for each statistic. We also fixed our code to handle edge cases in the state window for when either one or no statistics are selected. Another bug for the alerts was that they would not resize with the browser window, so at certain (reasonably small) window sizes, users could not close the alerts. Adding an extra div and  changing where certain aspects of the alert was defined helped to resolve this issue.
+
+### Issue #41: Theme Race Condition and #57 Coloring Issues in Chrome [TODO]
 
 
-## Test Coverage
+
+## Test Coverage [TODO]
+
+[![Build Status](https://travis-ci.com/upcs/cs341-project-ss2020-swift.svg?branch=master)](https://travis-ci.com/upcs/cs341-project-ss2020-swift)
+
+[![Code Coverage](https://codecov.io/gh/upcs/cs341-project-ss2020-swift/branch/master/graph/badge.svg)](https://codecov.io/gh/upcs/cs341-project-ss2020-swift)
 
 The API Handler code that deals with requests is 100% covered by tests. The code that deals with maintaining the data model (model.js) is nearly at 100% coverage. To achieve these numbers, we have over two thousand lines of code for tests that cover a variety of cases. We made extensive use of mocks in order to isolate client side code and tested for a variety of edge cases (some of which are code was already checking for, some of which it was not). Below is a hand-picked assortment of our juiciest tests.
 
-### Stat.enable -> without data failed callback
+### Most Inventive Tests [TODO]
+#### Stat.enable -> without data failed callback
 Creating a Stat object using the constructor has some side effects (like updating the global data object) that we don't want to deal with. As such, we are using the ```apply()``` function to let us use a fake Stat object when testing this function. This particular test has another knot however, because we are supposed to test what happens when the get request fails. As such, we must mock the jQuery ```get()``` function to complete this test. Relevant code portions are below.
 
 ```javascript
@@ -61,7 +76,7 @@ $.get.mockRestore();
 window.alert.mockRestore();
 ```
 
-### restoreFromStorage -> null storage
+#### restoreFromStorage -> null storage
 There is a rare possibility that a browser does not support local storage, which we use for saving user state such as theme and selected statistics. We wanted to test to make sure we could handle this case gracefully. However, Jest's built-in browser supports local storage, and there is no obvious way to disable this functionality for a single test. The solution came in two parts. First, we put the code that set whether storage was available in a separate ```setStorage``` function. This function cannot be mocked using Jest alone because it resides in the same file. However, the Node module ```rewire``` can do exactly this. As a result, we mock the function to fail to set storage, allowing us to test the edge case where the browser is not allowed to save data. Note that ```rewire``` does not work perfectly with Jest - tests using it do not contribute to code coverage. Thus, our coverage report says this case is not covered even though it is.
 
 But if you thought this test couldn't get any more interesting - you're in luck. Restoring from storage requires access to Stat objects, but we didn't want to create real ones to isolate this code. Thus, we create a new FakeStat object with mock functions that are used by ```restoreFromStorage``` so we can check which functions it calls and with what parameters. Some of this functionality was in the ```beforeEach``` and ```afterEach``` portions of the tests, but I have put it all together below so it's easy to read.
@@ -94,7 +109,7 @@ window.localStorage.clear();
 ```
 
 
-### Stat.showMeta -> fetchedMetadata
+#### Stat.showMeta -> fetchedMetadata
 Our code is lazy, which means we don't query our API until we absolutely need to. This shows up in the ```showMeta()``` function, where the user is requesting to see metadata information, and we need to test what happens when we haven't asked the API for metadata yet. The function that handles this call is asynchronous, so even if we mock the function to return instantaneously the rest of the code is not run. As it turns out, setting a timeout of 1 ms is sufficient for Javascript to let the async handler to run and successfully test the code.
 
 ```javascript
@@ -119,14 +134,13 @@ setTimeout(() => {
 ```
 
 ## Security
-
+SMAP does not provide accounts, so the main security concern is the potential for SQL injections, which are prevented by parameterizing the database queries. There is also potential for denial of service (DOS) issues, though we will not address these for this project. For more information, go to tests > security_review.tx
 
 
 ## Peer Bug Fixes
+Our peers reported two bugs (one was reported twice). One was that the social media buttons at the bottom of the page were nonfunctional (Issues 68 and 69). Since these were placeholders in case we had time to implement social media sharing, this bug was resolved by simply removing them. The other bug concerned the stat names, which would overflow their boxes and push subsequent names further down (Issue #46). This was resolved by adding in css attributes for text-wrapping as well as adaptive height for that grid-area.
 
-
-
-## Error Handling
+## Error Handling [TODO]
 
 # Features List:
 
@@ -201,13 +215,5 @@ setTimeout(() => {
 ### Security Requirement
 > Our only security requirement was to address Denial of Service (DoS) errors. We imagined a DoS error would result from too many people or bots using the website at the same time or simply simultaneously refreshing the page. Since we are not the only ones with this particular data set on the internet, and our website is simply a visualization tool, we have decided that it is very unlikely that a) too many people use our website at the same time or b) someone tries to cause a DoS error by making too many website requests. In either case, however unlikely, we think the worst thing that would happen is that we use up our GCloud budget. A bad DoS attack would shut down the website before we are charged more than our credit allows, and the expected lifetime of the product is now less than a month. Given the short lifespan of our product and the unlikelihood of a DoS error, intentional or unintentional, we have not further addressed the issue.
 
-### Code Quality [todo]
+### Code Quality [TODO]
 > Our code is thoroughly commented, and unit tested. Our server side test coverage is _____ and our client side test coverage is ____. We have also taken great care to make our website intuitive to new users. This meets our software quality requirements. 	
-
-# Security Review
->SMAP does not provide accounts, so the main security concern is the potential for SQL injections, which are prevented by >parameterizing the database queries. There is also potential for denial of service (DOS) issues, though we will not address >these for this project. For more information, go to tests > security_review.txt
-
-
-[![Build Status](https://travis-ci.com/upcs/cs341-project-ss2020-swift.svg?branch=master)](https://travis-ci.com/upcs/cs341-project-ss2020-swift)
-
-[![Code Coverage](https://codecov.io/gh/upcs/cs341-project-ss2020-swift/branch/master/graph/badge.svg)](https://codecov.io/gh/upcs/cs341-project-ss2020-swift)
