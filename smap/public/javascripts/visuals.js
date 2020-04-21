@@ -61,6 +61,13 @@ var us_map_promise = $.get("/images/us.svg");
 var ne_map_promise = $.get("/images/ne.svg");
 
 
+//Promises to preload
+
+var cats_promise = $.get("/api/cats");
+var us_map_promise = $.get("/images/us.svg");
+var ne_map_promise = $.get("/images/ne.svg");
+
+
 ///////////////////
 ///  FUNCTIONS  ///
 ///////////////////
@@ -180,12 +187,9 @@ function clear_loading(loop) {
 
 
 /**
- * Preload SVG elements and catagory data.
- *
  * @param {function} callback the clear_loading function
  * @param {setInterval} loop the loop we're supposed to pass into the callback function
- * @notes This function stays inside the document.ready due to it calling other functions that
- *      need to be fully defined before it.
+ * @notes Preload SVG elements and catagory data.
  */
 function preload(callback, loop) {
     // Remove the NE-magnifier (only open in the first place to trigger load event)
