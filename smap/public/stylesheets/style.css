@@ -265,6 +265,18 @@ Thumbs are hard to come by, but this site knows how to style them
     border-bottom-width: 0px;
     background-color: var(--secondary-color-light);
 }
+/*
+* External citation: https://www.ryadel.com/en/css3-media-query-target-only-ie-ie6-ie11-firefox-chrome-safari-edge/
+* This @media section is the most commonly used way to specify styling for only certain conditions, including
+* the use of a specific browser.
+*/
+@media not all and (min-resolution:.001dpcm) {
+    @media {
+        .safari10_sliders {
+            max-height: 40vh;
+        }
+    }
+}
 
 /**************************/
 /***  Selector Styling  ***/
@@ -355,6 +367,18 @@ Thumbs are hard to come by, but this site knows how to style them
     border-top-width: 0px;
     border-bottom-width: 0px;
     background-color: var(--secondary-color-light);
+}
+/*
+* External citation: https://www.ryadel.com/en/css3-media-query-target-only-ie-ie6-ie11-firefox-chrome-safari-edge/
+* This @media section is the most commonly used way to specify styling for only certain conditions, including
+* the use of a specific browser.
+*/
+@media not all and (min-resolution:.001dpcm) {
+    @media {
+        .safari10_sliders {
+            max-height: 45vh;
+        }
+    }
 }
 
 /*************************/
@@ -824,7 +848,7 @@ svg {
 @media not all and (min-resolution:.001dpcm) {
     @media {
         .safari10 {
-            height: 90vh;
+            max-height: 90vh;
         }
     }
 }
