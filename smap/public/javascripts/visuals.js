@@ -2,9 +2,17 @@
 
 // const $ = require('jquery');
 
-const blur_elements = [
-    $("#nav-bar"), $("#settings"), $("#map-container"), $("#about-container")
+// const blur_elements = [
+//     $("#nav-bar"), $("#settings"), $("#map-container"), $("#about-container")
+// ];
+
+const blur_elements_string = [
+    "#nav-bar", "#settings", "#map-container", "#about-container"
 ];
+
+const active_slider_template_string =  "#active_slider_template";
+const sliderContainer_string = "#statistics-sliders";
+
 //check prepareMetadataAlert and closeMetadataAlert if you get a bug where a new thing isn't blurring or unblurring
 
 var chart;
@@ -123,18 +131,15 @@ $("document").ready(function () {
 
     // END ANIMATIONS //
     ////////////////////
-
-    let active =  $("#active_slider_template");
-    activeSliderTemplate = active.clone();
+    activeSliderTemplate = $(active_slider_template_string).clone();
     activeSliderTemplate.removeAttr("id");
-    active.remove();
+    $(active_slider_template_string).remove();
 
     let inactive = $("#inactive_slider_template");
     inactiveSliderTemplate = inactive.clone();
     inactiveSliderTemplate.removeAttr("id");
     inactive.remove();
 
-    sliderContainer = $("#statistics-sliders");
     selectionContainer = $("#statistics-selector");
 
     // Get the model
@@ -187,8 +192,8 @@ $("document").ready(function () {
 
         //when clicking on a state
         $("path", us_map).click(function () {
-            for (let element of blur_elements) {
-                element.addClass("blurred");
+            for (let blur_string of blur_elements_string) {
+                $(blur_string).addClass("blurred");
             }
             $("body").addClass("unscrollable");
             $("#state-window-alert-container").removeClass("hidden");
@@ -393,8 +398,12 @@ function createDetailsMsg(stat){
     return msg;
 }
 
-    const blur_elements = [
-        $("#nav-bar"), $("#settings"), $("#map-container"), $("#about-container"), $("#ne-inspector-container")
+    // const blur_elements_ne_string = [
+    //     $("#nav-bar"), $("#settings"), $("#map-container"), $("#about-container"), $("#ne-inspector-container")
+    // ];
+
+    const blur_elements_ne_string = [
+        "#nav-bar", "#settings", "#map-container", "#about-container", "#ne-inspector-container"
     ];
 
     $(".alert-close").click( () =>
@@ -402,8 +411,8 @@ function createDetailsMsg(stat){
     );
 
     function closeAlert() {
-        for (let element of blur_elements) {
-            element.removeClass("blurred");
+        for (let blur_string of blur_elements_ne_string) {
+            $(blur_string).removeClass("blurred");
         }
         $("body").removeClass("unscrollable");
         $(".alert-container").addClass("hidden");
@@ -476,10 +485,13 @@ function prepareMetadataAlert(){
   // for (var element of blur_elements) {
   //     element.addClass("blurred");
   // }
-  $("#nav-bar").addClass("blurred");
-  $("#settings").addClass("blurred");
-  $("#map-container").addClass("blurred");
-  $("#about-container").addClass("blurred");
+  for (var string of blur_elements_string) {
+      $(string).addClass("blurred");
+  }
+  // $("#nav-bar").addClass("blurred");
+  // $("#settings").addClass("blurred");
+  // $("#map-container").addClass("blurred");
+  // $("#about-container").addClass("blurred");
   $("#metadata-alert-container").removeClass("hidden");
 }
 
@@ -505,13 +517,13 @@ function showMetadataAlert(metadata){
 }
 
 function closeMetadataAlert(){
-  // for (var element of blur_elements) {
-  //     element.removeClass("blurred");
-  // }
-  $("#nav-bar").removeClass("blurred");
-  $("#settings").removeClass("blurred");
-  $("#map-container").removeClass("blurred");
-  $("#about-container").removeClass("blurred");
+  for (var blur_string of blur_elements_string) {
+      $(blur_string).removeClass("blurred");
+  }
+  // $("#nav-bar").removeClass("blurred");
+  // $("#settings").removeClass("blurred");
+  // $("#map-container").removeClass("blurred");
+  // $("#about-container").removeClass("blurred");
 
   $("body").removeClass("unscrollable");
   $(".loading").removeClass("hidden");
@@ -521,10 +533,10 @@ function closeMetadataAlert(){
 
 //Creates an active slider from the template and adds it to the page
 function makeActiveSlider(title, weight){
-  let slider = activeSliderTemplate.clone();
+  let slider = $(active_slider_template_string).clone();
   $(".statistic-slider", slider).attr("value", weight);
   $(".statistic-slider-title", slider).html(title);
-  sliderContainer.append(slider);
+  $(sliderContainer_string).append(slider);
   return slider;
 }
 
@@ -541,6 +553,7 @@ function makeInactiveSlider(title){
 function mixColor(weight, color) {
     // Get the theme colors
     var min_string = $(":root").css("--color-light");
+    console.log(":root: " + JSON.stringify($(":root")));
     var max_string = $(":root").css(color);
     // Get the text from the inside of the "rgba(_______);"
     var min_data = min_string.split("(")[1].split(")")[0];
@@ -572,7 +585,7 @@ function colorSVG(doc, state, weight) {
     var svgItem = doc.getElementById(state);
     // Set the color to something else
     var border = $(":root").css("--secondary-color-dark");
-    svgItem.setAttribute("style", "stroke-width: 1; stroke: "+border+"; fill: "+mixColor(weight, "--accent-color")+";");
+    svgItem.setAttribute("style", "stroke-width: 1; stroke: "+border+"; fill: "+mixColor(weight, "--")+";");
 }
 
 function colorState(state, weight) {
@@ -695,11 +708,15 @@ if(typeof module !== "undefined" && module.exports){
     // },
     // setMetadata: setMetadata,
     // displayWeights: displayWeights
-    blur_elements: blur_elements,
     getMetadata: getMetadata,
     prepareMetadataAlert: prepareMetadataAlert,
     showMetadataAlert: showMetadataAlert,
-    closeMetadataAlert: closeMetadataAlert
-
+    closeMetadataAlert: closeMetadataAlert,
+    makeActiveSlider: makeActiveSlider,
+    makeInactiveSlider: makeInactiveSlider,
+    mixColor: mixColor,
+    object_strings: {
+        active_slider_template_string: active_slider_template_string
+    }
   }
 }

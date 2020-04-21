@@ -245,7 +245,31 @@ describe("closeMetadataAlert", () => {
     });
 });
 
+describe("makeActiveSlider", () => {
+    // test("happy path, valid title and weight", () => {
+    //
+    //     let test_slider = visuals.makeActiveSlider("fake title", 1);
+    //     expect($(".statistic-slider", test_slider).attr("value")).toBe(1);
+    // });
 
+    //Notes for Dr. T:
+        // these functions require access to global variables, but rewire doesn't work with jquery
+        // and require only gets functions, not global variables
+
+
+
+
+});
+
+// describe("mixColor", () => {
+//     test("happy path", () => {
+//         let weight = 0.5;
+//         // let color = "--accent-color";
+//         let color = getComputedStyle(document.documentElement).getPropertyValue("--accent-color");
+//         test_color = visuals.mixColor(weight, color);
+//         expect(test_color).toBe(expect.anything());
+//     });
+// });
 
 
 
