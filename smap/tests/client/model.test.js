@@ -358,7 +358,7 @@ describe('getStateInfo', () => {
     model.data.active.add(1);
     model.data.stats[1] = {
       rankings: ["AR", "AL", "OH"],
-      data: {
+      raw_data: {
         "AR": 5,
         "AL": 3,
         "OH": 2
@@ -368,7 +368,7 @@ describe('getStateInfo', () => {
     model.data.active.add(2);
     model.data.stats[2] = {
       rankings: ["AL", "AR", "OH"],
-      data: {
+      raw_data: {
         "AR": 2,
         "AL": 10,
         "OH": 1
@@ -389,7 +389,7 @@ describe('getStateInfo', () => {
     model.data.active.add(1);
     model.data.stats[1] = {
       rankings: ["AR", "AL", "OH"],
-      data: {
+      raw_data: {
         "AR": 5,
         "AL": 3,
         "OH": 2
@@ -398,7 +398,7 @@ describe('getStateInfo', () => {
     model.data.active.add(2);
     model.data.stats[2] = {
       rankings: ["AL", "AR", "OH"],
-      data: {
+      raw_data: {
         "AR": 2,
         "AL": 10,
         "OH": 1
@@ -411,7 +411,7 @@ describe('getStateInfo', () => {
     model.data.active.add(1);
     model.data.stats[1] = {
       rankings: ["AR", "AL", "OH"],
-      data: {
+      raw_data: {
         "AR": 5,
         "AL": 3,
         "OH": 2
@@ -420,7 +420,7 @@ describe('getStateInfo', () => {
     };
     model.data.active.add(2);
     model.data.stats[2] = {
-      data: {
+      raw_data: {
         "AR": 2,
         "AL": 10,
         "OH": 1
@@ -823,6 +823,8 @@ describe("Stat.enable", () => {
     expect(stat.rankings.slice(0, 2)).toEqual(["NV", "OR"]);
     expect(data.NV).toEqual(1);
     expect(data.OR).toBeCloseTo(0.33333);
+    expect(stat.raw_data.OR).toEqual(1);
+    expect(stat.raw_data.NV).toEqual(3);
     expect(model.data.active.has(7)).toEqual(true);
     expect(window.colorState).toHaveBeenCalledTimes(50);
     expect(window.localStorage.getItem(model.storage.ACTIVE_SLIDER_KEY)).toEqual("7");
@@ -1293,6 +1295,19 @@ describe("rankStates", () => {
       "OH": 1
     };
     expect(script.rankStates(data)).toEqual([]);
+  });
+
+  test('inverted', () => {
+    let data = {
+      "AR": 2,
+      "AL": 10,
+      "OH": 1,
+      "invert_flag": 1
+    };
+    for (let state of states){
+      if (["AR", "AL", "OH"].indexOf(state) === -1) data[state] = 20;
+    }
+    expect(model.rankStates(data).slice(0,3)).toEqual(["OH", "AR", "AL"]);
   });
 });
 

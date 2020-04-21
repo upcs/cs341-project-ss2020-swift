@@ -29,6 +29,10 @@
 /***  Global Styling  ***/
 /************************/
 
+html {
+    background-color: var(--color-light);
+}
+
 
 body {
     /* Positioning and Display */
@@ -36,6 +40,7 @@ body {
     /* Fonts and Text */
     font-family: var(--font-sans);
     color: var(--color-dark);
+    overflow-x: hidden;
 }
 
 /*******************************/
@@ -43,13 +48,7 @@ body {
 /*******************************/
 
 #app-container {
-    /* Positioning and Display */
-    display: grid;
-    grid-template-columns: [settings-width]30% auto;
-    grid-template-rows: [app-height]90% 10%;
     background-color: var(--color-light);
-    width: 100%;
-    height: 100vh;
 }
 
 /******************************/
@@ -57,25 +56,6 @@ body {
 /******************************/
 
 #settings {
-    /* Positioning and Display */
-    position: absolute;
-    bottom: 0;
-    top: 0;
-    width: 30%;
-    display: grid;
-    grid-area: settings;
-    grid-template-rows:
-        [settings-guide]10%
-        [sliders-guide]auto
-        [selector-guide]10%
-        [end-settings-guide]auto;
-    grid-template-areas:
-        "sliders-header"
-        "sliders"
-        "selector-header"
-        "selector"
-    ;
-    z-index: 2;
     /* Coloring */
     background-color: var(--group-color);
     box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.35);
@@ -285,6 +265,18 @@ Thumbs are hard to come by, but this site knows how to style them
     border-bottom-width: 0px;
     background-color: var(--secondary-color-light);
 }
+/*
+* External citation: https://www.ryadel.com/en/css3-media-query-target-only-ie-ie6-ie11-firefox-chrome-safari-edge/
+* This @media section is the most commonly used way to specify styling for only certain conditions, including
+* the use of a specific browser.
+*/
+@media not all and (min-resolution:.001dpcm) {
+    @media {
+        .safari10_sliders {
+            max-height: 40vh;
+        }
+    }
+}
 
 /**************************/
 /***  Selector Styling  ***/
@@ -298,7 +290,6 @@ Thumbs are hard to come by, but this site knows how to style them
     grid-template-areas:
         "statistic-option-add statistic-option-title ."
     ;
-    height: auto;
     margin-bottom: 4px;
     padding: 8px;
     /* Coloring */
@@ -366,8 +357,10 @@ Thumbs are hard to come by, but this site knows how to style them
     /* Note: The following settings are specific to Chrome and webkit browsers */
 }::-webkit-scrollbar {
     width: 8px;
+    height: 8px;
 }::-webkit-scrollbar-track {
     width: 8px;
+    height: 8px;
     background-color: var(--color-light);
 }::-webkit-scrollbar-thumb {
     border: 1px solid var(--color-light);
@@ -375,21 +368,24 @@ Thumbs are hard to come by, but this site knows how to style them
     border-bottom-width: 0px;
     background-color: var(--secondary-color-light);
 }
+/*
+* External citation: https://www.ryadel.com/en/css3-media-query-target-only-ie-ie6-ie11-firefox-chrome-safari-edge/
+* This @media section is the most commonly used way to specify styling for only certain conditions, including
+* the use of a specific browser.
+*/
+@media not all and (min-resolution:.001dpcm) {
+    @media {
+        .safari10_sliders {
+            max-height: 45vh;
+        }
+    }
+}
 
 /*************************/
 /***  Nav-bar Styling  ***/
 /*************************/
 
 #nav-bar {
-    /* Positioning and Display */
-    grid-row: 2/2;
-	grid-column: 1/4;
-    display: grid;
-    align-items: center;
-	grid-template-columns:
-        [right-nav-padding]5.5% [spacing]29.5% [arrow]30% [legend]29.5% [theme-selector]5.5%
-    ;
-    grid-template-areas: "spacing1 spacing2 center-nav legend theme-selector" ;
     /* Coloring */
     background-color: var(--subgroup-color);
     /* Other */
@@ -398,8 +394,10 @@ Thumbs are hard to come by, but this site knows how to style them
 
 #nav-arrow {
     /* Positioning and Display */
-    width: 250px;
-    height: 45px;
+    width: 25vh;
+    height: 5vh;
+    max-width: 25vw;
+    max-height: 5vw;
     margin-top: 10px;
     margin-bottom: 10px;
     /* Animation */
@@ -422,41 +420,32 @@ Thumbs are hard to come by, but this site knows how to style them
 #map-legend-container {
     /* Positioning and Display */
     grid-area: legend;
-    justify-self: center;
+    display: flex;
+    padding-left: 3vw;
+    padding-right: 3vw;
 }
 
 #map-legend {
     /* Positioning and Display */
-    display: inline-block;
-    width: 150px;
-    vertical-align: middle;
+    width: 100%;
+    min-width: 50px;
+}
+
+#best {
+    padding: 5px;
+}
+
+#worst {
+    padding: 5px;
 }
 
 /*********************************/
 /***  US Map Specific Styling  ***/
 /*********************************/
 
-#map-container {
-    /* Positioning and Display */
-    display: grid;
-    grid-row: 1/1;
-    grid-column: 2/4;
-    align-items: center;
-    justify-items: center;
-    /* Coloring */
-    background-color: var(--color-light);
-    height: 100%;
-}
-
-#us-map {
-    /* Positioning and Display */
-    max-width: 100%;
-    height: 100%;
-}
-
-object {
+svg {
     /* Other */
-    filter: drop-shadow(0px 0px 3px var(--secondary-color-dark));
+    filter: drop-shadow(0px 0px 4px var(--secondary-color-dark));
 }
 
 
@@ -504,7 +493,7 @@ object {
   align-items: center;
   justify-items: end;
   position: absolute; /* Stay in place */
-  z-index: 1; /* Sit on top */
+  z-index: 2; /* Sit on top */
   left: 0;
   top: 0;
   width: 100%; /* Full width */
@@ -536,14 +525,19 @@ object {
 /*** Theme Selector Styling ***/
 /******************************/
 
-#theme-selector {
-    /* Positioning and Display */
-	grid-area: theme-selector;
-	width: 80%;
-	height: 80%;
+#theme-roller-container{
+    grid-area: theme-selector;
+    padding: 5px;
 }
 
-#theme-selector:hover {
+#theme-roller {
+    /* Positioning and Display */
+    height: 8vh;
+    height: 8vh;
+    float: right;
+}
+
+#theme-roller:hover {
     /* Animation */
     filter: invert(100%) contrast(60%) drop-shadow(0px 0px 8px var(--accent-color-dark));
     transition-duration: 0.25s;
@@ -642,7 +636,7 @@ object {
 	display: inline-grid !important;
 }
 
-#theme-selector-container:hover #theme-selector {
+#theme-selector-container:hover #theme-roller {
 	/* Animation */
     filter: invert(100%) contrast(60%) drop-shadow(0px 0px 8px var(--accent-color-dark));
     transition-duration: 0.25s;
@@ -686,29 +680,41 @@ object {
 	box-shadow: 0px 0px 5px #333333;
 }
 
+.fullscreen {
+    /* Coloring */
+    background-color: var(--color-light);
+    /* Fonts and Text */
+    color: var(--color-dark);
+    /* Other */
+    box-shadow: 0px 0px 150px inset rgba(0, 0, 0, 0.25);
+}
+
 #init {
     /* Positioning and Display */
     position: fixed;
     display: grid;
     align-items: center;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    left: 0;
-    z-index: 100;
-    /* Coloring */
-    background-color: #DADADA;
-    /* Fonts and Text */
-    color: #555555;
+    justify-items: center;
     text-align: center;
-    /* Other */
-    box-shadow: 0px 0px 150px inset #999999;
+    width: 100%;
+    height: 100%;
+    z-index: 100;
 }
 
 #ellipses {
     /* Fonts and Text */
     font-size: 80px;
     letter-spacing: -5px;
+}
+
+#error {
+    position: fixed;
+    display: grid;
+    align-items: center;
+    justify-items: center;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
 }
 
 /***********************/
@@ -725,15 +731,6 @@ object {
 }
 
 #about-content {
-    /* Positioning and Display */
-    display: grid;
-    justify-items: center;
-    grid-template-columns: auto 60% 20%;
-    grid-template-areas:
-        "about-ad-left about-content about-ad-right"
-    ;
-    padding-top: 20px;
-    padding-bottom: 20px;
     /* Coloring */
     background-color: var(--color-light);
     /* Fonts and Text */
@@ -743,34 +740,7 @@ object {
 
 #about-paragraph {
     grid-area: about-content;
-}
-
-.bottom-social {
-    /* Positioning and Display */
-    width: 70px;
-    height: 70px;
-    padding: 5px;
-    /* Other */
-    filter: invert(var(--inversion));
-}
-
-.bottom-social:hover {
-    /* Other */
-    opacity: 75%;
-}
-
-.bottom-social:active {
-    /* Other */
-    opacity: 50%;
-}
-
-#bottom-bar {
-    /* Positioning and Display */
-    padding-top: 50px;
-    padding-left: 15%;
-    padding-right: 15%;
-    /* Coloring */
-    background-color: var(--group-color);
+    text-indent: 2.5em;
 }
 
 /*******************************/
@@ -791,6 +761,7 @@ object {
     align-items: center;
     justify-content: center;
     position: fixed;
+    width: 100%;
     background-color: rgba(0, 0, 0, 0.7);
     z-index: 10;
     right: 0;
@@ -867,6 +838,7 @@ object {
     border-radius: 0px 0px 10px 10px;
     z-index: 11;
     grid-area: alert;
+    max-height: 90vh;
 }
 /*
 * External citation: https://www.ryadel.com/en/css3-media-query-target-only-ie-ie6-ie11-firefox-chrome-safari-edge/
@@ -876,7 +848,7 @@ object {
 @media not all and (min-resolution:.001dpcm) {
     @media {
         .safari10 {
-            height: 90vh;
+            max-height: 90vh;
         }
     }
 }
@@ -1059,7 +1031,7 @@ i {
 }
 
 #loading-ad-right, #loading-ad-left {
-    width: 50%;
+    width: 45%;
     height: 100px;
     position: absolute;
     bottom: 20px;
@@ -1071,13 +1043,6 @@ i {
 
 #loading-ad-left {
     left: 20px;
-}
-
-#about-ad-right, #about-ad-left {
-    width: 125px;
-    height: 500px;
-    writing-mode: vertical-rl;
-    text-orientation: mixed;
 }
 
 #about-ad-right {
