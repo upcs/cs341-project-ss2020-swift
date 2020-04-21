@@ -746,8 +746,8 @@ function fillStateWindow(state_id) {
         $("#state-window-data-container").css("grid-template-rows", "50% 50%");
         $("#state-window-data-container").css("grid-template-columns", "50% 50%");
         // Write good/bad stat names in good/bad grid items
-        $("#good-stats").html(makeStatMessage(stateCatArr[0], best_stat.category.stat_name_short, true));
-        $("#bad-stats").html(makeStatMessage(worst_stat_info, worst_stat.category.stat_name_short, false));
+        $("#good-stats").html(makeStatMessage(stateCatArr[0], best_stat.category.stat_name_short, true, best_stat.data.units));
+        $("#bad-stats").html(makeStatMessage(worst_stat_info, worst_stat.category.stat_name_short, false, best_stat.data.units));
         // Write details/metadata in good/bad stats details grid items
         $("#good-stats-details").text("");
         $("#bad-stats-details").text("");
@@ -758,10 +758,16 @@ function fillStateWindow(state_id) {
     }
 }
 
-function makeStatMessage(statInfo, name, is_best){
+function makeStatMessage(statInfo, name, is_best, units){
+  let unitsStr;
+  if (units[0] === '%'){
+    unitsStr = units;
+  } else {
+    unitsStr = " " + units;
+  }
   return `
   <h3>${is_best ? "Best" : "Worst"} statistic: ${name} </h3>
-  ${statInfo.value} UNITS <br />
+  ${statInfo.value}${unitsStr} <br />
   Rank: ${statInfo.rank}
   `
 }
