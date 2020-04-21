@@ -30,6 +30,26 @@ function resetMetadataAlertHTML(){
     `;
 }
 
+function resetStatSlider(){
+    document.body.innerHTML = `
+    <div id="statistics-sliders">
+        <div class="statistic-slider-container" id="active_slider_template">
+            <div class="statistic-slider-remover">&#215;</div>
+            <div class="statistic-slider-title">Template</div>
+            <input class="statistic-slider" type="range" min="1" max="5" value="3" />
+            <div class="statistic-slider-metadata">&#9432;</div>
+            <div class="statistic-slider-tick-container">
+                <p class="single-ticks-1">1</p>
+                <p class="single-ticks-2">2</p>
+                <p class="single-ticks-3">3</p>
+                <p class="single-ticks-4">4</p>
+                <p class="single-ticks-5">5</p>
+            </div>
+        </div>
+    </div>
+    `;
+}
+
 describe("getMetadata", () => {
     test("returns metadata", () => {
         let metadata = visuals.getMetadata();
@@ -68,7 +88,6 @@ describe("prepareMetadataAlert", () => {
         expect($("#metadata-alert-container").hasClass("hidden")).toBe(false);
     });
 });
-
 
 describe("showMetadataAlert", () => {
     beforeEach(resetMetadataAlertHTML);
@@ -246,21 +265,44 @@ describe("closeMetadataAlert", () => {
 });
 
 describe("makeActiveSlider", () => {
-    // test("happy path, valid title and weight", () => {
-    //
-    //     let test_slider = visuals.makeActiveSlider("fake title", 1);
-    //     expect($(".statistic-slider", test_slider).attr("value")).toBe(1);
-    // });
+/*
+    function resetStatSlider(){
+        document.body.innerHTML = `
+        <div id="statistics-sliders">
+            <div class="statistic-slider-container" id="active_slider_template">
+                <div class="statistic-slider-remover">&#215;</div>
+                <div class="statistic-slider-title">Template</div>
+                <input class="statistic-slider" type="range" min="1" max="5" value="3" />
+                <div class="statistic-slider-metadata">&#9432;</div>
+                <div class="statistic-slider-tick-container">
+                    <p class="single-ticks-1">1</p>
+                    <p class="single-ticks-2">2</p>
+                    <p class="single-ticks-3">3</p>
+                    <p class="single-ticks-4">4</p>
+                    <p class="single-ticks-5">5</p>
+                </div>
+            </div>
+        </div>
+        `;
+    }
+*/
+    beforeEach(resetStatSlider);
 
-    //Notes for Dr. T:
-        // these functions require access to global variables, but rewire doesn't work with jquery
-        // and require only gets functions, not global variables
+    test("happy path, valid title (\"fake title\") and weight(1)", () => {
 
+        expect($(".statistic-slider").attr("value")).toBe("3");
+        expect($(".statistic-slider-title").html()).toBe("Template");
 
+        let test_slider = visuals.makeActiveSlider("fake title", 1);
+        expect($(".statistic-slider", test_slider).attr("value")).toBe("1");
+        expect($(".statistic-slider-title", test_slider).html()).toBe("fake title");
 
-
+        expect($(visuals.object_strings.slider_container_string)[0].innerHTML).toContain(test_slider[0].innerHTML);
+    });
 });
 
+
+//TODO: after makeActiveSlider...
 // describe("mixColor", () => {
 //     test("happy path", () => {
 //         let weight = 0.5;

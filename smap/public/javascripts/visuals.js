@@ -11,7 +11,7 @@ const blur_elements_string = [
 ];
 
 const active_slider_template_string =  "#active_slider_template";
-const sliderContainer_string = "#statistics-sliders";
+const slider_container_string = "#statistics-sliders";
 
 //check prepareMetadataAlert and closeMetadataAlert if you get a bug where a new thing isn't blurring or unblurring
 
@@ -375,7 +375,7 @@ function populateDataDetails(stat, best) {
             }
         });
     } else {
-        console.error("<visuals><populateStateWindow>: Unknown error")
+        console.error("Unknown error"); 
     }
 }
 
@@ -536,7 +536,7 @@ function makeActiveSlider(title, weight){
   let slider = $(active_slider_template_string).clone();
   $(".statistic-slider", slider).attr("value", weight);
   $(".statistic-slider-title", slider).html(title);
-  $(sliderContainer_string).append(slider);
+  $(slider_container_string).append(slider);
   return slider;
 }
 
@@ -553,7 +553,7 @@ function makeInactiveSlider(title){
 function mixColor(weight, color) {
     // Get the theme colors
     var min_string = $(":root").css("--color-light");
-    console.log(":root: " + JSON.stringify($(":root")));
+    // console.log(":root: " + JSON.stringify($(":root")));
     var max_string = $(":root").css(color);
     // Get the text from the inside of the "rgba(_______);"
     var min_data = min_string.split("(")[1].split(")")[0];
@@ -597,7 +597,6 @@ function colorState(state, weight) {
     if(ne_states.includes(state)) {
         colorSVG(ne_map, state, weight);
     }
-
 }
 
 //weights is the dictionary with keys of state abbreviations and values of the calculated weight
@@ -716,7 +715,8 @@ if(typeof module !== "undefined" && module.exports){
     makeInactiveSlider: makeInactiveSlider,
     mixColor: mixColor,
     object_strings: {
-        active_slider_template_string: active_slider_template_string
+        active_slider_template_string: active_slider_template_string,
+        slider_container_string: slider_container_string
     }
   }
 }
