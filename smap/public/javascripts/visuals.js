@@ -132,6 +132,7 @@ $("document").ready(function () {
 
 
 /**
+ * Animates removal of loading screen.
  * @param {setInverval} loop the loading loop we're supposed to break and replace with the loading screen
  *      saying it is ready
  */
@@ -172,6 +173,8 @@ function clear_loading(loop) {
 
 
 /**
+ * Preload SVG elements and catagory data.
+ * 
  * @param {function} callback the clear_loading function
  * @param {setInterval} loop the loop we're supposed to pass into the callback function
  * @notes This function stays inside the document.ready due to it calling other functions that
@@ -237,6 +240,7 @@ function createSliderTemplates() {
 
 
 /**
+ * Creates an active slider from template, but with the appropropriate name.
  * @param {String} title the title of the statistic to be filled into the title
  * @param {Number} weight the default weight of the slider
  */
@@ -251,6 +255,7 @@ function makeActiveSlider(title, weight){
 
 
 /**
+ * Creates an inactive slider from template, but with the appropropriate name.
  * @param {String} title the title of the statistic to be filled into the box
  */
 function makeInactiveSlider(title) {
@@ -268,6 +273,9 @@ function makeInactiveSlider(title) {
 
 
 /**
+ * Creates a color based on the state's weight. States with smaller values have colors that 
+ * are lighter, while states with values close to 1 have more saturated colors.
+ * 
  * @param {Number} weight number between 0 (low) and 1 (high) representing how "colored" the color should be
  * @param {String} color is the color to be mixed with the light color
  * @return is the resulting rgba string that can be used in the website
@@ -303,6 +311,8 @@ function mixColor(weight, color) {
 
 
 /**
+ * Colors individual states in the SVG according to their normalized weights.
+ * 
  * @param {Document} doc the svg document that is to be used to grab state paths
  * @param {String} state the state name that should be retrieved
  * @param {Number} weight the number that is passed to mixColor
@@ -317,6 +327,7 @@ function colorSVG(doc, state, weight) {
 
 
 /**
+ * Colors states in the united states SVG. If the state is also in the northeast, it is colored in that SVG too.
  * @param {String} state the state that is to be colored
  * @param {Number} weight the number that is passed to mixColor in colorSVG
  */
@@ -332,7 +343,8 @@ function colorState(state, weight) {
 }
 
 /**
- * @notes This is an preloading function
+ * @notes This is an preloading function for the highlighting of states that occurs upon mouse hover.
+ * Applies to both the entire US map and the NE magnifier map.
  */
 function setUpHovering() {
     var us_map = document.getElementById("us-map");
@@ -524,6 +536,8 @@ function resizeChart(ctx) {
 
 
 /**
+ * Makes a bar chart of state weights, from best to worst. Also includes styling of chart and it's bars.
+ * 
  * @param {String} state_id is the state that was clicked from the state window. It will be highlighted
  * @param {Number Array} weights the weights of the states that will be the y-axis data
  * @param {String Array} ranks the ordered list of the states that will be the x-axis data
@@ -805,10 +819,8 @@ function themeHandler() {
     $("link[rel~='stylesheet']").each(function(_, theme) {
         theme = $(theme);
         if(theme.hasClass("theme")) {
-            if(theme.attr("title") != theme_id) {
-                //$("#"+theme+"-theme").attr("rel", "alternate stylesheet");
-                theme.prop("disabled", true);
-            } else {
+            theme.prop("disabled", true);
+            if(theme.attr("title") === theme_id) {
                 theme.prop("disabled", false);
             }
         }

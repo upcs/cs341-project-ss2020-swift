@@ -2,7 +2,8 @@
  * dbms.js
  *
  * This file contains functions for accessing the MySQL database
- * which contains the Cheesecake order data.
+ * which contains the statisic data (category names and the data itself) 
+ * as well as metadata.
  *
  */
 

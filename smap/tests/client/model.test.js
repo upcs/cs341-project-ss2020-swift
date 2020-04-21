@@ -206,13 +206,14 @@ describe('setMetadata', () => {
       stat_name_short:"Fake stat",
       publication_date: "Just now",
       source: "Ryan Regier",
-      oroginal_source: "pilots.up.edu"
+      original_source: "pilots.up.edu"
     }];
     let stat = {};
     model.data.stats[1] = stat;
     model.setMetadata(metadata);
     expect(stat).toHaveProperty("metadata");
     expect(stat.metadata.note).toEqual("hello world");
+    expect(stat.metadata.original_source).toEqual("pilots.up.edu");
     expect(stat.metadata).toBe(metadata[0]);
   });
 
@@ -253,6 +254,7 @@ describe('setMetadata', () => {
 
 describe('normalizeStats: ', () => {
 
+//MIT
   function makeDummyRow(id, invert, defaultValue){
     let row = {
       stat_id: id,
@@ -427,6 +429,7 @@ describe('getStateInfo', () => {
     };
     expect(model.getStateInfo("AL")).toEqual([
       {id:1, rank:2, value:3, name:"Fake Stat 1"}
+      //Fake Stats 2 is not included because it has no rankings
     ]);
   });
 });
@@ -465,6 +468,7 @@ describe('displayWeights', () => {
 
         model.displayWeights();
 
+       //ensure colorState is called 50 times, once for each state
         expect(mockCalls.length).toEqual(50);
         expect(mockCalls[0]).toEqual(["AL", 1]);
         expect(mockCalls[1]).toEqual(["AK", 0]);
@@ -578,6 +582,7 @@ describe('displayWeights', () => {
 describe('Stat', () => {
   let spy;
 
+  //MIT
   beforeEach(() => {
     spy = jest.spyOn(model.Stat.prototype, "disable").mockImplementation(() => {});
   });
@@ -606,7 +611,7 @@ describe('Stat', () => {
     expect(spy).not.toHaveBeenCalled();
   });
 
-  test('in data.stats', () => {
+  test('new stat is in data.stats', () => {
     let cat = {stat_id: 1, title: "Fake Stat"};
     let oldStat = {};
     model.data.stats[1] = oldStat;

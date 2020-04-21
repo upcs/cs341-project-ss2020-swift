@@ -1,5 +1,7 @@
-//This file contains functions for processing  and handling API requests
-//This will eventually contain code for querying the database
+/* 
+* This file contains functions for processing  and handling API requests
+* Data involved in these requests is obtained via database queries
+*/
 
 "use strict";
 
@@ -7,17 +9,18 @@ var mysql = require("mysql");
 var dbms = require("../dbms");
 var consts = require("./constants");
 
-//Dummy return data - will be replaced with DB connection in the future
-var dummyData = {crime_rate: {NV: 1, OR: 2}, salary: {NV: 5, OR: 7}, gdp: {NV: 8, OR: 25}};
-var dummyCats = [{stat_id:2, stat_name_short:"DUMMY CAT-- GDP"}, {stat_id:3, stat_name_short:"DUMMY CAT-- Education Expenditure"}];
-var dummyCats2 = [{id:2, stat_name_short:"GDP"}];
-
 const rawQuery = consts.rawQuery;
 const states = consts.states;
 const catsQuery = consts.cats;
 const metadata = consts.metadata;
 
-//Finds all valid categories for which data can be fetched
+/*
+  Finds all valid categories (statistics) for which data can be fetched from the database.
+  Args: 
+    callback - a callback function that specifies how to handle the results obtained from the db query in this function
+  Return:
+    The function returns in the event of a failed database query
+*/
 function getCats(callback){
   console.log("getting cats....");
   let query = catsQuery;
@@ -37,7 +40,14 @@ function getCats(callback){
   });
 }
 
-//Finds metadata for all available categories
+
+/*
+  Queries the database for metadata on all available categories
+  Args: 
+    callback - a callback function that specifies how to handle the results obtained from the db query in this function
+  Return:
+    The function returns in the event of a failed database query
+*/
 function getMeta(callback){
   console.log("meta...");
   let query = metadata;
@@ -56,9 +66,13 @@ function getMeta(callback){
   });
 }
 
-//Parses the request query for the /api/data endpoint
-//  query - the request query object
-//Returns: A list of categories requested, or undefined if no categories provided
+/*
+  Parses the request query for the /api/data endpoint
+  Args: 
+    query - the requested query object
+  Return:
+    cat - an array of the stat_ids corresponding to categories requested, or undefined if none provided
+*/
 function parseDataURL(query) {
 
   //remember, queries will be the stat_id, aka a number
@@ -83,15 +97,18 @@ function parseDataURL(query) {
   return cat;
 }
 
-
-//refer to comments at line 46
-//Gets the data for the /api/data endpoint
-//  cats - an array of categories to get data for
-//Returns: an object of the form {category: Data}, or undefined if any category does not exist
-//Note that at this point, the data is NOT normalized
+/*
+  Gets the data for the /api/data endpoint via a database query. At this point, the data is NOT normalized.
+  Args: 
+    cats - an array of the stat_ids corresponding to categories requested, or undefined if none provided
+    callback - a callback function that specifies how to handle the results obtained from the db query in this function
+  Return:
+    An array with objects of the form {category: Data}, or undefined if the database query was unsuccessful. Note that passing in a nonexistant 
+    category is acceptable; it will be ignored, but will not create an error. If the query contains good and bad categories, only 
+    the good ones will be part of the returned object.
+*/
 function getData(cats, callback){
   let query = mysql.format(rawQuery, [states, cats]);
-
   dbms.dbquery(query, function(error, results){
     if(error){
       console.log("You are a failure and you will never succeed");
