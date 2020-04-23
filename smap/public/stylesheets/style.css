@@ -707,16 +707,6 @@ svg {
     letter-spacing: -5px;
 }
 
-#error {
-    position: fixed;
-    display: grid;
-    align-items: center;
-    justify-items: center;
-    width: 100%;
-    height: 100%;
-    z-index: 10;
-}
-
 /***********************/
 /***  About Section  ***/
 /***********************/
