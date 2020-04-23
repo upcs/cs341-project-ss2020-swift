@@ -12,7 +12,7 @@ Ryan Regier,
 Philip Robinson
 
 #### Load Times
-Page load time / time until page operable. Both are in seconds and are an average of five trials on the swift-smap.appspot.com site for Sprint 5. Sprint 4 times were computed from timing localhost requests.
+Page load time / time until page operable. Both are in seconds and are an average of five trials on the swift-smap.appspot.com site for Sprint 5. Sprint 4 times were computed from timing localhost requests, which is why times appear to have gotten worse.
 
 -	Firefox (Sprint 4): 0.32764 / 3.0188
 - Firefox (Sprint 5): 3.7482 / 5.7482
