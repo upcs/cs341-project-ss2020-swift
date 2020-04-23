@@ -4,12 +4,9 @@
 "use strict";
 
 const $ = require('jquery');
-const rewire = require('rewire');
 const visuals_path = '../../public/javascripts/visuals.js';
-const index_path = '../../public/index';
 window.$ = $;
 const visuals = require(visuals_path);
-// const index = require(index_path);
 
 function resetMetadataAlertHTML(){
     document.body.innerHTML = `
@@ -30,26 +27,6 @@ function resetMetadataAlertHTML(){
     `;
 }
 
-// function resetStatSlider(){
-//     document.body.innerHTML = `
-//     <div id="statistics-sliders">
-//         <div class="statistic-slider-container" id="active_slider_template">
-//             <div class="statistic-slider-remover">&#215;</div>
-//             <div class="statistic-slider-title">Template</div>
-//             <input class="statistic-slider" type="range" min="1" max="5" value="3" />
-//             <div class="statistic-slider-metadata">&#9432;</div>
-//             <div class="statistic-slider-tick-container">
-//                 <p class="single-ticks-1">1</p>
-//                 <p class="single-ticks-2">2</p>
-//                 <p class="single-ticks-3">3</p>
-//                 <p class="single-ticks-4">4</p>
-//                 <p class="single-ticks-5">5</p>
-//             </div>
-//         </div>
-//     </div>
-//     `;
-// }
-
 describe("getMetadata", () => {
     test("returns metadata", () => {
         let metadata = visuals.getMetadata();
@@ -67,14 +44,8 @@ describe("getMetadata", () => {
     });
 });
 
-    //TODO: if time, fix this for the for loop that used to be in prepareMetadataAlert
 describe("prepareMetadataAlert", () => {
     beforeEach(resetMetadataAlertHTML);
-
-    //Ideally, these would be fetched from over yonder in the visuals.js file, but I can't get that to work... TODO?
-    // const blur_elements = [
-    //     $("#nav-bar"), $("#settings"), $("#map-container"), $("#about-container")
-    // ];
 
     test("returns metadata", () => {
         expect($("body").hasClass("unscrollable")).toBe(false);
@@ -119,6 +90,8 @@ describe("showMetadataAlert", () => {
         expect($(".metadata-alert-element").hasClass("hidden")).toBe(false);
     });
 
+
+    //MIT
     test("null metadata", () => {
         let metadata = null;
 
@@ -147,6 +120,8 @@ describe("showMetadataAlert", () => {
         expect($(".metadata-alert-element").hasClass("hidden")).toBe(true);
     });
 
+
+    //MIT
     test("empty metadata", () => {
         let metadata = {};
 
@@ -263,29 +238,3 @@ describe("closeMetadataAlert", () => {
         expect($("#metadata-alert-container").hasClass("hidden")).toBe(true);
     });
 });
-
-//TODO: after makeActiveSlider...
-// describe("mixColor", () => {
-//     test("happy path", () => {
-//         let weight = 0.5;
-//         // let color = "--accent-color";
-//         let color = getComputedStyle(document.documentElement).getPropertyValue("--accent-color");
-//         test_color = visuals.mixColor(weight, color);
-//         expect(test_color).toBe(expect.anything());
-//     });
-// });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//
