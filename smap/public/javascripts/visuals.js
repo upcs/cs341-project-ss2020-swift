@@ -27,6 +27,7 @@ const THEMES = [
 ];
 const LIGHT_THEMES = ["orange-red", "green-blue", "pink-purple" ];
 const DARK_THEMES = ["dark-red", "dark-green", "dark-blue"];
+const default_theme_selector_id = "orange-red";
 const NE_STATES = ["MA", "CT", "NH", "RI", "VT", "DE", "MD", "MJ", "NY", "PA", "ME", "NJ"];
 // Tuneable values
 const MIN_WIDTH = 500; // in px
@@ -37,6 +38,7 @@ const CRITICAL_ASPECT_RATIO = 1.125;
 const LAYOUT_CHANGE_TIME = 250;
 const GRAPH_ANIMATION_TIME = 1000;
 const SCROLL_ANIMATION_TIME = 1000;
+
 const DOTS_PULSE = 1000;
 const DOTS_LENGTH = 500
 const DOTS_OFFSET = 250;
@@ -157,9 +159,6 @@ function clear_loading(loop) {
     $("#dot1").animate({opacity: "0"}, DOTS_FADE_OUT, "swing");
     $("#dot2").animate({opacity: "0"}, DOTS_FADE_OUT, "swing");
     $("#dot3").animate({opacity: "0"}, DOTS_FADE_OUT, "swing");
-
-    // Click the default orange-red theme
-    $("#orange-red").click();
 
     setTimeout(function(){
         // Stop the triple dot loading loop
@@ -288,6 +287,46 @@ function makeInactiveSlider(title) {
 
 
 /**
+ * Creates a color based on the state's weight. States with smaller values have colors that
+ * are lighter, while states with values close to 1 have more saturated colors.
+ *
+ * @param {Number} weight number between 0 (low) and 1 (high) representing how "colored" the color should be
+ * @param {String} color is the color to be mixed with the light color
+ * @return is the resulting rgba string that can be used in the website
+ */
+function mixColor(weight, color) {
+    // Get the theme colors
+    var min_string = $(":root").css("--color-light");
+    var max_string = $(":root").css(color);
+    // Get the text from the inside of the "rgba(_______);"
+    var min_data = min_string.split("(")[1].split(")")[0];
+    var max_data = max_string.split("(")[1].split(")")[0];
+    // Split the string into a list of strings based on whitetext/commas
+    min_data = min_data.split(/[\s,]+/);
+    max_data = max_data.split(/[\s,]+/);
+    // Change each of the values to numbers
+    for (var color_channel of min_data) {
+        color_channel = Number(color_channel);
+    }
+    for (var color_channel of max_data) {
+        color_channel = Number(color_channel);
+    }
+    // Weight the values
+    min_data[0] *= (1 - weight);
+    min_data[1] *= (1 - weight);
+    min_data[2] *= (1 - weight);
+    max_data[0] *= weight;
+    max_data[1] *= weight;
+    max_data[2] *= weight;
+    // Make a result array and return a string based on this value
+    var result = [ min_data[0]+max_data[0], min_data[1]+max_data[1], min_data[2]+max_data[2] ];
+    return ("rgba("+ result[0] +", "+ result[1] +", "+ result[2] +", 1)");
+}
+
+
+/**
+ * Colors individual states in the SVG according to their normalized weights.
+ *
  * @param {Document} doc the svg document that is to be used to grab state paths
  * @param {String} state the state name that should be retrieved
  * @param {Number} weight the number that is passed to mixColor
@@ -794,14 +833,23 @@ function scrollAbout() {
  * @notes This is an event handler function for a theme circle click
  */
 function themeHandler() {
+    setTheme(this.id);
+}
+
+function setTheme(theme_selector_id){
+    let theme_id = theme_selector_id + "-theme";
+
     // Change the circle to be "active"
-    var theme_id = $(this).attr("id") + "-theme";
+    let theme_selector = $("#" + theme_selector_id);
+    if (theme_selector.length == 0){
+      return false;
+    }
     $(".theme-template-active").addClass("theme-template").removeClass("theme-template-active");
-    $(this).addClass("theme-template-active").removeClass("theme-template");
+    theme_selector.addClass("theme-template-active").removeClass("theme-template");
     // Set the flag if light or dark theme
-    if(LIGHT_THEMES.includes($(this).attr("id"))) {
+    if(LIGHT_THEMES.includes(theme_selector_id)) {
         theme_brightness = "light";
-    } else if(DARK_THEMES.includes($(this).attr("id"))) {
+    } else if(DARK_THEMES.includes(theme_selector_id)) {
         theme_brightness = "dark";
     }
     // Change the stylesheet reference
@@ -824,6 +872,8 @@ function themeHandler() {
     });
     // Recolor the map
     displayWeights();
+    updateThemeStorage(theme_selector_id);
+    return true;
 }
 
 /****************************************** OTHER *****************************************/

@@ -1004,15 +1004,21 @@ describe('restoreFromStorage', () => {
     this.weight = model.DEFAULT_WEIGHT;
   };
 
+  let themeSuccess = false;
+
   beforeEach(() => {
     resetData();
     FakeStat.prototype.enable = jest.fn(function(){model.data.active.add(this.category.stat_id)});
     FakeStat.prototype.disable = jest.fn(function(){model.data.active.delete(this.category.stat_id)});
     FakeStat.prototype.updateWeight = jest.fn(function(weight){this.weight = weight});
+    window.setTheme = jest.fn(() => themeSuccess);
+    window.default_theme_selector_id = "fake-theme";
   });
 
   afterEach(() => {
     window.localStorage.clear();
+    window.setTheme.mockRestore();
+    delete window.default_theme_selector_id;
   });
 
   test('null storage', () => {
@@ -1110,6 +1116,34 @@ describe('restoreFromStorage', () => {
     expect(model.data.stats[2].weight).toEqual(4);
     expect(model.data.stats[3].weight).toEqual(1);
     expect(model.data.restored).toBeTruthy();
+  });
+
+  test("no theme", () => {
+    let storage = window.localStorage;
+    expect(storage.getItem(model.storage.THEME_KEY)).toBeNull();
+    themeSuccess = true;
+    model.storage.restore();
+    expect(window.setTheme).toHaveBeenCalledTimes(1);
+    expect(window.setTheme).toHaveBeenCalledWith("fake-theme");
+  });
+
+  test("bad theme", () => {
+    let storage = window.localStorage;
+    storage.setItem(model.storage.THEME_KEY, "waaa");
+    themeSuccess = false;
+    model.storage.restore();
+    expect(window.setTheme).toHaveBeenCalledTimes(2);
+    expect(window.setTheme.mock.calls[0]).toEqual(["waaa"]);
+    expect(window.setTheme.mock.calls[1]).toEqual(["fake-theme"]);
+  });
+
+  test("good theme", () => {
+    let storage = window.localStorage;
+    storage.setItem(model.storage.THEME_KEY, "waaa");
+    themeSuccess = true;
+    model.storage.restore();
+    expect(window.setTheme).toHaveBeenCalledTimes(1);
+    expect(window.setTheme).toHaveBeenCalledWith("waaa");
   });
 });
 
@@ -1365,4 +1399,29 @@ describe('Stat.showMeta', () => {
       }
     }, 1);
   });
-})
+});
+
+describe("updateThemeStorage", () => {
+
+  beforeEach(() => {
+    model.storage.reset();
+  })
+
+  afterEach(() => {
+    resetData();
+  });
+
+  test("data not restored", () => {
+    let storage = window.localStorage;
+    model.data.restored = false;
+    model.storage.updateTheme("fake-theme");
+    expect(storage.getItem(model.storage.THEME_KEY)).toBeNull();
+  });
+
+  test("data restored", () => {
+    let storage = window.localStorage;
+    model.data.restored = true;
+    model.storage.updateTheme("fake-theme");
+    expect(storage.getItem(model.storage.THEME_KEY)).toEqual("fake-theme");
+  });
+});

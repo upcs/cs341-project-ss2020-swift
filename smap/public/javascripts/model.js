@@ -369,6 +369,7 @@ Stat.prototype.showMeta = function(){
 */
 const ACTIVE_SLIDER_KEY = "active_sliders";
 const ACTIVE_SLIDER_PREFIX = "slider_";
+const THEME_KEY = "theme"
 
 //EXTERNAL CITATION:
 //  The following code is from
@@ -415,6 +416,10 @@ function setStorage(){
 function restoreFromStorage(){
   setStorage();
   if (storage) {
+    let theme = storage.getItem(THEME_KEY);
+    if (theme === null || !setTheme(theme)){
+      setTheme(default_theme_selector_id);
+    }
     let sliders = storage.getItem(ACTIVE_SLIDER_KEY);
     if (sliders) {
       let cats = sliders.split(",");
@@ -424,7 +429,7 @@ function restoreFromStorage(){
         if (stat){
           stat.enable();
           let value = Number(storage.getItem(ACTIVE_SLIDER_PREFIX + cat));
-          if (value !== undefined && value >= MIN_WEIGHT && value <= MAX_WEIGHT){
+          if (value >= MIN_WEIGHT && value <= MAX_WEIGHT){
             stat.updateWeight(value);
           }
         }
@@ -471,6 +476,12 @@ function updateWeightStorage(cat){
   }
 }
 
+function updateThemeStorage(theme){
+  if (storage && data.restored){
+    storage.setItem(THEME_KEY, theme);
+  }
+}
+
 //endregion
 
 
@@ -485,10 +496,12 @@ if(typeof module !== "undefined" && module.exports){
       available: storageAvailable,
       updateCategory: updateCategoryStorage,
       updateWeight: updateWeightStorage,
+      updateTheme: updateThemeStorage,
       restore: restoreFromStorage,
       reset: setStorage,
       ACTIVE_SLIDER_KEY: ACTIVE_SLIDER_KEY,
-      ACTIVE_SLIDER_PREFIX: ACTIVE_SLIDER_PREFIX
+      ACTIVE_SLIDER_PREFIX: ACTIVE_SLIDER_PREFIX,
+      THEME_KEY: THEME_KEY
     },
     normalizeStats: normalizeStats,
     calculateWeight: calculateWeight,
