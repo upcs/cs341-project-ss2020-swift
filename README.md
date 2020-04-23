@@ -11,8 +11,13 @@ Meredith Marcinko,
 Ryan Regier,
 Philip Robinson
 
-#### Average Webpage Get Request Time: 2.264
-#### Average Webpage Loading Time: 4.764
+#### Load Times
+Page load time / time until page operable. Both are in seconds and are an average of five trials on the swift-smap.appspot.com site. For load times from Sprint 4, see the acceptanceTests.txt file.
+Firefox (Sprint 5): 3.7482 / 5.7482
+Chrome (Sprint 5): 3.5930 / 5.5930
+Safari (desktop) (Sprint 5): 0.4384 / 2.4384
+Microsoft Edge (Sprint 5): 8.9920441 / 10.9920441
+Note: Acceptance tests were performed on mobile versions of Safari and Edge. There is no method for accessing the console via mobile, so these times were not recorded.
 
 # Sprint 5 Improvements
 
@@ -21,13 +26,16 @@ The loading time measurements we previously reported were not entirely accurate 
 
 The next issue we noticed was that we have to send ajax requests for our map images to fix a standing bug. We also need to manipulate the DOM once the maps are loaded, so we were requesting the maps in the document.ready event listener. This lead to a delay where we had to wait for the document to load then wait for the maps to download in order for the page to finish loading. Instead, we request the maps (and, while we were at it, the category list) immediately and store their promises, but wait to resolve the promises until the DOM is ready. These requests used to have a delay around 0.2 seconds, which is now gone. There is now no practical delay between the document being ready and the loading being finished (excluding animation time).
 
+## Peer Bug Fixes
+Our peers reported two bugs (one was reported twice). One was that the social media buttons at the bottom of the page were nonfunctional (Issues 68 and 69). Since these were placeholders in case we had time to implement social media sharing, this bug was resolved by simply removing them. The other bug concerned the stat names, which would overflow their boxes and push subsequent names further down (Issue #46). This was resolved by adding in css attributes for text-wrapping as well as adaptive height for that grid-area.
+
 ## Cross-Browser Compatibility
 
 The majority of our reported issues were related to cross-browser functionality. Safari handles sizing differently than most browsers, using an older method to interpret percentages. When the height of an item within a grid is defined by percentage, that percentage is of the entire screen size, not of the parent grid. Thus, specific styling had to be implemented for the statistics sidebar and alert windows in Safari, using vh instead of % for sizing.
 
 A specific style sheet was also developed for users on mobile devices. [TODO]
 
-## Significant Bug Fixes
+## Significant Client-Side Bug Fixes
 
 Most bug fixes centered around race conditions (discussed below) and the information in state and metadata windows. We worked to ensure appropriate handling of units for each statistic. We also fixed our code to handle edge cases in the state window for when either one or no statistics are selected. Another bug for the alerts was that they would not resize with the browser window, so at certain (reasonably small) window sizes, users could not close the alerts. Adding an extra div and  changing where certain aspects of the alert was defined helped to resolve this issue.
 
@@ -35,7 +43,7 @@ Most bug fixes centered around race conditions (discussed below) and the informa
 
 
 
-## Test Coverage [TODO]
+## Test Coverage 
 
 [![Build Status](https://travis-ci.com/upcs/cs341-project-ss2020-swift.svg?branch=master)](https://travis-ci.com/upcs/cs341-project-ss2020-swift)
 
@@ -108,7 +116,6 @@ script.storage.restore();
 window.localStorage.clear();
 ```
 
-
 #### Stat.showMeta -> fetchedMetadata
 Our code is lazy, which means we don't query our API until we absolutely need to. This shows up in the ```showMeta()``` function, where the user is requesting to see metadata information, and we need to test what happens when we haven't asked the API for metadata yet. The function that handles this call is asynchronous, so even if we mock the function to return instantaneously the rest of the code is not run. As it turns out, setting a timeout of 1 ms is sufficient for Javascript to let the async handler to run and successfully test the code.
 
@@ -135,10 +142,6 @@ setTimeout(() => {
 
 ## Security
 SMAP does not provide accounts, so the main security concern is the potential for SQL injections, which are prevented by parameterizing the database queries. There is also potential for denial of service (DOS) issues, though we will not address these for this project. For more information, go to tests > security_review.tx
-
-
-## Peer Bug Fixes
-Our peers reported two bugs (one was reported twice). One was that the social media buttons at the bottom of the page were nonfunctional (Issues 68 and 69). Since these were placeholders in case we had time to implement social media sharing, this bug was resolved by simply removing them. The other bug concerned the stat names, which would overflow their boxes and push subsequent names further down (Issue #46). This was resolved by adding in css attributes for text-wrapping as well as adaptive height for that grid-area.
 
 ## Error Handling [TODO]
 
