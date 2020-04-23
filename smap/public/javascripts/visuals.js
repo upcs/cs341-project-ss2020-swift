@@ -936,39 +936,32 @@ function setLayout(init){
     // }
     // Make a dynamically scaling minimum width. Note, 0.15 is a magic number
     let zoom_ratio = Math.pow(window.devicePixelRatio, 0.15);
-    // If we are too small, display the error
-    if($(window).height() < (MIN_HEIGHT/zoom_ratio) || $(window).width() < (MIN_WIDTH/zoom_ratio)) {
-        console.error("Too small window size");
-        $("#error").css("display", "grid");
+    // Get the aspect ratio to determine if we should use vertical or horizontal stylesheets
+    let aspect_ratio = $(window).width() / $(window).height();
+    // If we should go vertical
+    if(aspect_ratio < CRITICAL_ASPECT_RATIO || $(window).width() < MIN_HORIZONTAL_WIDTH/zoom_ratio) {
+        if(layout_orientation !== "vertical") {
+            // Go vertical
+            layout_orientation = "vertical";
+            // Set a flash of color as a transition
+            if(!init) { $("body").animate({opacity: "0"}, LAYOUT_CHANGE_TIME, "swing"); }
+            window.setTimeout(function() {
+                $("#horizontal-layout").prop("disabled", true);
+                $("#vertical-layout").prop("disabled", false);
+            }, LAYOUT_CHANGE_TIME);
+            if(!init) { $("body").animate({opacity: "1"}, LAYOUT_CHANGE_TIME, "swing"); }
+        }
     } else {
-        $("#error").css("display", "none");
-        // Get the aspect ratio to determine if we should use vertical or horizontal stylesheets
-        let aspect_ratio = $(window).width() / $(window).height();
-        // If we should go vertical
-        if(aspect_ratio < CRITICAL_ASPECT_RATIO || $(window).width() < MIN_HORIZONTAL_WIDTH/zoom_ratio) {
-            if(layout_orientation !== "vertical") {
-                // Go vertical
-                layout_orientation = "vertical";
-                // Set a flash of color as a transition
-                if(!init) { $("body").animate({opacity: "0"}, LAYOUT_CHANGE_TIME, "swing"); }
-                window.setTimeout(function() {
-                    $("#horizontal-layout").prop("disabled", true);
-                    $("#vertical-layout").prop("disabled", false);
-                }, LAYOUT_CHANGE_TIME);
-                if(!init) { $("body").animate({opacity: "1"}, LAYOUT_CHANGE_TIME, "swing"); }
-            }
-        } else {
-            if(layout_orientation !== "horizontal") {
-                // Go horizontal
-                layout_orientation = "horizontal";
-                // Set a flash of color as a transition
-                if(!init) { $("body").animate({opacity: "0"}, LAYOUT_CHANGE_TIME, "swing"); }
-                window.setTimeout(function() {
-                    $("#vertical-layout").prop("disabled", true);
-                    $("#horizontal-layout").prop("disabled", false);
-                }, LAYOUT_CHANGE_TIME);
-                if(!init) { $("body").animate({opacity: "1"}, LAYOUT_CHANGE_TIME, "swing"); }
-            }
+        if(layout_orientation !== "horizontal") {
+            // Go horizontal
+            layout_orientation = "horizontal";
+            // Set a flash of color as a transition
+            if(!init) { $("body").animate({opacity: "0"}, LAYOUT_CHANGE_TIME, "swing"); }
+            window.setTimeout(function() {
+                $("#vertical-layout").prop("disabled", true);
+                $("#horizontal-layout").prop("disabled", false);
+            }, LAYOUT_CHANGE_TIME);
+            if(!init) { $("body").animate({opacity: "1"}, LAYOUT_CHANGE_TIME, "swing"); }
         }
     }
 }
