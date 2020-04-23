@@ -9,10 +9,193 @@ Sarah Bunger,
 Hayden Liao,
 Meredith Marcinko,
 Ryan Regier,
-Philip Robinson,
+Philip Robinson
 
-#### Average Webpage Get Request Time: 2.264
-#### Average Webpage Loading Time: 4.764
+#### Load Times
+Page load time / time until page operable. Both are in seconds and are an average of five trials on the swift-smap.appspot.com site for Sprint 5. Sprint 4 times were computed from timing localhost requests, which is why times appear to have gotten worse.
+
+-	Firefox (Sprint 4): 0.32764 / 3.0188
+- Firefox (Sprint 5): 3.7482 / 5.7482
+-	Chrome (Sprint 4): 0.412904 / 2.912904
+-	Chrome (Sprint 5): 3.5930 / 5.5930
+-	Safari (desktop) (Sprint 4): 0.2772 / 2.7772
+-	Safari (desktop) (Sprint 5): 0.4384 / 2.4384
+-	Microsoft Edge (Sprint 5): 8.9920441 / 10.9920441
+
+Note: Acceptance tests were performed on mobile versions of Safari and Edge. There is no method for accessing the console via mobile, so these times were not recorded.
+
+# Sprint 5 Improvements
+
+## Performance
+The loading time measurements we previously reported were not entirely accurate because it stopped timing when the loading screen began fading out rather than when it ended - which increased the time until the user could access the website by another half a second. This meant a total of 3 seconds of animation, which was longer than the webpage took to ready. The primary performance improvement was thus speeding up the loading animation by 1 second to make this time more reasonable.
+
+The next issue we noticed was that we have to send ajax requests for our map images to fix a standing bug. We also need to manipulate the DOM once the maps are loaded, so we were requesting the maps in the document.ready event listener. This lead to a delay where we had to wait for the document to load then wait for the maps to download in order for the page to finish loading. Instead, we request the maps (and, while we were at it, the category list) immediately and store their promises, but wait to resolve the promises until the DOM is ready. These requests used to have a delay around 0.2 seconds, which is now gone. There is now no practical delay between the document being ready and the loading being finished (excluding animation time).
+
+## Peer Bug Fixes
+Our peers reported two bugs (one was reported twice). One was that the social media buttons at the bottom of the page were nonfunctional (Issues 68 and 69). Since these were placeholders in case we had time to implement social media sharing, this bug was resolved by simply removing them. The other bug concerned the stat names, which would overflow their boxes and push subsequent names further down (Issue #46). This was resolved by adding in css attributes for text-wrapping as well as adaptive height for that grid-area.
+
+## Cross-Browser Compatibility
+
+The majority of our reported issues were related to cross-browser functionality. Safari handles sizing differently than most browsers, using an older method to interpret percentages. When the height of an item within a grid is defined by percentage, that percentage is of the entire screen size, not of the parent grid. Thus, specific styling had to be implemented for the statistics sidebar and alert windows in Safari, using vh instead of % for sizing.
+
+A specific style sheet was also developed for users on mobile devices.
+
+### Known Issues
+
+On Edge, state highlighting looks incorrect if you move your mouse very quickly (see #94).
+
+On Safari, the Statistic Selection container does not utilize all vertical room possible.
+
+Default mobile view does not show bottom bar with legend and theme selector.
+
+## Significant Client-Side Bug Fixes
+
+### Issue #41: Theme Race Condition
+
+Chrome changed themes with a delay - the theme it displayed was always the previous theme you selected rather than the current. The issue came down to how we modified the DOM. Changing the html property required that the browser handle a page update asynchronously, at which point the map was already colored in. We changed this to modifying the DOM directly to fix the issue.
+
+However, this issue had a rare resurgence where no theme would be displayed when the theme changed. When two alternate stylesheets were enabled at the same time, some browsers sometimes treated this like no stylesheet was enabled. We fixed this by mimicking an external example and disabling the active stylesheet before searching for the one to enable.
+
+### Issue #57: Coloring Issues in Chrome
+
+Although our map SVGs were linked with the ```<object>``` tag in the browser, Chrome does not download these maps until they are visible on the screen as an optimization. We were unable to force the maps to load without resorting to some hacks. As a workaround, we fetch the maps with AJAX and embed the maps directly into our document.
+
+### Issue #58: Edge sliders
+
+Edge sliders did not scale to fit the width assigned to it in the CSS grid. As it turns out, it took this width as a maximum. Instead, the width defaulted to 196px. Setting ```width: auto``` fixed the problem, and this change was not even registered in the inspectors of other browsers.
+
+### Issue #60 and #70: Fewer than two stats selected
+
+This was simply adding relevant checks in the code, as well as a bit of CSS so we could style these cases slightly differently.
+
+### Issue #66, #80, and #107: Scaling issues
+
+Another bug for the alerts was that they would not resize with the browser window, so at certain (reasonably small) window sizes, users could not close the alerts. Adding an extra div and changing where certain aspects of the alert was defined helped to resolve this issue for Firefox and Chrome. Safari required extra wrangling; as mentioned in the cross-browser compatability section, Safari does not handle percentaces as units within a grid.  
+
+The scaling issue mentioned in #107 related to the map. Safari's handling of size within grids, combined with the fact that we have two stylesheets (for horizontal and vertial layouts), caused the map to initially spill out of its container upon resize. As soon as the user moused over it, the proper map would render, one state at a time. This issue was resolved by switching to viewport measurements and removing ```display: grid```.
+
+## Test Coverage
+
+[![Build Status](https://travis-ci.com/upcs/cs341-project-ss2020-swift.svg?branch=master)](https://travis-ci.com/upcs/cs341-project-ss2020-swift)
+
+[![Code Coverage](https://codecov.io/gh/upcs/cs341-project-ss2020-swift/branch/master/graph/badge.svg)](https://codecov.io/gh/upcs/cs341-project-ss2020-swift)
+
+The API Handler code that deals with requests is 100% covered by tests. The code that deals with maintaining the data model (model.js) is nearly at 100% coverage. The client side code that actually modifies the display (visuals.js) had significantly lower coverage due to the nature of the side-effect laden code (manipulating the DOM and global state using jQuery), but many functions were still tested thoroughly. For the cases that we could not easily automate, we cover them with a suite of acceptance tests. As a result, a mix of manual and automated tests cover what we estimate to be 85% of our code base. To achieve these numbers, we have over two thousand lines of code for tests that cover a variety of cases. We made extensive use of mocks in order to isolate client side code and tested for a variety of edge cases (some of which are code was already checking for, some of which it was not). Below is a hand-picked assortment of our juiciest tests.
+
+### Most Inventive Tests
+#### Stat.enable -> without data failed callback
+Creating a Stat object using the constructor has some side effects (like updating the global data object) that we don't want to deal with. As such, we are using the ```apply()``` function to let us use a fake Stat object when testing this function. This particular test has another knot however, because we are supposed to test what happens when the get request fails. As such, we must mock the jQuery ```get()``` function to complete this test. Relevant code portions are below.
+
+```javascript
+$.get = jest.fn((url, blank, callback) => {
+  callback([], "failure", null);
+});
+window.alert = jest.fn(() => {});
+
+let rm = jest.fn(() => {});
+let stat = {
+  slider: {
+    remove: rm
+  },
+  weight: 1,
+  category: {
+    title: "Fake Stat",
+    stat_id: 7
+  },
+  updateWeight: jest.fn(() => {}),
+};
+
+//Precondition checks...
+
+model.Stat.prototype.enable.apply(stat, []);
+
+//Postcondition checks...
+
+$.get.mockRestore();
+window.alert.mockRestore();
+```
+
+#### restoreFromStorage -> null storage
+There is a rare possibility that a browser does not support local storage, which we use for saving user state such as theme and selected statistics. We wanted to test to make sure we could handle this case gracefully. However, Jest's built-in browser supports local storage, and there is no obvious way to disable this functionality for a single test. The solution came in two parts. First, we put the code that set whether storage was available in a separate ```setStorage``` function. This function cannot be mocked using Jest alone because it resides in the same file. However, the Node module ```rewire``` can do exactly this. As a result, we mock the function to fail to set storage, allowing us to test the edge case where the browser is not allowed to save data. Note that ```rewire``` does not work perfectly with Jest - tests using it do not contribute to code coverage. Thus, our coverage report says this case is not covered even though it is.
+
+But if you thought this test couldn't get any more interesting - you're in luck. Restoring from storage requires access to Stat objects, but we didn't want to create real ones to isolate this code. Thus, we create a new FakeStat object with mock functions that are used by ```restoreFromStorage``` so we can check which functions it calls and with what parameters. Some of this functionality was in the ```beforeEach``` and ```afterEach``` portions of the tests, but I have put it all together below so it's easy to read.
+
+```javascript
+function FakeStat(id){
+  this.category = {stat_id: id};
+  this.weight = model.DEFAULT_WEIGHT;
+};
+FakeStat.prototype.enable = jest.fn(function(){model.data.active.add(this.category.stat_id)});
+FakeStat.prototype.disable = jest.fn(function(){model.data.active.delete(this.category.stat_id)});
+FakeStat.prototype.updateWeight = jest.fn(function(weight){this.weight = weight});
+
+model.data.stats[3] = new FakeStat(3);
+
+let script = rewire(path);
+let available = jest.fn(() => {});
+script.__set__('setStorage', available);
+
+let storage = window.localStorage;
+storage.setItem(script.storage.ACTIVE_SLIDER_KEY, "3");
+
+//Precondition checks...
+
+script.storage.restore();
+
+//Postcondition checks...
+
+window.localStorage.clear();
+```
+
+#### Stat.showMeta -> fetchedMetadata
+Our code is lazy, which means we don't query our API until we absolutely need to. This shows up in the ```showMeta()``` function, where the user is requesting to see metadata information, and we need to test what happens when we haven't asked the API for metadata yet. The function that handles this call is asynchronous, so even if we mock the function to return instantaneously the rest of the code is not run. As it turns out, setting a timeout of 1 ms is sufficient for Javascript to let the async handler to run and successfully test the code.
+
+```javascript
+fetchedMetadata = [{stat_id:2, note:{data:[]}}];
+window.getMetadata = jest.fn(async () => {return fetchedMetadata});
+
+let stat = {stat_id: 2};
+model.Stat.prototype.showMeta.apply(stat);
+
+//Testing for code not related to get request
+
+setTimeout(() => {
+  try{
+    expect(window.showMetadataAlert).toHaveBeenCalled();
+    expect(window.closeMetadataAlert).not.toHaveBeenCalled();
+    done();
+  } catch (err){
+    done(err);
+  }
+}, 1);
+
+```
+
+## Security
+SMAP does not provide accounts, so the main security concern is the potential for SQL injections, which are prevented by parameterizing the database queries. There is also potential for denial of service (DOS) issues, though we will not address these for this project. For more information, go to tests > security_review.txt
+
+## Error Handling
+
+There are a variety of ways things can go wrong in our app. Here we list some potential errors and how our app recovers from them.
+
+### Failed Database Query
+
+An error like this could happen if the database goes offline. Every single database query checks for an error in our code. If the database query fails, the server will return a 404 error. This leads to...
+
+### 404 Error (or other server error)
+
+There is not really a graceful way to handle when the server 404s a critical resource. If the site fails to download the US or NE map, the site will load forever. While not ideal, this is better than showing a completely broken site. If the server fails to download the list of categories, no statistics will be displayed when the site loads, but nothing should crash and the state of the website will remain valid.
+
+The client will request metadata when either the state window is opened for the first time or the (i) button next to a statistic is pressed. If the former request fails, the state window will simply contain no statistic information in the right panels because a promise will never resolve. In the later case, the metadata screen will show a loading screen indefinitely, but it can still be closed by the user and things will function normally.
+
+Finally, the client will request data for a category if the user selects it. If this request fails, the category is not activated (although it will appear in the list of active statistics) and thus will not have any effect on the calculations for displaying weights. An error is also logged to the console.
+
+### Bad API Call
+
+We know that our client will use our API correctly, but we are prepared to deal with poorly made or maliciously made requests. Since we saw this as a security issue, you can find more information in the Security section. Briefly, our server can handle requests which ask for:
+- a non-existent category
+- a category with an infinite category id
+- a category id which contains valid SQL code (ex. "OR 1=1")
 
 # Features List:
 
@@ -87,13 +270,5 @@ Philip Robinson,
 ### Security Requirement
 > Our only security requirement was to address Denial of Service (DoS) errors. We imagined a DoS error would result from too many people or bots using the website at the same time or simply simultaneously refreshing the page. Since we are not the only ones with this particular data set on the internet, and our website is simply a visualization tool, we have decided that it is very unlikely that a) too many people use our website at the same time or b) someone tries to cause a DoS error by making too many website requests. In either case, however unlikely, we think the worst thing that would happen is that we use up our GCloud budget. A bad DoS attack would shut down the website before we are charged more than our credit allows, and the expected lifetime of the product is now less than a month. Given the short lifespan of our product and the unlikelihood of a DoS error, intentional or unintentional, we have not further addressed the issue.
 
-### Code Quality [todo]
-> Our code is thoroughly commented, and unit tested. Our server side test coverage is _____ and our client side test coverage is ____. We have also taken great care to make our website intuitive to new users. This meets our software quality requirements. 	
-
-# Security Review
->SMAP does not provide accounts, so the main security concern is the potential for SQL injections, which are prevented by >parameterizing the database queries. There is also potential for denial of service (DOS) issues, though we will not address >these for this project. For more information, go to tests > security_review.txt
-
-
-[![Build Status](https://travis-ci.com/upcs/cs341-project-ss2020-swift.svg?branch=master)](https://travis-ci.com/upcs/cs341-project-ss2020-swift)
-
-[![Code Coverage](https://codecov.io/gh/upcs/cs341-project-ss2020-swift/branch/master/graph/badge.svg)](https://codecov.io/gh/upcs/cs341-project-ss2020-swift)
+### Code Quality 
+> Our code is thoroughly commented, and unit tested. Our server side test coverage is nearly 100%. Our client side unit test coverage is 15%, but we believe our acceptance tests cover 85% of the client side code. We have also taken great care to make our website intuitive to new users. This meets our software quality requirements. 

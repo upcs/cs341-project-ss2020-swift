@@ -867,7 +867,6 @@ describe("Stat.enable", () => {
     $.get = jest.fn((url, blank, callback) => {
       callback([], "failure", null);
     });
-    window.alert = jest.fn(() => {});
 
     let rm = jest.fn(() => {});
     let stat = {
@@ -893,10 +892,8 @@ describe("Stat.enable", () => {
     expect(stat.updateWeight).toHaveBeenCalledWith(1);
     expect(stat.slider).toBe(fakeSlider);
     expect($.get.mock.calls[0]).toEqual(expect.arrayContaining(["/api/data?cat=7", ""]));
-    expect(window.alert).toHaveBeenCalled();
 
     $.get.mockRestore();
-    window.alert.mockRestore();
   })
 });
 
@@ -1027,7 +1024,7 @@ describe('restoreFromStorage', () => {
     script.__set__('setStorage', available);
     let storage = window.localStorage;
     storage.setItem(script.storage.ACTIVE_SLIDER_KEY, "3");
-    model.data.stats[3] = new FakeStat(3)
+    model.data.stats[3] = new FakeStat(3);
     expect(script.data.active.size).toEqual(0);
     expect(available.mock.calls.length).toEqual(0);
     expect(script.data.restored).toBeFalsy();
@@ -1321,7 +1318,7 @@ describe('Stat.showMeta', () => {
     window.showMetadataAlert = jest.fn(() => {});
     window.closeMetadataAlert = jest.fn(() => {});
     fetchedMetadata = [];
-    window.getMetadata = jest.fn(async () => {return fetchedMetadata}); //TODO: Make a promise
+    window.getMetadata = jest.fn(async () => {return fetchedMetadata});
   });
 
   test('happy path', () => {
