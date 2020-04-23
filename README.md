@@ -13,10 +13,15 @@ Philip Robinson
 
 #### Load Times
 Page load time / time until page operable. Both are in seconds and are an average of five trials on the swift-smap.appspot.com site. For load times from Sprint 4, see the acceptanceTests.txt file.
+
 Firefox (Sprint 5): 3.7482 / 5.7482
+
 Chrome (Sprint 5): 3.5930 / 5.5930
+
 Safari (desktop) (Sprint 5): 0.4384 / 2.4384
+
 Microsoft Edge (Sprint 5): 8.9920441 / 10.9920441
+
 Note: Acceptance tests were performed on mobile versions of Safari and Edge. There is no method for accessing the console via mobile, so these times were not recorded.
 
 # Sprint 5 Improvements
