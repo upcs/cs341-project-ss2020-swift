@@ -35,10 +35,9 @@ The next issue we noticed was that we have to send ajax requests for our map ima
 Our peers reported two bugs (one was reported twice). One was that the social media buttons at the bottom of the page were nonfunctional (Issues 68 and 69). Since these were placeholders in case we had time to implement social media sharing, this bug was resolved by simply removing them. The other bug concerned the stat names, which would overflow their boxes and push subsequent names further down (Issue #46). This was resolved by adding in css attributes for text-wrapping as well as adaptive height for that grid-area.
 
 ## Cross-Browser Compatibility
-
 The majority of our reported issues were related to cross-browser functionality. Safari handles sizing differently than most browsers, using an older method to interpret percentages. When the height of an item within a grid is defined by percentage, that percentage is of the entire screen size, not of the parent grid. Thus, specific styling had to be implemented for the statistics sidebar and alert windows in Safari, using vh instead of % for sizing.
 
-A specific style sheet was also developed for users on mobile devices.
+A specific style sheet was also developed for users on mobile devices and windows that were sized to thinner than a square aspect ratio. This ensured that our website had the best presentation possible at all sizes of browser windows, even though a majority will likely be at the regular 16:9 aspect ratio on desktop. When the size of the window crosses a certain threshold, a flash of light or dark (based on theme) will happen and the layout will switch to "vertical" or "horizontal" accordingly. The traditional "horizontal" layout has the settings bar off to the left with the map on the right. The vertical layout has the map at the top of the screen with the settings bar sandwiched between the map and the bottom bar.
 
 ### Known Issues
 
@@ -46,7 +45,7 @@ On Edge, state highlighting looks incorrect if you move your mouse very quickly 
 
 On Safari, the Statistic Selection container does not utilize all vertical room possible.
 
-Default mobile view does not show bottom bar with legend and theme selector.
+Default mobile view does not show bottom bar with legend and theme selector due to the browser's tab and navigation bar.
 
 ## Significant Client-Side Bug Fixes
 
@@ -270,5 +269,5 @@ We know that our client will use our API correctly, but we are prepared to deal 
 ### Security Requirement
 > Our only security requirement was to address Denial of Service (DoS) errors. We imagined a DoS error would result from too many people or bots using the website at the same time or simply simultaneously refreshing the page. Since we are not the only ones with this particular data set on the internet, and our website is simply a visualization tool, we have decided that it is very unlikely that a) too many people use our website at the same time or b) someone tries to cause a DoS error by making too many website requests. In either case, however unlikely, we think the worst thing that would happen is that we use up our GCloud budget. A bad DoS attack would shut down the website before we are charged more than our credit allows, and the expected lifetime of the product is now less than a month. Given the short lifespan of our product and the unlikelihood of a DoS error, intentional or unintentional, we have not further addressed the issue.
 
-### Code Quality 
-> Our code is thoroughly commented, and unit tested. Our server side test coverage is nearly 100%. Our client side unit test coverage is 15%, but we believe our acceptance tests cover 85% of the client side code. We have also taken great care to make our website intuitive to new users. This meets our software quality requirements. 
+### Code Quality
+> Our code is thoroughly commented, and unit tested. Our server side test coverage is nearly 100%. Our client side unit test coverage is 15%, but we believe our acceptance tests cover 85% of the client side code. We have also taken great care to make our website intuitive to new users. This meets our software quality requirements.
