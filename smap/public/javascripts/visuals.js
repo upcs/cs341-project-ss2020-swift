@@ -288,44 +288,6 @@ function makeInactiveSlider(title) {
 
 
 /**
- * Creates a color based on the state's weight. States with smaller values have colors that
- * are lighter, while states with values close to 1 have more saturated colors.
- *
- * @param {Number} weight number between 0 (low) and 1 (high) representing how "colored" the color should be
- * @param {String} color is the color to be mixed with the light color
- * @return is the resulting rgba string that can be used in the website
- */
-function mixColor(weight, color) {
-    // Get the theme colors
-    var min_string = $(":root").css("--color-light");
-    var max_string = $(":root").css(color);
-    // Get the text from the inside of the "rgba(_______);"
-    var min_data = min_string.split("(")[1].split(")")[0];
-    var max_data = max_string.split("(")[1].split(")")[0];
-    // Split the string into a list of strings based on whitetext/commas
-    min_data = min_data.split(/[\s,]+/);
-    max_data = max_data.split(/[\s,]+/);
-    // Change each of the values to numbers
-    for (var color_channel of min_data) {
-        color_channel = Number(color_channel);
-    }
-    for (var color_channel of max_data) {
-        color_channel = Number(color_channel);
-    }
-    // Weight the values
-    min_data[0] *= (1 - weight);
-    min_data[1] *= (1 - weight);
-    min_data[2] *= (1 - weight);
-    max_data[0] *= weight;
-    max_data[1] *= weight;
-    max_data[2] *= weight;
-    // Make a result array and return a string based on this value
-    var result = [ min_data[0]+max_data[0], min_data[1]+max_data[1], min_data[2]+max_data[2] ];
-    return ("rgba("+ result[0] +", "+ result[1] +", "+ result[2] +", 1)");
-}
-
-
-/**
  * Colors individual states in the SVG according to their normalized weights.
  *
  * @param {Document} doc the svg document that is to be used to grab state paths
@@ -472,13 +434,15 @@ function prepareMetadataAlert(){
  */
 function showMetadataAlert(metadata){
     // Set all the fields of the metadata using
-    $("#metadata-title").text(metadata.stat_name_short);
-    $("#metadata-date").text(metadata.publication_date);
-    $("#metadata-notes").text(metadata.note);
-    $("#metadata-publisher").text(metadata.source + ": " + metadata.original_source);
-    // Remove the loading placeholder now and show the metadata that was filled
-    $(".loading").addClass("hidden");
-    $(".metadata-alert-element").removeClass("hidden");
+    if(metadata != null && metadata.stat_name_short != null){
+        $("#metadata-title").text(metadata.stat_name_short);
+        $("#metadata-date").text(metadata.publication_date);
+        $("#metadata-notes").text(metadata.note);
+        $("#metadata-publisher").text(metadata.source + ": " + metadata.original_source);
+        // Remove the loading placeholder now and show the metadata that was filled
+        $(".loading").addClass("hidden");
+        $(".metadata-alert-element").removeClass("hidden");
+    }
 }
 
 
@@ -943,5 +907,16 @@ function setLayout(init){
             }, LAYOUT_CHANGE_TIME);
             if(!init) { $("body").animate({opacity: "1"}, LAYOUT_CHANGE_TIME, "swing"); }
         }
+    }
+}
+
+// For testing purposes. More details later
+if (typeof module !== "undefined" && module.exports) {
+    module.exports = {
+        BLUR_ELEMENTS: BLUR_ELEMENTS,
+        getMetadata: getMetadata,
+        prepareMetadataAlert: prepareMetadataAlert,
+        showMetadataAlert: showMetadataAlert,
+        closeMetadataAlert: closeMetadataAlert
     }
 }
