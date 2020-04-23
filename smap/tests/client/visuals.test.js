@@ -199,7 +199,6 @@ describe("showMetadataAlert", () => {
         original_source: "original source"
         }
 
-        expect($("#metadata-title").text()).toBe("init title text");
         expect($("#metadata-title").text()).toBe("Error: Incomplete metadata");
         expect($("#metadata-date").text()).toBe("init date text");
         expect($("#metadata-notes").text()).toBe("init notes text");
