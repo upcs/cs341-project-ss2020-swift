@@ -20,7 +20,7 @@ function resetMetadataAlertHTML(){
         <div id="about-container"></div>
 
         <div id="metadata-alert-container" class="alert-container hidden">
-            <div id=metadata-title class="metadata-alert-element hidden">init title text</div>
+            <div id=metadata-title class="metadata-alert-element hidden">Error: Incomplete metadata</div>
             <div id=metadata-date class="metadata-alert-element hidden">init date text</div>
             <div id=metadata-notes class="metadata-alert-element hidden">init notes text</div>
             <div id=metadata-publisher class="metadata-alert-element hidden">init publisher text</div>
@@ -81,7 +81,7 @@ describe("showMetadataAlert", () => {
             original_source: "original source"
         };
 
-        expect($("#metadata-title").text()).toBe("init title text");
+        expect($("#metadata-title").text()).toBe("Error: Incomplete metadata");
         expect($("#metadata-date").text()).toBe("init date text");
         expect($("#metadata-notes").text()).toBe("init notes text");
         expect($("#metadata-publisher").text()).toBe("init publisher text");
@@ -103,7 +103,7 @@ describe("showMetadataAlert", () => {
     test("null metadata", () => {
         let metadata = null;
 
-        expect($("#metadata-title").text()).toBe("init title text");
+        expect($("#metadata-title").text()).toBe("Error: Incomplete metadata");
         expect($("#metadata-date").text()).toBe("init date text");
         expect($("#metadata-notes").text()).toBe("init notes text");
         expect($("#metadata-publisher").text()).toBe("init publisher text");
@@ -131,7 +131,7 @@ describe("showMetadataAlert", () => {
     test("empty metadata", () => {
         let metadata = {};
 
-        expect($("#metadata-title").text()).toBe("init title text");
+        expect($("#metadata-title").text()).toBe("Error: Incomplete metadata");
         expect($("#metadata-date").text()).toBe("init date text");
         expect($("#metadata-notes").text()).toBe("init notes text");
         expect($("#metadata-publisher").text()).toBe("init publisher text");
@@ -165,7 +165,7 @@ describe("showMetadataAlert", () => {
         original_source: "original source"
         }
 
-        expect($("#metadata-title").text()).toBe("init title text");
+        expect($("#metadata-title").text()).toBe("Error: Incomplete metadata");
         expect($("#metadata-date").text()).toBe("init date text");
         expect($("#metadata-notes").text()).toBe("init notes text");
         expect($("#metadata-publisher").text()).toBe("init publisher text");
@@ -200,6 +200,7 @@ describe("showMetadataAlert", () => {
         }
 
         expect($("#metadata-title").text()).toBe("init title text");
+        expect($("#metadata-title").text()).toBe("Error: Incomplete metadata");
         expect($("#metadata-date").text()).toBe("init date text");
         expect($("#metadata-notes").text()).toBe("init notes text");
         expect($("#metadata-publisher").text()).toBe("init publisher text");
