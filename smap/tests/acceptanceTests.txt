@@ -3,11 +3,11 @@ Description: Load time was tested five times and averaged. No data was collected
     The first number is page lode time; the second is the time until the page is operable. Both are in seconds.
 Actual Results:
 -	Firefox (Sprint 4): 0.32764 / 3.0188 
--       Firefox (Sprint 5): 3.7482 / 5.7482
+-   Firefox (Sprint 5): 3.7482 / 5.7482
 -	Chrome (Sprint 4): 0.412904 / 2.912904
 -	Chrome (Sprint 5): 3.5930 / 5.5930
 -	Safari (desktop) (Sprint 4): 0.2772 / 2.7772
--	Safari (desktop) (Sprint 5): 
+-	Safari (desktop) (Sprint 5): 0.4384 / 2.4384
 -	Microsoft Edge (Sprint 5): 8.9920441 / 10.9920441
 
 Title: Site loading and consistency of aesthetics.
