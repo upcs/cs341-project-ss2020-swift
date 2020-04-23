@@ -492,10 +492,6 @@ svg {
   padding-left: 30%;
 }
 
-#map-container {
-    display: grid;
-}
-
 /* The NE magnifier (background) */
 #ne-magnifier {
   display: grid;
