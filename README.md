@@ -41,7 +41,7 @@ Most bug fixes centered around race conditions (discussed below) and the informa
 
 [![Code Coverage](https://codecov.io/gh/upcs/cs341-project-ss2020-swift/branch/master/graph/badge.svg)](https://codecov.io/gh/upcs/cs341-project-ss2020-swift)
 
-The API Handler code that deals with requests is 100% covered by tests. The code that deals with maintaining the data model (model.js) is nearly at 100% coverage. To achieve these numbers, we have over two thousand lines of code for tests that cover a variety of cases. We made extensive use of mocks in order to isolate client side code and tested for a variety of edge cases (some of which are code was already checking for, some of which it was not). Below is a hand-picked assortment of our juiciest tests.
+The API Handler code that deals with requests is 100% covered by tests. The code that deals with maintaining the data model (model.js) is nearly at 100% coverage. To achieve these numbers, we have over two thousand lines of code for tests that cover a variety of cases. We made extensive use of mocks in order to isolate client side code and tested for a variety of edge cases (some of which our code was already checking for, some of which it was not). Below is a hand-picked assortment of our juiciest tests.
 
 ### Most Inventive Tests [TODO]
 #### Stat.enable -> without data failed callback
@@ -131,6 +131,35 @@ setTimeout(() => {
   }
 }, 1);
 
+```
+
+#### visuals.js -> showMetadataAlert
+One issue we could run into when trying to show a metadata alert is not having the metadata available. In the case where the title is missing from the 
+metadata, this test tests that the error is handled gracefully by printing a specific error message to the "#metadata-title" div for the user to see from the front end. A simple refresh should fix this issue. 
+
+```javascript
+  let metadata =
+  {
+  publication_date: "publication date",
+  note: "note",
+  source: "source",
+  original_source: "original source"
+  }
+
+  expect($("#metadata-title").text()).toBe("init title text");
+  expect($("#metadata-date").text()).toBe("init date text");
+  expect($("#metadata-notes").text()).toBe("init notes text");
+  expect($("#metadata-publisher").text()).toBe("init publisher text");
+
+  expect($("#loading-div").hasClass("hidden")).toBe(false);
+  expect($("#metadata-title").hasClass("hidden")).toBe(true);
+  expect($(".metadata-alert-element").hasClass("hidden")).toBe(true);
+
+  visuals.showMetadataAlert(metadata);
+
+  expect($("#metadata-title").text()).toEqual(
+      expect.stringContaining("Error"),
+      expect.stringContaining("[Mm]etadata")
 ```
 
 ## Security
