@@ -80,9 +80,9 @@ The scaling issue mentioned in #107 related to the map. Safari's handling of siz
 
 [![Code Coverage](https://codecov.io/gh/upcs/cs341-project-ss2020-swift/branch/master/graph/badge.svg)](https://codecov.io/gh/upcs/cs341-project-ss2020-swift)
 
-The API Handler code that deals with requests is 100% covered by tests. The code that deals with maintaining the data model (model.js) is nearly at 100% coverage. To achieve these numbers, we have over two thousand lines of code for tests that cover a variety of cases. We made extensive use of mocks in order to isolate client side code and tested for a variety of edge cases (some of which our code was already checking for, some of which it was not). Below is a hand-picked assortment of our juiciest tests.
+The API Handler code that deals with requests is 100% covered by tests. The code that deals with maintaining the data model (model.js) is nearly at 100% coverage. To achieve these numbers, we have over two thousand lines of code for tests that cover a variety of cases. We made extensive use of mocks in order to isolate client side code and tested for a variety of edge cases (some of which our code was already checking for, some of which it was not). visuals.js, a file of a measly 817 lines, contains all the jquery for the website. Its test coverage is only 15%, but that's because jquery is really hard to test, particularly when you use global variables the way we did. Also, we use the acceptance tests (in acceptance_tests.txt) to verify the way the website looks which also serves to test visuals.js. Below is a hand-picked assortment of our juiciest tests.
 
-### Most Inventive Tests [TODO]
+### Most Inventive Tests 
 #### Stat.enable -> without data failed callback
 Creating a Stat object using the constructor has some side effects (like updating the global data object) that we don't want to deal with. As such, we are using the ```apply()``` function to let us use a fake Stat object when testing this function. This particular test has another knot however, because we are supposed to test what happens when the get request fails. As such, we must mock the jQuery ```get()``` function to complete this test. Relevant code portions are below.
 
