@@ -867,7 +867,6 @@ describe("Stat.enable", () => {
     $.get = jest.fn((url, blank, callback) => {
       callback([], "failure", null);
     });
-    window.alert = jest.fn(() => {});
 
     let rm = jest.fn(() => {});
     let stat = {
@@ -893,10 +892,8 @@ describe("Stat.enable", () => {
     expect(stat.updateWeight).toHaveBeenCalledWith(1);
     expect(stat.slider).toBe(fakeSlider);
     expect($.get.mock.calls[0]).toEqual(expect.arrayContaining(["/api/data?cat=7", ""]));
-    expect(window.alert).toHaveBeenCalled();
 
     $.get.mockRestore();
-    window.alert.mockRestore();
   })
 });
 
