@@ -1,4 +1,5 @@
 var handler = require('../routes/imports/apiHandler');
+var dbms = require("../routes/dbms");
 
 var firstTestId = 2;
 var firstIdSting = '2';
@@ -26,6 +27,10 @@ describe('parseDataURL', () => {
   test('no categories', () => {
     expect(handler.parseDataURL({})).toBeUndefined();
   });
+
+  test('infinite category', () => {
+    expect(handler.parseDataURL({cat:"829465897346058276430875623084562873465982374659827364598743"})).toBeUndefined();
+  })
 });
 
 //tests for getData() function ----------------------------------------
@@ -253,5 +258,42 @@ describe('getCats', () => {
     }
     handler.getCats(callback);
   });
+});
 
+describe("failed DB connection", () => {
+    var error;
+    var results;
+
+    beforeEach(() => {
+      error = null;
+      results = null;
+      dbms.dbquery = jest.fn((query, callback) => {
+        callback(error, results);
+      });
+    });
+
+    afterEach(() => {
+      dbms.dbquery.mockRestore();
+    });
+
+    test("getCats", () => {
+      error = "What's a database?";
+      let callback = jest.fn(() => {});
+      handler.getCats(callback);
+      expect(callback).toHaveBeenCalledWith(undefined);
+    });
+
+    test("getMeta", () => {
+      error = "Look, I think you got the wrong person. I'm a cabbage seller.";
+      let callback = jest.fn(() => {});
+      handler.getMeta(callback);
+      expect(callback).toHaveBeenCalledWith(undefined);
+    });
+
+    test("getData", () => {
+      error = "Wait, are we in cyberspace RIGHT NOW!?";
+      let callback = jest.fn(() => {});
+      handler.getData([1], callback);
+      expect(callback).toHaveBeenCalledWith(undefined);
+    })
 });

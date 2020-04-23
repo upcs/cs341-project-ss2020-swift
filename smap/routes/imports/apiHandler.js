@@ -1,4 +1,4 @@
-/* 
+/*
 * This file contains functions for processing  and handling API requests
 * Data involved in these requests is obtained via database queries
 */
@@ -16,7 +16,7 @@ const metadata = consts.metadata;
 
 /*
   Finds all valid categories (statistics) for which data can be fetched from the database.
-  Args: 
+  Args:
     callback - a callback function that specifies how to handle the results obtained from the db query in this function
   Return:
     The function returns in the event of a failed database query
@@ -43,7 +43,7 @@ function getCats(callback){
 
 /*
   Queries the database for metadata on all available categories
-  Args: 
+  Args:
     callback - a callback function that specifies how to handle the results obtained from the db query in this function
   Return:
     The function returns in the event of a failed database query
@@ -68,7 +68,7 @@ function getMeta(callback){
 
 /*
   Parses the request query for the /api/data endpoint
-  Args: 
+  Args:
     query - the requested query object
   Return:
     cat - an array of the stat_ids corresponding to categories requested, or undefined if none provided
@@ -90,7 +90,13 @@ function parseDataURL(query) {
 
   for(let i = 0; i < cat.length; i++){
     cat[i] = parseInt(cat[i], 10);
-    if(!cat[i] || !isFinite(cat[i])){
+    /*
+      EXTERNAL CITATION
+      https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isSafeInteger
+      Safety is our number one priority
+      If the category isn't safe, it's not a category.
+    */
+    if(!cat[i] || !isFinite(cat[i]) || !Number.isSafeInteger(cat[i])){
       return undefined;
     }
   }
@@ -99,12 +105,12 @@ function parseDataURL(query) {
 
 /*
   Gets the data for the /api/data endpoint via a database query. At this point, the data is NOT normalized.
-  Args: 
+  Args:
     cats - an array of the stat_ids corresponding to categories requested, or undefined if none provided
     callback - a callback function that specifies how to handle the results obtained from the db query in this function
   Return:
-    An array with objects of the form {category: Data}, or undefined if the database query was unsuccessful. Note that passing in a nonexistant 
-    category is acceptable; it will be ignored, but will not create an error. If the query contains good and bad categories, only 
+    An array with objects of the form {category: Data}, or undefined if the database query was unsuccessful. Note that passing in a nonexistant
+    category is acceptable; it will be ignored, but will not create an error. If the query contains good and bad categories, only
     the good ones will be part of the returned object.
 */
 function getData(cats, callback){
