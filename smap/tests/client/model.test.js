@@ -1,5 +1,5 @@
 //SMAP Team
-//Testing for javascripts/statistics.js
+//Testing for javascripts/model.js
 
 "use strict";
 
@@ -358,7 +358,7 @@ describe('getStateInfo', () => {
     model.data.active.add(1);
     model.data.stats[1] = {
       rankings: ["AR", "AL", "OH"],
-      data: {
+      raw_data: {
         "AR": 5,
         "AL": 3,
         "OH": 2
@@ -368,7 +368,7 @@ describe('getStateInfo', () => {
     model.data.active.add(2);
     model.data.stats[2] = {
       rankings: ["AL", "AR", "OH"],
-      data: {
+      raw_data: {
         "AR": 2,
         "AL": 10,
         "OH": 1
@@ -389,7 +389,7 @@ describe('getStateInfo', () => {
     model.data.active.add(1);
     model.data.stats[1] = {
       rankings: ["AR", "AL", "OH"],
-      data: {
+      raw_data: {
         "AR": 5,
         "AL": 3,
         "OH": 2
@@ -398,7 +398,7 @@ describe('getStateInfo', () => {
     model.data.active.add(2);
     model.data.stats[2] = {
       rankings: ["AL", "AR", "OH"],
-      data: {
+      raw_data: {
         "AR": 2,
         "AL": 10,
         "OH": 1
@@ -411,7 +411,7 @@ describe('getStateInfo', () => {
     model.data.active.add(1);
     model.data.stats[1] = {
       rankings: ["AR", "AL", "OH"],
-      data: {
+      raw_data: {
         "AR": 5,
         "AL": 3,
         "OH": 2
@@ -420,7 +420,7 @@ describe('getStateInfo', () => {
     };
     model.data.active.add(2);
     model.data.stats[2] = {
-      data: {
+      raw_data: {
         "AR": 2,
         "AL": 10,
         "OH": 1
@@ -823,6 +823,8 @@ describe("Stat.enable", () => {
     expect(stat.rankings.slice(0, 2)).toEqual(["NV", "OR"]);
     expect(data.NV).toEqual(1);
     expect(data.OR).toBeCloseTo(0.33333);
+    expect(stat.raw_data.OR).toEqual(1);
+    expect(stat.raw_data.NV).toEqual(3);
     expect(model.data.active.has(7)).toEqual(true);
     expect(window.colorState).toHaveBeenCalledTimes(50);
     expect(window.localStorage.getItem(model.storage.ACTIVE_SLIDER_KEY)).toEqual("7");
@@ -1002,15 +1004,21 @@ describe('restoreFromStorage', () => {
     this.weight = model.DEFAULT_WEIGHT;
   };
 
+  let themeSuccess = false;
+
   beforeEach(() => {
     resetData();
     FakeStat.prototype.enable = jest.fn(function(){model.data.active.add(this.category.stat_id)});
     FakeStat.prototype.disable = jest.fn(function(){model.data.active.delete(this.category.stat_id)});
     FakeStat.prototype.updateWeight = jest.fn(function(weight){this.weight = weight});
+    window.setTheme = jest.fn(() => themeSuccess);
+    window.default_theme_selector_id = "fake-theme";
   });
 
   afterEach(() => {
     window.localStorage.clear();
+    window.setTheme.mockRestore();
+    delete window.default_theme_selector_id;
   });
 
   test('null storage', () => {
@@ -1108,6 +1116,34 @@ describe('restoreFromStorage', () => {
     expect(model.data.stats[2].weight).toEqual(4);
     expect(model.data.stats[3].weight).toEqual(1);
     expect(model.data.restored).toBeTruthy();
+  });
+
+  test("no theme", () => {
+    let storage = window.localStorage;
+    expect(storage.getItem(model.storage.THEME_KEY)).toBeNull();
+    themeSuccess = true;
+    model.storage.restore();
+    expect(window.setTheme).toHaveBeenCalledTimes(1);
+    expect(window.setTheme).toHaveBeenCalledWith("fake-theme");
+  });
+
+  test("bad theme", () => {
+    let storage = window.localStorage;
+    storage.setItem(model.storage.THEME_KEY, "waaa");
+    themeSuccess = false;
+    model.storage.restore();
+    expect(window.setTheme).toHaveBeenCalledTimes(2);
+    expect(window.setTheme.mock.calls[0]).toEqual(["waaa"]);
+    expect(window.setTheme.mock.calls[1]).toEqual(["fake-theme"]);
+  });
+
+  test("good theme", () => {
+    let storage = window.localStorage;
+    storage.setItem(model.storage.THEME_KEY, "waaa");
+    themeSuccess = true;
+    model.storage.restore();
+    expect(window.setTheme).toHaveBeenCalledTimes(1);
+    expect(window.setTheme).toHaveBeenCalledWith("waaa");
   });
 });
 
@@ -1260,6 +1296,19 @@ describe("rankStates", () => {
     };
     expect(script.rankStates(data)).toEqual([]);
   });
+
+  test('inverted', () => {
+    let data = {
+      "AR": 2,
+      "AL": 10,
+      "OH": 1,
+      "invert_flag": 1
+    };
+    for (let state of states){
+      if (["AR", "AL", "OH"].indexOf(state) === -1) data[state] = 20;
+    }
+    expect(model.rankStates(data).slice(0,3)).toEqual(["OH", "AR", "AL"]);
+  });
 });
 
 
@@ -1350,4 +1399,29 @@ describe('Stat.showMeta', () => {
       }
     }, 1);
   });
-})
+});
+
+describe("updateThemeStorage", () => {
+
+  beforeEach(() => {
+    model.storage.reset();
+  })
+
+  afterEach(() => {
+    resetData();
+  });
+
+  test("data not restored", () => {
+    let storage = window.localStorage;
+    model.data.restored = false;
+    model.storage.updateTheme("fake-theme");
+    expect(storage.getItem(model.storage.THEME_KEY)).toBeNull();
+  });
+
+  test("data restored", () => {
+    let storage = window.localStorage;
+    model.data.restored = true;
+    model.storage.updateTheme("fake-theme");
+    expect(storage.getItem(model.storage.THEME_KEY)).toEqual("fake-theme");
+  });
+});

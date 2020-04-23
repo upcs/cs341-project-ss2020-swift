@@ -103,7 +103,7 @@ function normalizeStats(row){
 //merely multiplying by the slider value meant a 50% increase for 1 to 2 but a 20% increase for 4 to 5
 function calculateWeight(value){
   if(!Number.isInteger(value) || value<=0){
-      console.error("<model.js><calculateWeight> Invalid slider value (must be int >= 1)");
+      console.error("<calculateWeight> Invalid slider value (must be int >= 1)");
       return 0;
   }
   const ratio = 1.8;
@@ -135,7 +135,7 @@ function getStateInfo(stateAbbr){
         arr.push({
           id: cat,
           rank: rank,
-          value: stat.data[stateAbbr],
+          value: stat.raw_data[stateAbbr],
           name: stat.category.title
         });
       }
@@ -164,13 +164,16 @@ function rankStates(data){
       let value = data[second] - data[first];
       if (value !== 0) return value;
       //NOTE: In node v10, on which our server runs, sorts may not be stable
-      //As such, checking the order of ranks does not make sense unless we break ties
+      //As such, checking the order of ranks does not make sense unless we break ties, which we do here by alphabetical order
       return first.localeCompare(second);
     } else {
       error = true;
       return 0;
     }
   });
+  if(data.invert_flag === 1) {
+    ranks.reverse();
+  }
   return error ? [] : ranks;
 }
 
@@ -220,6 +223,7 @@ It is of the following form:
   enabled: Whether to use this category to calculate weights.
   slider: A JQuery object for the slider (whether active or inactive).
   data: The data for the statistic - mapping from state abbreviations to numbers. May be undefined.
+  raw_data: unnormalized data
   metadata: The metadata for the statistic category - may be undefined
 }
 Constructor arguments:
@@ -286,11 +290,11 @@ Stat.prototype.enable = function(){
         console.error("Could not get data for stat: " + this.category.stat_id);
       } else {
         this.data = cat_data[0];
+        this.raw_data = {};
+        Object.assign(this.raw_data, this.data); //Clones data object (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign)
         this.rankings = rankStates(this.data);
         data.active.add(this.category.stat_id);
-        // this.data is an object with all of the column names ["stat_id"], ["stat_name_short"], ["AL"], ["AK"], etc.
         normalizeStats(this.data);
-        // console.log(this.data);
         displayWeights();
         updateCategoryStorage();
       }
@@ -364,6 +368,7 @@ Stat.prototype.showMeta = function(){
 */
 const ACTIVE_SLIDER_KEY = "active_sliders";
 const ACTIVE_SLIDER_PREFIX = "slider_";
+const THEME_KEY = "theme"
 
 //EXTERNAL CITATION:
 //  The following code is from
@@ -410,6 +415,10 @@ function setStorage(){
 function restoreFromStorage(){
   setStorage();
   if (storage) {
+    let theme = storage.getItem(THEME_KEY);
+    if (theme === null || !setTheme(theme)){
+      setTheme(default_theme_selector_id);
+    }
     let sliders = storage.getItem(ACTIVE_SLIDER_KEY);
     if (sliders) {
       let cats = sliders.split(",");
@@ -419,7 +428,7 @@ function restoreFromStorage(){
         if (stat){
           stat.enable();
           let value = Number(storage.getItem(ACTIVE_SLIDER_PREFIX + cat));
-          if (value !== undefined && value >= MIN_WEIGHT && value <= MAX_WEIGHT){
+          if (value >= MIN_WEIGHT && value <= MAX_WEIGHT){
             stat.updateWeight(value);
           }
         }
@@ -466,6 +475,12 @@ function updateWeightStorage(cat){
   }
 }
 
+function updateThemeStorage(theme){
+  if (storage && data.restored){
+    storage.setItem(THEME_KEY, theme);
+  }
+}
+
 //endregion
 
 
@@ -480,10 +495,12 @@ if(typeof module !== "undefined" && module.exports){
       available: storageAvailable,
       updateCategory: updateCategoryStorage,
       updateWeight: updateWeightStorage,
+      updateTheme: updateThemeStorage,
       restore: restoreFromStorage,
       reset: setStorage,
       ACTIVE_SLIDER_KEY: ACTIVE_SLIDER_KEY,
-      ACTIVE_SLIDER_PREFIX: ACTIVE_SLIDER_PREFIX
+      ACTIVE_SLIDER_PREFIX: ACTIVE_SLIDER_PREFIX,
+      THEME_KEY: THEME_KEY
     },
     normalizeStats: normalizeStats,
     calculateWeight: calculateWeight,

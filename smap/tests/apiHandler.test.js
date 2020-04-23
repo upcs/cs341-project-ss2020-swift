@@ -1,9 +1,13 @@
 var handler = require('../routes/imports/apiHandler');
+var dbms = require("../routes/dbms");
 
 var firstTestId = 2;
 var firstIdSting = '2';
 var secondTestId = 9;
 var secondIdString = '9';
+
+const EXTRA_DATA_FIELDS = ["stat_id", "invert_flag", "stat_name_short", "units"];
+const DATA_SIZE = 50 + EXTRA_DATA_FIELDS.length;
 
 //tests for parseDataURL() function ------------------------------------
 describe('parseDataURL', () => {
@@ -23,6 +27,10 @@ describe('parseDataURL', () => {
   test('no categories', () => {
     expect(handler.parseDataURL({})).toBeUndefined();
   });
+
+  test('infinite category', () => {
+    expect(handler.parseDataURL({cat:"829465897346058276430875623084562873465982374659827364598743"})).toBeUndefined();
+  })
 });
 
 //tests for getData() function ----------------------------------------
@@ -40,7 +48,8 @@ describe('getData', () => {
         expect(data[0].stat_id).toBe(firstTestId);
 
         //check size of dictionary returned; should be 53
-        expect(Object.keys(data[0]).length).toBe(53);
+        expect(Object.keys(data[0]).length).toBe(DATA_SIZE);
+        expect(Object.keys(data[0])).toEqual(expect.arrayContaining(EXTRA_DATA_FIELDS));
 
         //check the value of just one state
         //expect(data[0]["NV"]).toBe(61864);
@@ -63,8 +72,10 @@ describe('getData', () => {
         expect(data[1].stat_id).toBe(secondTestId);
 
         //check size of dictionary returned; should be 53
-        expect(Object.keys(data[0]).length).toBe(53);
-        expect(Object.keys(data[1]).length).toBe(53);
+        expect(Object.keys(data[0]).length).toBe(DATA_SIZE);
+        expect(Object.keys(data[1]).length).toBe(DATA_SIZE);
+        expect(Object.keys(data[0])).toEqual(expect.arrayContaining(EXTRA_DATA_FIELDS));
+        expect(Object.keys(data[1])).toEqual(expect.arrayContaining(EXTRA_DATA_FIELDS));
 
         //check the value of just one state
         expect(data[0]["NV"]).toBe(541.1);
@@ -178,7 +189,8 @@ describe('getData', () => {
         expect(data[1]).toBeUndefined();
 
         //check size of dictionary returned; should be 53
-        expect(Object.keys(data[0]).length).toBe(53);
+        expect(Object.keys(data[0]).length).toBe(DATA_SIZE);
+        expect(Object.keys(data[0])).toEqual(expect.arrayContaining(EXTRA_DATA_FIELDS));
 
         //check the value of just one state
         expect(data[0]["NV"]).toBe(3.4);
@@ -246,5 +258,42 @@ describe('getCats', () => {
     }
     handler.getCats(callback);
   });
+});
 
+describe("failed DB connection", () => {
+    var error;
+    var results;
+
+    beforeEach(() => {
+      error = null;
+      results = null;
+      dbms.dbquery = jest.fn((query, callback) => {
+        callback(error, results);
+      });
+    });
+
+    afterEach(() => {
+      dbms.dbquery.mockRestore();
+    });
+
+    test("getCats", () => {
+      error = "What's a database?";
+      let callback = jest.fn(() => {});
+      handler.getCats(callback);
+      expect(callback).toHaveBeenCalledWith(undefined);
+    });
+
+    test("getMeta", () => {
+      error = "Look, I think you got the wrong person. I'm a cabbage seller.";
+      let callback = jest.fn(() => {});
+      handler.getMeta(callback);
+      expect(callback).toHaveBeenCalledWith(undefined);
+    });
+
+    test("getData", () => {
+      error = "Wait, are we in cyberspace RIGHT NOW!?";
+      let callback = jest.fn(() => {});
+      handler.getData([1], callback);
+      expect(callback).toHaveBeenCalledWith(undefined);
+    })
 });
