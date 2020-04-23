@@ -171,9 +171,9 @@ setTimeout(() => {
 
 ```
 
-#### visuals.js -> showMetadataAlert
-One issue we could run into when trying to show a metadata alert is not having the metadata available. In the case where the title is missing from the 
-metadata, this test tests that the error is handled gracefully by printing a specific error message to the "#metadata-title" div for the user to see from the front end. A simple refresh should fix this issue. 
+#### showMetadataAlert -> metadata with no title
+One issue we could run into when trying to show a metadata alert is not having the metadata available. When the title is missing from the metadata, this test
+ensures that the error is handled gracefully. A specific error message will be printed to the "#metadata-title" div for the user to see from the front end. A simple refresh should fix this issue. 
 
 ```javascript
   let metadata =
