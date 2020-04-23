@@ -29,6 +29,10 @@
 /***  Global Styling  ***/
 /************************/
 
+html {
+    background-color: var(--color-light);
+}
+
 
 body {
     /* Positioning and Display */
@@ -36,6 +40,7 @@ body {
     /* Fonts and Text */
     font-family: var(--font-sans);
     color: var(--color-dark);
+    overflow-x: hidden;
 }
 
 /*******************************/
@@ -43,13 +48,7 @@ body {
 /*******************************/
 
 #app-container {
-    /* Positioning and Display */
-    display: grid;
-    grid-template-columns: [settings-width]30% auto;
-    grid-template-rows: [app-height]90% 10%;
     background-color: var(--color-light);
-    width: 100%;
-    height: 100vh;
 }
 
 /******************************/
@@ -57,25 +56,6 @@ body {
 /******************************/
 
 #settings {
-    /* Positioning and Display */
-    position: absolute;
-    bottom: 0;
-    top: 0;
-    width: 30%;
-    display: grid;
-    grid-area: settings;
-    grid-template-rows:
-        [settings-guide]10%
-        [sliders-guide]auto
-        [selector-guide]10%
-        [end-settings-guide]auto;
-    grid-template-areas:
-        "sliders-header"
-        "sliders"
-        "selector-header"
-        "selector"
-    ;
-    z-index: 2;
     /* Coloring */
     background-color: var(--group-color);
     box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.35);
@@ -92,7 +72,7 @@ body {
     /* Positioning and Display */
     display: grid;
     grid-template-columns: [remove-statistic-guide]7% [stat-option-title]86% [metadata]7%;
-	grid-template-rows: [slider-title]auto [slider-slider]34% [slider-ticks]30%;
+	/* grid-template-rows: [slider-title]auto [slider-slider]34% [slider-ticks]30%; */
     grid-template-areas:
         "slider-remover slider-title slider-metadata"
         "slider-remover slider slider"
@@ -148,7 +128,9 @@ body {
     display: grid;
     grid-area: slider;
     height: 10px;
-    margin: 10px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    width: auto;
     /* Borders */
     border: 2px solid var(--accent-color);
     border-radius: 8px;
@@ -157,6 +139,43 @@ body {
     box-shadow: 0px 0px 2px inset var(--secondary-color-light);
     /* Other */
     -webkit-appearance: none !important;
+    width: auto;
+}
+
+/*EXTERNAL CITATION
+https://css-tricks.com/styling-cross-browser-compatible-range-inputs-css/
+Thumbs are hard to come by, but this site knows how to style them
+*/
+.statistic-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  border: 1px solid #000000;
+  height: 10px;
+  width: 10px;
+  border-radius: 8px;
+  background: #ffffff;
+  cursor: pointer;
+ }
+
+/* All the same stuff for Firefox */
+.statistic-slider::-moz-range-thumb {
+  -webkit-appearance: none;
+  border: 1px solid #000000;
+  height: 10px;
+  width: 10px;
+  border-radius: 8px;
+  background: #ffffff;
+  cursor: pointer;
+}
+
+/* All the same stuff for IE */
+.statistic-slider::-ms-thumb {
+  -webkit-appearance: none;
+  border: 1px solid #000000;
+  height: 8px;
+  width: 8px;
+  border-radius: 8px;
+  background: #ffffff;
+  cursor: pointer;
 }
 
 .statistic-slider-tick-container {
@@ -166,7 +185,7 @@ body {
     width: 100%;
     margin-top: -5px;
     display: grid;
-    grid-template-columns: [beginning]4% [tick-1]1% [between-tick]23% [tick-2]1% [between-tick]21% [tick-3]1% [between-tick]23% [tick-4]1% [between-tick]22% [tick-5]1% [end]3%;
+    grid-template-columns:[begin]2% [tick-1]1% [between-tick]23% [tick-2]1% [between-tick]23% [tick-3]1% [between-tick]23% [tick-4]1% [between-tick]23% [tick-5]1% [end]2%;
     grid-template-rows: auto;
     grid-template-areas:
         "before-tick tick-1 between-1 tick-2 between-2 tick-3 between-3 tick-4 between-4 tick-5 end"
@@ -194,6 +213,7 @@ body {
 
 .single-ticks-2 {
     grid-area: tick-2;
+    margin-left: 2px;
 }
 
 .single-ticks-3 {
@@ -202,6 +222,7 @@ body {
 
 .single-ticks-4 {
     grid-area: tick-4;
+    margin-left: -2px;
 }
 
 .single-ticks-5 {
@@ -244,6 +265,18 @@ body {
     border-bottom-width: 0px;
     background-color: var(--secondary-color-light);
 }
+/*
+* External citation: https://www.ryadel.com/en/css3-media-query-target-only-ie-ie6-ie11-firefox-chrome-safari-edge/
+* This @media section is the most commonly used way to specify styling for only certain conditions, including
+* the use of a specific browser.
+*/
+@media not all and (min-resolution:.001dpcm) {
+    @media {
+        .safari10_sliders {
+            max-height: 40vh;
+        }
+    }
+}
 
 /**************************/
 /***  Selector Styling  ***/
@@ -257,7 +290,6 @@ body {
     grid-template-areas:
         "statistic-option-add statistic-option-title ."
     ;
-    height: auto;
     margin-bottom: 4px;
     padding: 8px;
     /* Coloring */
@@ -325,8 +357,10 @@ body {
     /* Note: The following settings are specific to Chrome and webkit browsers */
 }::-webkit-scrollbar {
     width: 8px;
+    height: 8px;
 }::-webkit-scrollbar-track {
     width: 8px;
+    height: 8px;
     background-color: var(--color-light);
 }::-webkit-scrollbar-thumb {
     border: 1px solid var(--color-light);
@@ -334,21 +368,24 @@ body {
     border-bottom-width: 0px;
     background-color: var(--secondary-color-light);
 }
+/*
+* External citation: https://www.ryadel.com/en/css3-media-query-target-only-ie-ie6-ie11-firefox-chrome-safari-edge/
+* This @media section is the most commonly used way to specify styling for only certain conditions, including
+* the use of a specific browser.
+*/
+@media not all and (min-resolution:.001dpcm) {
+    @media {
+        .safari10_sliders {
+            max-height: 45vh;
+        }
+    }
+}
 
 /*************************/
 /***  Nav-bar Styling  ***/
 /*************************/
 
 #nav-bar {
-    /* Positioning and Display */
-    grid-row: 2/2;
-	grid-column: 1/4;
-    display: grid;
-    align-items: center;
-	grid-template-columns:
-        [right-nav-padding]5.5% [spacing]29.5% [arrow]30% [legend]29.5% [theme-selector]5.5%
-    ;
-    grid-template-areas: "spacing1 spacing2 center-nav legend theme-selector" ;
     /* Coloring */
     background-color: var(--subgroup-color);
     /* Other */
@@ -357,8 +394,10 @@ body {
 
 #nav-arrow {
     /* Positioning and Display */
-    width: 250px;
-    height: 45px;
+    width: 25vh;
+    height: 5vh;
+    max-width: 25vw;
+    max-height: 5vw;
     margin-top: 10px;
     margin-bottom: 10px;
     /* Animation */
@@ -381,41 +420,32 @@ body {
 #map-legend-container {
     /* Positioning and Display */
     grid-area: legend;
-    justify-self: center;
+    display: flex;
+    padding-left: 3vw;
+    padding-right: 3vw;
 }
 
 #map-legend {
     /* Positioning and Display */
-    display: inline-block;
-    width: 150px;
-    vertical-align: middle;
+    width: 100%;
+    min-width: 50px;
+}
+
+#best {
+    padding: 5px;
+}
+
+#worst {
+    padding: 5px;
 }
 
 /*********************************/
 /***  US Map Specific Styling  ***/
 /*********************************/
 
-#map-container {
-    /* Positioning and Display */
-    display: grid;
-    grid-row: 1/1;
-    grid-column: 2/4;
-    align-items: center;
-    justify-items: center;
-    /* Coloring */
-    background-color: var(--color-light);
-    height: 100%;
-}
-
-#us-map {
-    /* Positioning and Display */
-    max-width: 100%;
-    height: 100%;
-}
-
-object {
+svg {
     /* Other */
-    filter: drop-shadow(0px 0px 3px var(--secondary-color-dark));
+    filter: drop-shadow(0px 0px 4px var(--secondary-color-dark));
 }
 
 
@@ -457,19 +487,19 @@ object {
   padding-left: 30%;
 }
 
-/* The Model (background) */
-#model {
+/* The NE magnifier (background) */
+#ne-magnifier {
   display: grid;
   align-items: center;
   justify-items: end;
   position: absolute; /* Stay in place */
-  z-index: 1; /* Sit on top */
+  z-index: 2; /* Sit on top */
   left: 0;
   top: 0;
   width: 100%; /* Full width */
   height: 100%; /* Full height */
   background-color: rgb(0,0,0); /* Fallback color */
-  background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+  background-color: rgba(0,0,0,0.667); /* Black w/ opacity */
 }
 
 /* The Close Button */
@@ -495,14 +525,19 @@ object {
 /*** Theme Selector Styling ***/
 /******************************/
 
-#theme-selector {
-    /* Positioning and Display */
-	grid-area: theme-selector;
-	width: 80%;
-	height: 80%;
+#theme-roller-container{
+    grid-area: theme-selector;
+    padding: 5px;
 }
 
-#theme-selector:hover {
+#theme-roller {
+    /* Positioning and Display */
+    height: 8vh;
+    height: 8vh;
+    float: right;
+}
+
+#theme-roller:hover {
     /* Animation */
     filter: invert(100%) contrast(60%) drop-shadow(0px 0px 8px var(--accent-color-dark));
     transition-duration: 0.25s;
@@ -601,7 +636,7 @@ object {
 	display: inline-grid !important;
 }
 
-#theme-selector-container:hover #theme-selector {
+#theme-selector-container:hover #theme-roller {
 	/* Animation */
     filter: invert(100%) contrast(60%) drop-shadow(0px 0px 8px var(--accent-color-dark));
     transition-duration: 0.25s;
@@ -645,23 +680,25 @@ object {
 	box-shadow: 0px 0px 5px #333333;
 }
 
+.fullscreen {
+    /* Coloring */
+    background-color: var(--color-light);
+    /* Fonts and Text */
+    color: var(--color-dark);
+    /* Other */
+    box-shadow: 0px 0px 150px inset rgba(0, 0, 0, 0.25);
+}
+
 #init {
     /* Positioning and Display */
     position: fixed;
     display: grid;
     align-items: center;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    left: 0;
-    z-index: 100;
-    /* Coloring */
-    background-color: #DADADA;
-    /* Fonts and Text */
-    color: #555555;
+    justify-items: center;
     text-align: center;
-    /* Other */
-    box-shadow: 0px 0px 150px inset #999999;
+    width: 100%;
+    height: 100%;
+    z-index: 100;
 }
 
 #ellipses {
@@ -684,15 +721,6 @@ object {
 }
 
 #about-content {
-    /* Positioning and Display */
-    display: grid;
-    justify-items: center;
-    grid-template-columns: auto 60% 20%;
-    grid-template-areas:
-        "about-ad-left about-content about-ad-right"
-    ;
-    padding-top: 20px;
-    padding-bottom: 20px;
     /* Coloring */
     background-color: var(--color-light);
     /* Fonts and Text */
@@ -702,34 +730,7 @@ object {
 
 #about-paragraph {
     grid-area: about-content;
-}
-
-.bottom-social {
-    /* Positioning and Display */
-    width: 70px;
-    height: 70px;
-    padding: 5px;
-    /* Other */
-    filter: invert(var(--inversion));
-}
-
-.bottom-social:hover {
-    /* Other */
-    opacity: 75%;
-}
-
-.bottom-social:active {
-    /* Other */
-    opacity: 50%;
-}
-
-#bottom-bar {
-    /* Positioning and Display */
-    padding-top: 50px;
-    padding-left: 15%;
-    padding-right: 15%;
-    /* Coloring */
-    background-color: var(--group-color);
+    text-indent: 2.5em;
 }
 
 /*******************************/
@@ -739,11 +740,18 @@ object {
 .alert-container {
     /* display: none; */
     display: grid;
-    grid-template-columns: auto 70%;
-    grid-template-areas: ". alert .";
+    grid-template-columns: [left]15% [alert]70% [right]15%;
+    grid-template-rows: [top]15% [alert]70% [bottom]15%;
+
+    grid-template-areas:
+        ". top ."
+        ". alert ."
+        ". bottom ."
+    ;
     align-items: center;
     justify-content: center;
     position: fixed;
+    width: 100%;
     background-color: rgba(0, 0, 0, 0.7);
     z-index: 10;
     right: 0;
@@ -816,12 +824,23 @@ object {
 
 .alert-background {
     width: 100%;
+    height: 100%;
     border-radius: 0px 0px 10px 10px;
-    /* padding-bottom: 35px; */
-    background-color: rgba(120, 120, 120, 1);
-    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.75);
     z-index: 11;
     grid-area: alert;
+    max-height: 90vh;
+}
+/*
+* External citation: https://www.ryadel.com/en/css3-media-query-target-only-ie-ie6-ie11-firefox-chrome-safari-edge/
+* This @media section is the most commonly used way to specify styling for only certain conditions, including
+* the use of a specific browser.
+*/
+@media not all and (min-resolution:.001dpcm) {
+    @media {
+        .safari10 {
+            max-height: 90vh;
+        }
+    }
 }
 
 .blurred {
@@ -865,7 +884,7 @@ i {
 #state-window-container{
     display: grid;
     background-color: rgba(255,255,255,1); /* full white */
-    height: 600px;
+    height: 100%;
     grid-template-columns: 33% 67%;
     grid-template-rows: 20% 50% 30%;
     grid-template-areas:
@@ -933,6 +952,10 @@ i {
     filter: invert(var(--inversion));
 }
 
+#state-display img{
+    filter: drop-shadow(5px 4px 4px Black);
+}
+
 #state-window-data-container{
     text-align: left;
     grid-area: state-window-data-container;
@@ -950,30 +973,33 @@ i {
 #good-stats{
     grid-area: good-stats;
     border-right-width: 0px;
+    overflow-y: scroll;
 }
 
 #good-stats-details{
     grid-area: good-stats-details;
     border-left-width: 0px;
     overflow-y: scroll;
-    /* text-align: left */
 }
 
 #bad-stats{
     grid-area: bad-stats;
     border-right-width: 0px;
+    overflow-y: scroll;
 }
 
 #bad-stats-details{
     grid-area: bad-stats-details;
     border-left-width: 0px;
     overflow-y: scroll;
-    /* text-align: left */
 }
 
 #graph{
     grid-area: graph;
     background-color: var(--subgroup-color-lighter);
+    overflow-y: scroll;
+    scrollbar-width: thin;
+    scrollbar-color: var(--secondary-color-light) var(--color-light);
 }
 
 .state-window-image {
@@ -995,7 +1021,7 @@ i {
 }
 
 #loading-ad-right, #loading-ad-left {
-    width: 750px;
+    width: 45%;
     height: 100px;
     position: absolute;
     bottom: 20px;
@@ -1007,13 +1033,6 @@ i {
 
 #loading-ad-left {
     left: 20px;
-}
-
-#about-ad-right, #about-ad-left {
-    width: 125px;
-    height: 500px;
-    writing-mode: vertical-rl;
-    text-orientation: mixed;
 }
 
 #about-ad-right {

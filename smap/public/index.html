@@ -14,6 +14,8 @@
         <!-- Include our stylesheets -->
         <link rel="stylesheet" href="stylesheets/style.css" />
         <link rel="stylesheet" href="stylesheets/themes/master-theme-sheet.css">
+        <link rel="stylesheet" href="stylesheets/vertical-theme.css" id="vertical-layout" />
+        <link rel="stylesheet" href="stylesheets/horizontal-theme.css" id="horizontal-layout" />
         <link rel="stylesheet" href="stylesheets/themes/light/orange-red-theme.css" class="theme" title="orange-red-theme">
         <link rel="alternate stylesheet" href="stylesheets/themes/light/green-blue-theme.css" class="theme" title="green-blue-theme">
         <link rel="alternate stylesheet" href="stylesheets/themes/light/pink-purple-theme.css" class="theme" title="pink-purple-theme">
@@ -24,7 +26,6 @@
         <script src="javascripts/model.js" type="text/javascript"></script>
         <script src="javascripts/visuals.js" type="text/javascript"></script>
         <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
-
     </head>
     <body>
         <div id="metadata-alert-container" class="alert-container hidden">
@@ -51,7 +52,7 @@
         </div>
 
         <div id="state-window-alert-container" class="alert-container hidden">
-            <div class="alert-background">
+            <div class="alert-background safari10">
                 <div id=state-window-container>
                     <div class=grid-item id=state-rank> State Rank</div>
                     <div class=grid-item id=state-name> State name</div>
@@ -70,7 +71,7 @@
             </div>
         </div>
 
-		<div id="init">
+		<div id="init" class="fullscreen">
             <div>
                 <h1 id="loading">Loading assets</h1>
                 <div id="ellipses">
@@ -95,30 +96,19 @@
                 <div id="statistics-sliders-header">
                     Statistic Settings:
                 </div>
-                <div id="statistics-sliders">
-                    <!-- This is the template for each statistic slider container, the only thing
-                         that is unique is encapsulated in square brackets [[[]]] -->
-                    <!--
-                    <div class="statistic-slider-container" id="[[[ Statistic ID ]]]">
-                        <div class="statistic-slider-remover">&#215;</div>
-                        <div class="statistic-slider-title">[[[ Statistic Name ]]]</div>
-                        <input class="statistic-slider" type="range" min="1" max="5" value="3" />
-                        <div class="statistic-slider-metadata">&#9432;</div>
-                    </div>
-                    -->
-                    <!-- TODO: Remove the premade templates and populate using Javascript -->
-					<div class="statistic-slider-container" id="active_slider_template">
+                <div class="safari10_sliders" id="statistics-sliders">
+					          <div class="statistic-slider-container" id="active_slider_template">
                         <div class="statistic-slider-remover">&#215;</div>
                         <div class="statistic-slider-title">Template</div>
                         <input class="statistic-slider" type="range" min="1" max="5" value="3" />
                         <div class="statistic-slider-metadata">&#9432;</div>
                         <div class="statistic-slider-tick-container">
-							<p class="single-ticks-1">1</p>
-							<p class="single-ticks-2">2</p>
-							<p class="single-ticks-3">3</p>
-							<p class="single-ticks-4">4</p>
-							<p class="single-ticks-5">5</p>
-						</div>
+                            <p class="single-ticks-1">1</p>
+                            <p class="single-ticks-2">2</p>
+                            <p class="single-ticks-3">3</p>
+                            <p class="single-ticks-4">4</p>
+                            <p class="single-ticks-5">5</p>
+                        </div>
                     </div>
                 </div>
 
@@ -126,18 +116,8 @@
                     Statistic Selection:
                 </div>
                 <!-- All of the other statistics that are not sliders -->
-                <div id="statistics-selector">
-                    <!-- This is the template for each statistic selector container, the only thing
-                         that is unique is encapsulated in square brackets [[[]]] -->
-                    <!--
-                    <div class="statistic-option" id="[[[ Statistic ID ]]]">
-                        <div class="add-statistic">+</div>
-                        <div class="statistic-option-title">[[[ Statistic Title ]]]</div>
-                        <div class="statistic-option-metadata">&#9432;</div>
-                    </div>
-                    -->
-                    <!-- TODO: Remove the premade templates and populate using Javascript -->
-					<div class="statistic-option" id="inactive_slider_template">
+                <div class="safari10_sliders" id="statistics-selector">
+					          <div class="statistic-option" id="inactive_slider_template">
                         <div class="add-statistic">+</div>
                         <div class="statistic-option-title">Template</div>
                         <div class="statistic-option-metadata">&#9432;</div>
@@ -151,10 +131,14 @@
                     <img src="images/arrow.png" id="nav-arrow"/>
                 </div>
                 <div id="map-legend-container">
-                    Worst <div id="map-legend" class="statistic-slider"> </div> Best
+                    <div id="worst">Worst</div>
+                    <div id="map-legend" class="statistic-slider"> </div>
+                    <div id="best">Best</div>
                 </div>
 				<div id="theme-selector-container">
-                    <img src="images/theme_roller.png"  id="theme-selector"/>
+                    <div id="theme-roller-container">
+                        <img src="images/theme_roller.png"  id="theme-roller"/>
+                    </div>
                     <!-- Collection of themes -->
                     <div id="theme-container">
                         <div id="light">
@@ -195,16 +179,14 @@
                 </div>
                 <!-- End theme-roller -->
             </div>
-            <div id="map-container">
-            </div>
+            <div id="map-container"></div>
             <!-- Container for the whole ne magnifiyer -->
             <div id="ne-inspector-container">
                 <!-- Magnifying glass -->
                 <img id="ne-inspector" src="images/ne-inspector.png"/>
                 <!-- The container for the actual magnification bit -->
-                <div id="model">
-                    <div id="ne-map-container">
-                    </div>
+                <div id="ne-magnifier">
+                    <div id="ne-map-container"></div>
                     <span id="ne-magnifiyer-close">&times;</span>
                 </div>
             </div>
@@ -231,20 +213,12 @@
                 States are then colored according to their score, with higher opacity corresponding to
                 scores closer to the highest score. With SMAP, users no longer need to have multiple
                 files of data open at once to create their own assessments; comprehensive state
-                analysis is at their fingertips! </p></span>
+                analysis is at their fingertips! </p>
+                <p>All map and state graphics are derived from
+                <a href="https://simplemaps.com/resources/svg-maps">Simple Maps</a>.</p></span>
                 <div class="ad" id="about-ad-left">
                     This is an ad. <br />Be afraid!
                 </div>
-            </div>
-            <div id="bottom-bar">
-                <h2>Share us on social media!</h2>
-                <img src="images/socials/facebook.png" alt="Share on Facebook!" id="site-facebook" class="bottom-social" />
-                <img src="images/socials/twitter.png" alt="Give us a Tweet!" id="site-twitter" class="bottom-social" />
-                <img src="images/socials/instagram.png" alt="Share on Instagram!" id="site-instagram" class="bottom-social" />
-                <img src="images/socials/reddit.png" alt="Post us on Reddit!" id="site-reddit" class="bottom-social" />
-                <img src="images/socials/pinterest.png" alt="Pin us on Pinterest!" id="site-pinterest" class="bottom-social" />
-                <img src="images/socials/tumblr.png" alt="Share us on Tumblr!" id="site-tumblr" class="bottom-social" />
-                <br><br><br><br>
             </div>
         </div>
     </body>
