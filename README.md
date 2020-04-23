@@ -72,7 +72,7 @@ This was simply adding relevant checks in the code, as well as a bit of CSS so w
 
 Another bug for the alerts was that they would not resize with the browser window, so at certain (reasonably small) window sizes, users could not close the alerts. Adding an extra div and changing where certain aspects of the alert was defined helped to resolve this issue for Firefox and Chrome. Safari required extra wrangling; as mentioned in the cross-browser compatability section, Safari does not handle percentaces as units within a grid.  
 
-The scaling issue mentioned in #107 related to the map. Safari's handling of size within grids, combined with the fact that we have two stylesheets (for horizontal and vertial layouts), caused the map to initially spill out of its container upon resize. As soon as the user moused over it, the proper map would render, one state at a time. This issue was resolved by switching to viewport measurements and removing ```CSS display: grid```.
+The scaling issue mentioned in #107 related to the map. Safari's handling of size within grids, combined with the fact that we have two stylesheets (for horizontal and vertial layouts), caused the map to initially spill out of its container upon resize. As soon as the user moused over it, the proper map would render, one state at a time. This issue was resolved by switching to viewport measurements and removing ```display: grid```.
 
 ## Test Coverage
 
