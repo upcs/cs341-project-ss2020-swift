@@ -38,7 +38,7 @@ Our peers reported two bugs (one was reported twice). One was that the social me
 
 The majority of our reported issues were related to cross-browser functionality. Safari handles sizing differently than most browsers, using an older method to interpret percentages. When the height of an item within a grid is defined by percentage, that percentage is of the entire screen size, not of the parent grid. Thus, specific styling had to be implemented for the statistics sidebar and alert windows in Safari, using vh instead of % for sizing.
 
-A specific style sheet was also developed for users on mobile devices. [TODO]
+A specific style sheet was also developed for users on mobile devices. 
 
 ### Known Issues
 
@@ -49,8 +49,6 @@ On Safari, the Statistic Selection container does not utilize all vertical room 
 Default mobile view does not show bottom bar with legend and theme selector.
 
 ## Significant Client-Side Bug Fixes
-
-Most bug fixes centered around race conditions (discussed below) and the information in state and metadata windows. We also fixed our code to handle edge cases in the state window for when either one or no statistics are selected. Another bug for the alerts was that they would not resize with the browser window, so at certain (reasonably small) window sizes, users could not close the alerts. Adding an extra div and  changing where certain aspects of the alert was defined helped to resolve this issue. Finally, we worked on having visual consistency between browsers.
 
 ### Issue #41: Theme Race Condition
 
@@ -70,9 +68,11 @@ Edge sliders did not scale to fit the width assigned to it in the CSS grid. As i
 
 This was simply adding relevant checks in the code, as well as a bit of CSS so we could style these cases slightly differently.
 
-### Issue #66 and #80: Scaling issues
+### Issue #66, #80, and #107: Scaling issues
 
-### Issue #95: Safari statistic selection
+Another bug for the alerts was that they would not resize with the browser window, so at certain (reasonably small) window sizes, users could not close the alerts. Adding an extra div and changing where certain aspects of the alert was defined helped to resolve this issue for Firefox and Chrome. Safari required extra wrangling; as mentioned in the cross-browser compatability section, Safari does not handle percentaces as units within a grid.  
+
+The scaling issue mentioned in #107 related to the map. Safari's handling of size within grids, combined with the fact that we have two stylesheets (for horizontal and vertial layouts), caused the map to initially spill out of its container upon resize. As soon as the user moused over it, the proper map would render, one state at a time. This issue was resolved by switching to viewport measurements and removing ```CSS display: grid```.
 
 ## Test Coverage
 
