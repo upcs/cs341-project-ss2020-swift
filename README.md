@@ -59,9 +59,13 @@ Although our map SVGs were linked with the ```<object>``` tag in the browser, Ch
 
 ### Issue #58: Edge sliders
 
+Edge sliders did not scale to fit the width assigned to it in the CSS grid. As it turns out, it took this width as a maximum. Instead, the width defaulted to 196px. Setting ```CSS width: auto``` fixed the problem, and this change was not even registered in the inspectors of other browsers.
+
 ### Issue #60 and #70: Fewer than two stats selected
 
-### Issue #80 and #90: Scaling issues
+This was simply adding relevant checks in the code, as well as a bit of CSS so we could style these cases slightly differently.
+
+### Issue #66 and #80: Scaling issues
 
 ### Issue #95: Safari statistic selection
 
