@@ -638,6 +638,7 @@ svg {
     border: 2px solid #808080;
     /* Coloring */
     background-color: #000000;
+    z-index: 1;
 }
 
 #theme-selector-container {
