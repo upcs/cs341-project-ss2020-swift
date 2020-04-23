@@ -35,15 +35,37 @@ The majority of our reported issues were related to cross-browser functionality.
 
 A specific style sheet was also developed for users on mobile devices. [TODO]
 
+### Known Issues
+
+On Edge, state highlighting looks incorrect if you move your mouse very quickly (see #94).
+
+On Safari, the Statistic Selection container does not utilize all vertical room possible.
+
+Default mobile view does not show bottom bar with legend and theme selector.
+
 ## Significant Client-Side Bug Fixes
 
-Most bug fixes centered around race conditions (discussed below) and the information in state and metadata windows. We worked to ensure appropriate handling of units for each statistic. We also fixed our code to handle edge cases in the state window for when either one or no statistics are selected. Another bug for the alerts was that they would not resize with the browser window, so at certain (reasonably small) window sizes, users could not close the alerts. Adding an extra div and  changing where certain aspects of the alert was defined helped to resolve this issue.
+Most bug fixes centered around race conditions (discussed below) and the information in state and metadata windows. We also fixed our code to handle edge cases in the state window for when either one or no statistics are selected. Another bug for the alerts was that they would not resize with the browser window, so at certain (reasonably small) window sizes, users could not close the alerts. Adding an extra div and  changing where certain aspects of the alert was defined helped to resolve this issue. Finally, we worked on having visual consistency between browsers.
 
-### Issue #41: Theme Race Condition and #57 Coloring Issues in Chrome [TODO]
+### Issue #41: Theme Race Condition
 
+Chrome changed themes with a delay - the theme it displayed was always the previous theme you selected rather than the current. The issue came down to how we modified the DOM. Changing the html property required that the browser handle a page update asynchronously, at which point the map was already colored in. We changed this to modifying the DOM directly to fix the issue.
 
+However, this issue had a rare resurgence where no theme would be displayed when the theme changed. When two alternate stylesheets were enabled at the same time, some browsers sometimes treated this like no stylesheet was enabled. We fixed this by mimicking an external example and disabling the active stylesheet before searching for the one to enable.
 
-## Test Coverage 
+### Issue #57: Coloring Issues in Chrome
+
+Although our map SVGs were linked with the ```<object>``` tag in the browser, Chrome does not download these maps until they are visible on the screen as an optimization. We were unable to force the maps to load without resorting to some hacks. As a workaround, we fetch the maps with AJAX and embed the maps directly into our document.
+
+### Issue #58: Edge sliders
+
+### Issue #60 and #70: Fewer than two stats selected
+
+### Issue #80 and #90: Scaling issues
+
+### Issue #95: Safari statistic selection
+
+## Test Coverage
 
 [![Build Status](https://travis-ci.com/upcs/cs341-project-ss2020-swift.svg?branch=master)](https://travis-ci.com/upcs/cs341-project-ss2020-swift)
 
