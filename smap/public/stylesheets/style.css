@@ -448,6 +448,19 @@ Thumbs are hard to come by, but this site knows how to style them
     height: 100vh;
 }
 
+/*
+* External citation: https://www.ryadel.com/en/css3-media-query-target-only-ie-ie6-ie11-firefox-chrome-safari-edge/
+* This @media section is the most commonly used way to specify styling for only certain conditions, including
+* the use of a specific browser.
+*/
+@media not all and (min-resolution:.001dpcm) {
+    @media {
+        .safari10-map {
+            display: grid;
+        }
+    }
+}
+
 svg {
     /* Other */
     filter: drop-shadow(0px 0px 4px var(--secondary-color-dark));
