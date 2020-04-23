@@ -222,8 +222,9 @@ function preload(callback, loop) {
 
     setUpHovering();
     prepareStateWindow();
-    populateStateWindow(true); // Set up for just the NE
-    populateStateWindow(false); // Set up for the whole US
+    $("path").click(function() {
+        fillStateWindow($(this).attr("id"));
+    });
     callback(loop);
 }
 
@@ -519,27 +520,6 @@ function prepareStateWindow() {
         $("#state-window-alert-container").removeClass("hidden");
     });
 }
-
-
-/**
- * @param {bool} NE true if using NE magnifier, false for mainland US
- * @notes The point of this function is to reduce loading time, by loading up the information
- *      into the state window on load as opposed to on click. There may be more latency when
- *      clicking a statistic, but reasonably none when clicking on a state.
- */
-function populateStateWindow(is_ne){
-    // Check if we are working with NE map or whole US map and set variables accordingly
-    if(is_ne){
-        map = document.getElementById("ne-map").contentDocument;
-    } else {
-        map = document.getElementById("us-map").contentDocument;
-    }
-    // When clicking on a state
-    $("path", map).click(function() {
-        fillStateWindow($(this).attr("id"));
-    });
-}
-
 
 /**
  * Makes a bar chart of state weights, from best to worst. Also includes styling of chart and it's bars.
