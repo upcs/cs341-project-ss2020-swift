@@ -242,7 +242,6 @@ function Stat(category, weight){
     data.active.delete(category.stat_id);
   }
 
-  console.log(category);
   data.stats[category.stat_id] = this;
   this.category = category;
   this.weight = weight;
