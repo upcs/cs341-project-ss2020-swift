@@ -80,9 +80,9 @@ This was simply adding relevant checks in the code, as well as a bit of CSS so w
 
 [![Code Coverage](https://codecov.io/gh/upcs/cs341-project-ss2020-swift/branch/master/graph/badge.svg)](https://codecov.io/gh/upcs/cs341-project-ss2020-swift)
 
-The API Handler code that deals with requests is 100% covered by tests. The code that deals with maintaining the data model (model.js) is nearly at 100% coverage. To achieve these numbers, we have over two thousand lines of code for tests that cover a variety of cases. We made extensive use of mocks in order to isolate client side code and tested for a variety of edge cases (some of which our code was already checking for, some of which it was not). Below is a hand-picked assortment of our juiciest tests.
+The API Handler code that deals with requests is 100% covered by tests. The code that deals with maintaining the data model (model.js) is nearly at 100% coverage. The client side code that actually modifies the display (visuals.js) had significantly lower coverage due to the nature of the side-effect laden code, but many functions were still tested thoroughly. To achieve these numbers, we have over two thousand lines of code for tests that cover a variety of cases. We made extensive use of mocks in order to isolate client side code and tested for a variety of edge cases (some of which are code was already checking for, some of which it was not). Below is a hand-picked assortment of our juiciest tests.
 
-### Most Inventive Tests [TODO]
+### Most Inventive Tests
 #### Stat.enable -> without data failed callback
 Creating a Stat object using the constructor has some side effects (like updating the global data object) that we don't want to deal with. As such, we are using the ```apply()``` function to let us use a fake Stat object when testing this function. This particular test has another knot however, because we are supposed to test what happens when the get request fails. As such, we must mock the jQuery ```get()``` function to complete this test. Relevant code portions are below.
 
@@ -171,39 +171,31 @@ setTimeout(() => {
 
 ```
 
-#### showMetadataAlert -> metadata with no title
-One issue we could run into when trying to show a metadata alert is not having the metadata available. When the title is missing from the metadata, this test
-ensures that the error is handled gracefully. A specific error message will be printed to the "#metadata-title" div for the user to see from the front end. A simple refresh should fix this issue. 
-
-```javascript
-  let metadata =
-  {
-  publication_date: "publication date",
-  note: "note",
-  source: "source",
-  original_source: "original source"
-  }
-
-  expect($("#metadata-title").text()).toBe("init title text");
-  expect($("#metadata-date").text()).toBe("init date text");
-  expect($("#metadata-notes").text()).toBe("init notes text");
-  expect($("#metadata-publisher").text()).toBe("init publisher text");
-
-  expect($("#loading-div").hasClass("hidden")).toBe(false);
-  expect($("#metadata-title").hasClass("hidden")).toBe(true);
-  expect($(".metadata-alert-element").hasClass("hidden")).toBe(true);
-
-  visuals.showMetadataAlert(metadata);
-
-  expect($("#metadata-title").text()).toEqual(
-      expect.stringContaining("Error"),
-      expect.stringContaining("[Mm]etadata")
-```
-
 ## Security
-SMAP does not provide accounts, so the main security concern is the potential for SQL injections, which are prevented by parameterizing the database queries. There is also potential for denial of service (DOS) issues, though we will not address these for this project. For more information, go to tests > security_review.tx
+SMAP does not provide accounts, so the main security concern is the potential for SQL injections, which are prevented by parameterizing the database queries. There is also potential for denial of service (DOS) issues, though we will not address these for this project. For more information, go to tests > security_review.txt
 
-## Error Handling [TODO]
+## Error Handling
+
+There are a variety of ways things can go wrong in our app. Here we list some potential errors and how our app recovers from them.
+
+### Failed Database Query
+
+An error like this could happen if the database goes offline. Every single database query checks for an error in our code. If the database query fails, the server will return a 404 error. This leads to...
+
+### 404 Error (or other server error)
+
+There is not really a graceful way to handle when the server 404s a critical resource. If the site fails to download the US or NE map, the site will load forever. While not ideal, this is better than showing a completely broken site. If the server fails to download the list of categories, no statistics will be displayed when the site loads, but nothing should crash and the state of the website will remain valid.
+
+The client will request metadata when either the state window is opened for the first time or the (i) button next to a statistic is pressed. If the former request fails, the state window will simply contain no statistic information in the right panels because a promise will never resolve. In the later case, the metadata screen will show a loading screen indefinitely, but it can still be closed by the user and things will function normally.
+
+Finally, the client will request data for a category if the user selects it. If this request fails, the category is not activated (although it will appear in the list of active statistics) and thus will not have any effect on the calculations for displaying weights. An error is also logged to the console.
+
+### Bad API Call
+
+We know that our client will use our API correctly, but we are prepared to deal with poorly made or maliciously made requests. Since we saw this as a security issue, you can find more information in the Security section. Briefly, our server can handle requests which ask for:
+- a non-existent category
+- a category with an infinite category id
+- a category id which contains valid SQL code (ex. "OR 1=1")
 
 # Features List:
 
@@ -279,4 +271,4 @@ SMAP does not provide accounts, so the main security concern is the potential fo
 > Our only security requirement was to address Denial of Service (DoS) errors. We imagined a DoS error would result from too many people or bots using the website at the same time or simply simultaneously refreshing the page. Since we are not the only ones with this particular data set on the internet, and our website is simply a visualization tool, we have decided that it is very unlikely that a) too many people use our website at the same time or b) someone tries to cause a DoS error by making too many website requests. In either case, however unlikely, we think the worst thing that would happen is that we use up our GCloud budget. A bad DoS attack would shut down the website before we are charged more than our credit allows, and the expected lifetime of the product is now less than a month. Given the short lifespan of our product and the unlikelihood of a DoS error, intentional or unintentional, we have not further addressed the issue.
 
 ### Code Quality [TODO]
-> Our code is thoroughly commented, and unit tested. Our server side test coverage is _____ and our client side test coverage is ____. We have also taken great care to make our website intuitive to new users. This meets our software quality requirements. 	
+> Our code is thoroughly commented, and unit tested. Our server side test coverage is as high as possible (not all sever files were tested due to limitations with Jest, but the file we did test is 100% covered) and our client side test coverage is ____. We have also taken great care to make our website intuitive to new users. This meets our software quality requirements. 	

@@ -283,7 +283,7 @@ Stat.prototype.enable = function(){
   if(!this.data){
     $.get("/api/data?cat=" + this.category.stat_id, "", (cat_data, status, xhr) => {
       if (status !== "success"){
-        alert("AHHHHHHH FAILURE!!!");
+        console.error("Could not get data for stat: " + this.category.stat_id);
       } else {
         this.data = cat_data[0];
         this.rankings = rankStates(this.data);
