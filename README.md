@@ -170,6 +170,35 @@ setTimeout(() => {
 
 ```
 
+#### showMetadataAlert -> metadata with no title
+One issue we could run into when trying to show a metadata alert is not having the metadata available. When the title is missing from the metadata, this test ensures that the error is handled gracefully. A specific error message will be printed to the "#metadata-title" div for the user to see from the front end. A simple refresh should fix this issue. 
+
+
+```javascript
+  let metadata =
+  {
+  publication_date: "publication date",
+  note: "note",
+  source: "source",
+  original_source: "original source"
+  }
+
+  expect($("#metadata-title").text()).toBe("init title text");
+  expect($("#metadata-date").text()).toBe("init date text");
+  expect($("#metadata-notes").text()).toBe("init notes text");
+  expect($("#metadata-publisher").text()).toBe("init publisher text");
+
+  expect($("#loading-div").hasClass("hidden")).toBe(false);
+  expect($("#metadata-title").hasClass("hidden")).toBe(true);
+  expect($(".metadata-alert-element").hasClass("hidden")).toBe(true);
+
+  visuals.showMetadataAlert(metadata);
+
+  expect($("#metadata-title").text()).toEqual(
+      expect.stringContaining("Error"),
+      expect.stringContaining("[Mm]etadata")
+```
+
 ## Security
 SMAP does not provide accounts, so the main security concern is the potential for SQL injections, which are prevented by parameterizing the database queries. There is also potential for denial of service (DOS) issues, though we will not address these for this project. For more information, go to tests > security_review.txt
 
